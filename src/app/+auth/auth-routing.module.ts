@@ -1,7 +1,6 @@
 import { RouterModule } from '@angular/router';
 
-/** Components */
-import { AuthComponent } from './auth.component';
+import { AuthComponent } from "./AuthComponent";
 
 export const AuthRoutingModule = RouterModule.forChild([
   { path: '', component: AuthComponent },
