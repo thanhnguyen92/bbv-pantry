@@ -32,7 +32,8 @@ import {
   MatToolbarModule,
   MatTooltipModule,
   MatStepperModule,
-  MatDividerModule
+  MatDividerModule,
+  MatFormFieldModule
 } from '@angular/material';
 
 @NgModule({
@@ -68,7 +69,8 @@ import {
     MatToolbarModule,
     MatTooltipModule,
     MatStepperModule,
-    MatDividerModule
+    MatDividerModule,
+    MatFormFieldModule
   ],
   exports: [
     MatAutocompleteModule,
@@ -102,7 +104,8 @@ import {
     MatToolbarModule,
     MatTooltipModule,
     MatStepperModule,
-    MatDividerModule
+    MatDividerModule,
+    MatFormFieldModule
   ]
 })
 export class MaterialModule {}

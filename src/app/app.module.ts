@@ -9,6 +9,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AppComponent } from './app.component';
 import { environment } from 'src/environments/environment';
 import { MatToolbarModule } from '@angular/material';
+import { AngularFireAuthModule } from '@angular/fire/auth';
 
 @NgModule({
   declarations: [AppComponent],
@@ -18,7 +19,9 @@ import { MatToolbarModule } from '@angular/material';
     BrowserAnimationsModule,
     MatToolbarModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule
+    AngularFirestoreModule,
+    AngularFireAuthModule,
+    MaterialModule
   ],
   providers: [],
   bootstrap: [AppComponent]
