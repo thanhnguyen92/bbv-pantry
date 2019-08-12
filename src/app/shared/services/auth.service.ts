@@ -14,7 +14,7 @@ const USER_REFRESHTOKEN = 'REFRESH-TOKEN-KEY';
   providedIn: 'root',
 })
 export class AuthService {
-  userData: any;
+  userData: firebase.User;
 
   constructor(
     private afs: AngularFirestore,
@@ -30,6 +30,8 @@ export class AuthService {
         this.clearStorage();
       }
     });
+
+    
   }
 
   SigIn(email, password) {
@@ -90,7 +92,7 @@ export class AuthService {
   }
 
   private async setStorageUser(user: firebase.User) {
-    const accessToken = await user.getIdToken();
+    const accessToken = await user.getIdToken(true);
     const refreshToken = user.refreshToken;
     localStorage.setItem(USER_ACCESSTOKEN, accessToken);
     localStorage.setItem(USER_REFRESHTOKEN, refreshToken);
