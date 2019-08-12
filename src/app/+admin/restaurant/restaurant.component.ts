@@ -4,31 +4,39 @@ import { MatDialog } from '@angular/material';
 /** Components */
 import { RestaurantItemComponent } from './restaurant-item/restaurant-item.component';
 import { RestaurantModel } from 'src/app/shared/models/restaurant.model';
-
+import { RestaurantService } from 'src/app/shared/services/restaurant.service';
+import { map } from 'rxjs/operators';
 @Component({
   selector: 'app-restaurant',
   templateUrl: './restaurant.component.html',
-  styleUrls: ['./restaurant.component.scss']
+  styleUrls: ['./restaurant.component.scss'],
 })
 export class RestaurantComponent implements OnInit {
   restaurants: RestaurantModel[] = [];
   displayedColumns: string[] = ['name', 'phone', 'location', 'actions'];
 
-  constructor(private dialog: MatDialog) {}
+  constructor(
+    private dialog: MatDialog,
+    private restaurantService: RestaurantService,
+  ) {}
 
   ngOnInit() {
-    this.restaurants.push({
-      id: 0,
-      name: 'Test 1',
-      location: 'Ho Chi Minh',
-      phone: '0778860048'
-    } as RestaurantModel);
-    this.restaurants.push({
-      id: 1,
-      name: 'Test 2',
-      location: 'Ho Chi Minh',
-      phone: '0778860048'
-    } as RestaurantModel);
+    this.restaurantService
+      .Gets()
+      .snapshotChanges()
+      .pipe(
+        map(actions =>
+          actions.map(a => {
+            const data = a.payload.doc.data() as RestaurantModel;
+            const id = a.payload.doc.id;
+            data.uid = id;
+            return { ...data };
+          }),
+        ),
+      )
+      .subscribe(result => {
+        this.restaurants = result;
+      });
   }
 
   onCreate() {
@@ -42,22 +50,37 @@ export class RestaurantComponent implements OnInit {
   private showDialog(restaurant: RestaurantModel = new RestaurantModel()) {
     const dialogRef = this.dialog.open(RestaurantItemComponent, {
       width: '250px',
-      data: restaurant
+      data: {...restaurant},
     });
 
     dialogRef.afterClosed().subscribe((result: RestaurantModel) => {
-      console.log(result);
       if (!result) {
         return;
       }
-      if (result.id) {
+      if (result.uid) {
         // Edit
-        restaurant = result;
+        this.restaurantService
+          .Update({ ...result })
+          .then(resultAdd => {
+            // TODO: Should implement NotificationService to handle message with toast
+            window.alert('Success');
+          })
+          .catch(error => {
+            // TODO: Should implement NotificationService to handle message with toast
+            window.alert(error);
+          });
       } else {
         // Create
-        result.id = this.restaurants[this.restaurants.length - 1].id++;
-        this.restaurants.push(result);
-        this.restaurants = [...this.restaurants];
+        this.restaurantService
+          .Add({ ...result })
+          .then(resultAdd => {
+            // TODO: Should implement NotificationService to handle message with toast
+            window.alert('Success');
+          })
+          .catch(error => {
+            // TODO: Should implement NotificationService to handle message with toast
+            window.alert(error);
+          });
       }
     });
   }
