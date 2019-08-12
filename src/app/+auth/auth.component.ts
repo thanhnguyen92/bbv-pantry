@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-auth',
@@ -7,14 +8,17 @@ import { Router } from '@angular/router';
   styleUrls: ['./auth.component.scss']
 })
 export class AuthComponent implements OnInit, OnDestroy {
-  
-  constructor(private router: Router) {}
+
+ 
+  constructor(private router: Router) { }
 
   ngOnInit() {
-
+    
   }
 
   ngOnDestroy(): void {
-   
+
   }
+
+  
 }
