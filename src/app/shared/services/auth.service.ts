@@ -100,6 +100,7 @@ export class AuthService {
 
   get isAdmin() {
     //TODO: Should implement feature to check role admin
+    const tokenInfo = jwt_decode(localStorage.getItem(USER_ACCESSTOKEN));
 
     return true;
   }
