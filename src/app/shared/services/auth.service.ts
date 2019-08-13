@@ -1,35 +1,37 @@
 import { Injectable, NgZone } from '@angular/core';
 import {
   AngularFirestore,
-  AngularFirestoreDocument
+  AngularFirestoreDocument,
 } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { User } from '../models/user.model';
 import * as jwt_decode from 'jwt-decode';
-const USER_KEY = 'User';
+const USER_KEY = 'USER-KEY';
 const USER_ACCESSTOKEN = 'ACCESS-TOKEN-KEY';
+const USER_REFRESHTOKEN = 'REFRESH-TOKEN-KEY';
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  userData: any;
+  userData: firebase.User;
 
   constructor(
     private afs: AngularFirestore,
     private afAuth: AngularFireAuth,
     private router: Router,
-    private ngZone: NgZone
+    private ngZone: NgZone,
   ) {
-    this.afAuth.authState.subscribe(async user => {
-      if (user) {
-        this.userData = user;
-        console.log(await user.getIdToken());
-        localStorage.setItem(USER_KEY, JSON.stringify(user));
+    this.afAuth.authState.subscribe(async result => {
+      if (result) {
+        this.userData = result;
+        await this.setStorageUser(result);
       } else {
-        localStorage.setItem(USER_KEY, null);
+        this.clearStorage();
       }
     });
+
+    
   }
 
   SigIn(email, password) {
@@ -40,11 +42,10 @@ export class AuthService {
           this.router.navigate(['dasboard']);
         });
         this.SetUserData(result.user);
-        return true;
+        return result.user;
       })
       .catch(error => {
-        window.alert(error.message);
-        return false;
+        return error.message;
       });
   }
   SignUp(email, password) {
@@ -52,14 +53,12 @@ export class AuthService {
     return this.afAuth.auth
       .createUserWithEmailAndPassword(email, password)
       .then(result => {
-        debugger;
         this.SendVerificationMail();
         this.SetUserData(result.user);
-        return true;
+        return result;
       })
       .catch(error => {
-        window.alert(error.message);
-        return false;
+        return error.message;
       });
   }
 
@@ -71,17 +70,17 @@ export class AuthService {
 
   SetUserData(user) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(
-      `users/${user.uid}`
+      `users/${user.uid}`,
     );
     const userData: User = {
       uid: user.uid,
       email: user.email,
       displayName: user.displayName,
       photoURL: user.photoURL,
-      emailVerified: user.emailVerified
+      emailVerified: user.emailVerified,
     };
     return userRef.set(userData, {
-      merge: true
+      merge: true,
     });
   }
 
@@ -92,6 +91,19 @@ export class AuthService {
     });
   }
 
+  private async setStorageUser(user: firebase.User) {
+    const accessToken = await user.getIdToken(true);
+    const refreshToken = user.refreshToken;
+    localStorage.setItem(USER_ACCESSTOKEN, accessToken);
+    localStorage.setItem(USER_REFRESHTOKEN, refreshToken);
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+  }
+
+  private clearStorage() {
+    localStorage.setItem(USER_KEY, null);
+    localStorage.setItem(USER_ACCESSTOKEN, null);
+    localStorage.setItem(USER_REFRESHTOKEN, null);
+  }
   get isLogged() {
     const currentUser = JSON.parse(localStorage.getItem(USER_KEY));
     const isLogged = currentUser !== null && currentUser.emailVerified;
@@ -99,9 +111,12 @@ export class AuthService {
   }
 
   get isAdmin() {
-    //TODO: Should implement feature to check role admin
+    //TODO: Should implement feature to check role admin. Should implement admin firebase to custom token
     const tokenInfo = jwt_decode(localStorage.getItem(USER_ACCESSTOKEN));
-
-    return true;
+    const user = JSON.parse(localStorage.getItem(USER_KEY)) as firebase.User;
+    // Just hard code for this time.
+    if (user.email.indexOf('thanhnguyen') || user.email.indexOf('toannguyen'))
+      return true;
+    return false;
   }
 }

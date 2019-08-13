@@ -10,9 +10,10 @@ import { AppComponent } from './app.component';
 import { environment } from 'src/environments/environment';
 import { MatToolbarModule } from '@angular/material';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+import { ConfirmDialogComponent } from './shared/confirm-dialog/confirm-dialog.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, ConfirmDialogComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -23,6 +24,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
     AngularFireAuthModule,
     MaterialModule
   ],
+  entryComponents: [ConfirmDialogComponent],
   providers: [],
   bootstrap: [AppComponent]
 })
