@@ -8,17 +8,9 @@ import { FormGroup, FormBuilder } from '@angular/forms';
   styleUrls: ['./auth.component.scss']
 })
 export class AuthComponent implements OnInit, OnDestroy {
+  constructor(private router: Router) {}
 
- 
-  constructor(private router: Router) { }
+  ngOnInit() {}
 
-  ngOnInit() {
-    
-  }
-
-  ngOnDestroy(): void {
-
-  }
-
-  
+  ngOnDestroy(): void {}
 }

@@ -13,10 +13,11 @@ export class PublishSubcribeService {
   }
 
   publish(channel: string, event: any): void {
-    this.publishSubscribeSubject.next({
-      channel: channel,
-      event: event
-    });
+    const subscribeModel = {
+      channel,
+      event
+    } as SubscribeModel;
+    this.publishSubscribeSubject.next(subscribeModel);
   }
 
   subscribe(channel: string, handler: (value: any) => void): Subscription {
@@ -27,4 +28,13 @@ export class PublishSubcribeService {
       )
       .subscribe(handler);
   }
+}
+
+export class SubscribeModel {
+  /**
+   *
+   */
+  constructor() {}
+  channel: string;
+  event: any;
 }

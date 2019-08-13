@@ -11,6 +11,8 @@ import { environment } from 'src/environments/environment';
 import { MatToolbarModule } from '@angular/material';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { ConfirmDialogComponent } from './shared/confirm-dialog/confirm-dialog.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpErrorInterceptor } from './shared/interceptors';
 
 @NgModule({
   declarations: [AppComponent, ConfirmDialogComponent],
@@ -25,7 +27,13 @@ import { ConfirmDialogComponent } from './shared/confirm-dialog/confirm-dialog.c
     MaterialModule
   ],
   entryComponents: [ConfirmDialogComponent],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

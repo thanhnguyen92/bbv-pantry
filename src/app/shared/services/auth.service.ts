@@ -1,7 +1,7 @@
 import { Injectable, NgZone } from '@angular/core';
 import {
   AngularFirestore,
-  AngularFirestoreDocument,
+  AngularFirestoreDocument
 } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
@@ -11,7 +11,7 @@ const USER_KEY = 'USER-KEY';
 const USER_ACCESSTOKEN = 'ACCESS-TOKEN-KEY';
 const USER_REFRESHTOKEN = 'REFRESH-TOKEN-KEY';
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthService {
   userData: firebase.User;
@@ -20,7 +20,7 @@ export class AuthService {
     private afs: AngularFirestore,
     private afAuth: AngularFireAuth,
     private router: Router,
-    private ngZone: NgZone,
+    private ngZone: NgZone
   ) {
     this.afAuth.authState.subscribe(async result => {
       if (result) {
@@ -30,8 +30,6 @@ export class AuthService {
         this.clearStorage();
       }
     });
-
-    
   }
 
   SigIn(email, password) {
@@ -70,17 +68,17 @@ export class AuthService {
 
   SetUserData(user) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(
-      `users/${user.uid}`,
+      `users/${user.uid}`
     );
     const userData: User = {
       uid: user.uid,
       email: user.email,
       displayName: user.displayName,
       photoURL: user.photoURL,
-      emailVerified: user.emailVerified,
+      emailVerified: user.emailVerified
     };
     return userRef.set(userData, {
-      merge: true,
+      merge: true
     });
   }
 
@@ -103,6 +101,11 @@ export class AuthService {
     localStorage.setItem(USER_KEY, null);
     localStorage.setItem(USER_ACCESSTOKEN, null);
     localStorage.setItem(USER_REFRESHTOKEN, null);
+  }
+
+  get token() {
+    const accessToken = localStorage.getItem(USER_ACCESSTOKEN);
+    return accessToken;
   }
   get isLogged() {
     const currentUser = JSON.parse(localStorage.getItem(USER_KEY));
