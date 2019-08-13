@@ -8,7 +8,10 @@ import { MatFormFieldModule, MatInputModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 import { FirebaseService } from 'src/app/shared/services/firebase.service';
 import { RestaurantModel } from 'src/app/shared/models/restaurant.model';
-import { AngularFirestore, AngularFirestoreModule } from '@angular/fire/firestore';
+import {
+  AngularFirestore,
+  AngularFirestoreModule
+} from '@angular/fire/firestore';
 import { RestaurantService } from 'src/app/shared/services/restaurant.service';
 
 @NgModule({
@@ -17,9 +20,7 @@ import { RestaurantService } from 'src/app/shared/services/restaurant.service';
     CommonModule,
     RestaurantRoutingModule,
     SimpleMaterialModule,
-    MatFormFieldModule,
-    MatInputModule,
-    AngularFirestoreModule,
+    AngularFirestoreModule
   ],
   declarations: [RestaurantComponent, RestaurantItemComponent],
   entryComponents: [RestaurantItemComponent],
