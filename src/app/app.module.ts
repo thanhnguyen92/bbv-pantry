@@ -11,9 +11,10 @@ import { environment } from 'src/environments/environment';
 import { MatToolbarModule } from '@angular/material';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { ConfirmDialogComponent } from './shared/confirm-dialog/confirm-dialog.component';
+import { NotificationComponent } from './shared/components/notification/notification.component';
 
 @NgModule({
-  declarations: [AppComponent, ConfirmDialogComponent],
+  declarations: [AppComponent, ConfirmDialogComponent, NotificationComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -25,6 +26,7 @@ import { ConfirmDialogComponent } from './shared/confirm-dialog/confirm-dialog.c
     MaterialModule
   ],
   entryComponents: [ConfirmDialogComponent],
+  exports: [NotificationComponent],
   providers: [],
   bootstrap: [AppComponent]
 })

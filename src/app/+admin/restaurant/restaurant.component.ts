@@ -8,6 +8,7 @@ import { RestaurantService } from 'src/app/shared/services/restaurant.service';
 import { map, finalize } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
+import { NotificationService } from 'src/app/shared/services/notification.service';
 @Component({
   selector: 'app-restaurant',
   templateUrl: './restaurant.component.html',
@@ -91,12 +92,15 @@ export class RestaurantComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((result: RestaurantModel) => {
       if (result && result.uid) {
         this.restaurantService
-          .Delete(result.uid)
+          .delete(result.uid)
           .then(() => {
+            NotificationService.showSuccessMessage('Delete successful');
             window.alert('Delete Success');
           })
-          .catch(error => {
-            window.alert('Delete Fail');
+          .catch(() => {
+            NotificationService.showErrorMessage(
+              'Something went wrong, please try again'
+            );
           });
       }
     });
@@ -112,31 +116,25 @@ export class RestaurantComponent implements OnInit, OnDestroy {
       if (!result) {
         return;
       }
+
+      let service;
       if (result.uid) {
         // Edit
-        this.restaurantService
-          .Update({ ...result })
-          .then(resultAdd => {
-            // TODO: Should implement NotificationService to handle message with toast
-            window.alert('Success');
-          })
-          .catch(error => {
-            // TODO: Should implement NotificationService to handle message with toast
-            window.alert(error);
-          });
+        service = this.restaurantService.update({ ...result });
       } else {
         // Create
-        this.restaurantService
-          .Add({ ...result })
-          .then(resultAdd => {
-            // TODO: Should implement NotificationService to handle message with toast
-            window.alert('Success');
-          })
-          .catch(error => {
-            // TODO: Should implement NotificationService to handle message with toast
-            window.alert(error);
-          });
+        service = this.restaurantService.add({ ...result });
       }
+
+      service
+        .then(() => {
+          NotificationService.showSuccessMessage('Save successful');
+        })
+        .catch(() => {
+          NotificationService.showErrorMessage(
+            'Something went wrong, please try again'
+          );
+        });
     });
   }
 }

@@ -27,15 +27,15 @@ export class FirebaseService<T extends BaseEntity> {
     return this.entities;
   }
 
-  public Add(entity: T) {
+  public add(entity: T) {
     return this.entities.add(entity);
   }
 
-  public Update(entity: T) {
+  public update(entity: T) {
     return this.db.doc(`${this.path}/${entity.uid}`).update(entity);
   }
 
-  public Delete(id: string) {
+  public delete(id: string) {
     return this.db.doc(`${this.path}/${id}`).delete();
   }
   private errorCallback(message) {
