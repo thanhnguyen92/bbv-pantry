@@ -8,14 +8,18 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 
 import { AppComponent } from './app.component';
 import { environment } from 'src/environments/environment';
-import { MatToolbarModule } from '@angular/material';
+import {
+  MatToolbarModule,
+  MAT_SNACK_BAR_DEFAULT_OPTIONS
+} from '@angular/material';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { ConfirmDialogComponent } from './shared/confirm-dialog/confirm-dialog.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './shared/interceptors';
+import { NotificationComponent } from './shared/components/notification/notification.component';
 
 @NgModule({
-  declarations: [AppComponent, ConfirmDialogComponent],
+  declarations: [AppComponent, ConfirmDialogComponent, NotificationComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -34,6 +38,7 @@ import { HttpErrorInterceptor } from './shared/interceptors';
       multi: true
     }
   ],
+  exports: [NotificationComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

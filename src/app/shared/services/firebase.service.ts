@@ -3,12 +3,12 @@ import {
   AngularFirestore,
   AngularFirestoreDocument,
   AngularFirestoreCollection,
-  QueryFn,
+  QueryFn
 } from '@angular/fire/firestore';
 import { BaseEntity } from '../models/base.model';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class FirebaseService<T extends BaseEntity> {
   entity: AngularFirestoreDocument<T>;
@@ -17,25 +17,25 @@ export class FirebaseService<T extends BaseEntity> {
     this.entities = db.collection<T>(this.path);
   }
 
-  public Get(id: string): AngularFirestoreDocument {
+  public get(id: string): AngularFirestoreDocument {
     this.entity = this.db.doc<T>(this.path);
     return this.entity;
   }
 
-  public Gets(query?: QueryFn): AngularFirestoreCollection<T> {
+  public gets(query?: QueryFn): AngularFirestoreCollection<T> {
     this.entities = this.db.collection<T>(this.path, query);
     return this.entities;
   }
 
-  public Add(entity: T) {
+  public add(entity: T) {
     return this.entities.add(entity);
   }
 
-  public Update(entity: T) {
+  public update(entity: T) {
     return this.db.doc(`${this.path}/${entity.uid}`).update(entity);
   }
 
-  public Delete(id: string) {
+  public delete(id: string) {
     return this.db.doc(`${this.path}/${id}`).delete();
   }
   private errorCallback(message) {

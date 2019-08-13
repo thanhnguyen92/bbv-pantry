@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
 import { MatDialog, MatSort, MatTableDataSource } from '@angular/material';
 
 /** Components */
@@ -8,6 +8,7 @@ import { RestaurantService } from 'src/app/shared/services/restaurant.service';
 import { map, finalize } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
+import { NotificationService } from 'src/app/shared/services/notification.service';
 @Component({
   selector: 'app-restaurant',
   templateUrl: './restaurant.component.html',
@@ -22,7 +23,8 @@ export class RestaurantComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   constructor(
     private dialog: MatDialog,
-    private restaurantService: RestaurantService
+    private restaurantService: RestaurantService,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit() {
@@ -41,9 +43,12 @@ export class RestaurantComponent implements OnInit, OnDestroy {
   onDelete(restaurant) {
     this.showDialogConfirmDelete(restaurant);
   }
+  applyFilter(filterVal) {
+    this.dataSource.filter = filterVal.trim().toLowerCase();
+  }
   private reloadTable() {
     this.reloadTableSubcription = this.restaurantService
-      .Gets()
+      .gets()
       .valueChanges()
       .pipe(
         finalize(() => {
@@ -64,7 +69,7 @@ export class RestaurantComponent implements OnInit, OnDestroy {
   private initDataTable() {
     this.dataSource.sort = this.sort;
     this.restaurantService
-      .Gets()
+      .gets()
       .snapshotChanges()
       .pipe(
         finalize(() => (this.loading = false)),
@@ -91,12 +96,14 @@ export class RestaurantComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((result: RestaurantModel) => {
       if (result && result.uid) {
         this.restaurantService
-          .Delete(result.uid)
+          .delete(result.uid)
           .then(() => {
-            window.alert('Delete Success');
+            NotificationService.showSuccessMessage('Delete successful');
           })
-          .catch(error => {
-            window.alert('Delete Fail');
+          .catch(() => {
+            NotificationService.showErrorMessage(
+              'Something went wrong, please try again'
+            );
           });
       }
     });
@@ -112,31 +119,25 @@ export class RestaurantComponent implements OnInit, OnDestroy {
       if (!result) {
         return;
       }
+
+      let service;
       if (result.uid) {
         // Edit
-        this.restaurantService
-          .Update({ ...result })
-          .then(resultAdd => {
-            // TODO: Should implement NotificationService to handle message with toast
-            window.alert('Success');
-          })
-          .catch(error => {
-            // TODO: Should implement NotificationService to handle message with toast
-            window.alert(error);
-          });
+        service = this.restaurantService.update({ ...result });
       } else {
         // Create
-        this.restaurantService
-          .Add({ ...result })
-          .then(resultAdd => {
-            // TODO: Should implement NotificationService to handle message with toast
-            window.alert('Success');
-          })
-          .catch(error => {
-            // TODO: Should implement NotificationService to handle message with toast
-            window.alert(error);
-          });
+        service = this.restaurantService.add({ ...result });
       }
+
+      service
+        .then(() => {
+          NotificationService.showSuccessMessage('Save successful');
+        })
+        .catch(() => {
+          NotificationService.showErrorMessage(
+            'Something went wrong, please try again'
+          );
+        });
     });
   }
 }
