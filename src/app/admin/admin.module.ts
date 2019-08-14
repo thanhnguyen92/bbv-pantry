@@ -5,10 +5,11 @@ import { AdminRoutingModule } from './admin-routing.module';
 /** Components */
 import { AdminComponent } from './admin.component';
 import { SimpleMaterialModule } from '../shared/modules/simple-material.module';
+import { MenuComponent } from './menu/menu.component';
 
 @NgModule({
   imports: [CommonModule, AdminRoutingModule, SimpleMaterialModule],
-  declarations: [AdminComponent],
+  declarations: [AdminComponent, MenuComponent],
   providers: []
 })
 export class AdminModule {}
