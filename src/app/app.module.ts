@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { MaterialModule } from './shared/modules/material.module';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
-
+import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { AppComponent } from './app.component';
 import { environment } from 'src/environments/environment';
 import {
@@ -28,7 +28,8 @@ import { NotificationComponent } from './shared/components/notification/notifica
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule,
-    MaterialModule
+    MaterialModule,
+    AngularFireMessagingModule
   ],
   entryComponents: [ConfirmDialogComponent],
   providers: [

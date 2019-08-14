@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>{{ 'Add Menu Items' }}</h1>
+<div mat-dialog-content>
+    <mat-form-field>
+        <input matInput placeholder="Name" [(ngModel)]="data.name" />
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Price" [(ngModel)]="data.price" />
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Notes" [(ngModel)]="data.notes" />
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>
+        Save
+    </button>
+</div>

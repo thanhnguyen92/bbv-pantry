@@ -19,7 +19,8 @@ export class NotificationComponent implements OnDestroy {
   alerts: NotificationModel[] = [];
   defaultConfig: MatSnackBarConfig = {
     horizontalPosition: 'right',
-    verticalPosition: 'top'
+    verticalPosition: 'top',
+    duration: 3500
   };
   private notificationSubscription: Subscription;
   private errorHeader = '';
@@ -71,14 +72,25 @@ export class NotificationComponent implements OnDestroy {
       //   msg: translated,
       //   timeout: data.timeout
       // });
+
       this.snackBar.open(translated, '', {
         panelClass: 'success-message',
-        ...this.defaultConfig
+        ...{
+          ...this.defaultConfig,
+          ...{
+            duration: data.timeout
+          }
+        }
       });
     } else if (data.message) {
       this.snackBar.open(data.message, '', {
         panelClass: 'success-message',
-        ...this.defaultConfig
+        ...{
+          ...this.defaultConfig,
+          ...{
+            duration: data.timeout
+          }
+        }
       });
     }
   }
@@ -92,12 +104,22 @@ export class NotificationComponent implements OnDestroy {
       const translated = data.i18n;
       this.snackBar.open(translated, '', {
         panelClass: 'error-message',
-        ...this.defaultConfig
+        ...{
+          ...this.defaultConfig,
+          ...{
+            duration: data.timeout
+          }
+        }
       });
     } else if (data.message) {
       this.snackBar.open(data.message, '', {
         panelClass: 'error-message',
-        ...this.defaultConfig
+        ...{
+          ...this.defaultConfig,
+          ...{
+            duration: data.timeout
+          }
+        }
       });
     }
   }
@@ -111,12 +133,22 @@ export class NotificationComponent implements OnDestroy {
       const translated = data.i18n;
       this.snackBar.open(translated, '', {
         panelClass: 'warning-message',
-        ...this.defaultConfig
+        ...{
+          ...this.defaultConfig,
+          ...{
+            duration: data.timeout
+          }
+        }
       });
     } else if (data.message) {
       this.snackBar.open(data.message, '', {
         panelClass: 'warning-message',
-        ...this.defaultConfig
+        ...{
+          ...this.defaultConfig,
+          ...{
+            duration: data.timeout
+          }
+        }
       });
     }
   }
@@ -130,12 +162,22 @@ export class NotificationComponent implements OnDestroy {
       const translated = data.i18n;
       this.snackBar.open(translated, '', {
         panelClass: 'info-message',
-        ...this.defaultConfig
+        ...{
+          ...this.defaultConfig,
+          ...{
+            duration: data.timeout
+          }
+        }
       });
     } else if (data.message) {
       this.snackBar.open(data.message, '', {
         panelClass: 'info-message',
-        ...this.defaultConfig
+        ...{
+          ...this.defaultConfig,
+          ...{
+            duration: data.timeout
+          }
+        }
       });
     }
   }

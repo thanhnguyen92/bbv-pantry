@@ -9,6 +9,7 @@ import { map, finalize } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { NotificationService } from 'src/app/shared/services/notification.service';
+import { Router, ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-restaurant',
   templateUrl: './restaurant.component.html',
@@ -18,13 +19,14 @@ export class RestaurantComponent implements OnInit, OnDestroy {
   restaurants: RestaurantModel[] = [];
   dataSource = new MatTableDataSource(this.restaurants);
   loading = false;
-  private reloadTableSubcription: Subscription;
   displayedColumns: string[] = ['name', 'phone', 'location', 'actions'];
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   constructor(
     private dialog: MatDialog,
     private restaurantService: RestaurantService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private route: Router,
+    private activeRoute: ActivatedRoute
   ) {}
 
   ngOnInit() {
@@ -43,17 +45,22 @@ export class RestaurantComponent implements OnInit, OnDestroy {
   onDelete(restaurant) {
     this.showDialogConfirmDelete(restaurant);
   }
+  onGotoMenu(restaurant) {
+    this.route.navigate([restaurant.uid, 'menu'], {
+      relativeTo: this.activeRoute
+    });
+  }
   applyFilter(filterVal) {
     this.dataSource.filter = filterVal.trim().toLowerCase();
   }
   private reloadTable() {
-    this.reloadTableSubcription = this.restaurantService
+    const reloadTableSubcription = this.restaurantService
       .gets()
       .valueChanges()
       .pipe(
         finalize(() => {
           this.loading = false;
-          this.reloadTableSubcription.unsubscribe();
+          reloadTableSubcription.unsubscribe();
         }),
         map(data => {
           this.loading = true;
@@ -89,7 +96,11 @@ export class RestaurantComponent implements OnInit, OnDestroy {
   }
 
   private showDialogConfirmDelete(restaurant) {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+    let dialogRef;
+    if (dialogRef) {
+      return;
+    }
+    dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '250px',
       data: { ...restaurant }
     });

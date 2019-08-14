@@ -9,7 +9,7 @@ import { MenuComponent } from './menu/menu.component';
 
 @NgModule({
   imports: [CommonModule, AdminRoutingModule, SimpleMaterialModule],
-  declarations: [AdminComponent, MenuComponent],
+  declarations: [AdminComponent],
   providers: []
 })
 export class AdminModule {}
