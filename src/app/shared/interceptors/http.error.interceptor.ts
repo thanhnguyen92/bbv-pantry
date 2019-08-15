@@ -23,7 +23,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
       catchError((response: any) => {
         if (response instanceof HttpErrorResponse) {
           if (response.status === 401) {
-            this.router.navigate(['auth', 'sign-in']);
+            this.router.navigate(['auth', 'login']);
           }
 
           // Show error message when HTTP Status Code smaller 600
