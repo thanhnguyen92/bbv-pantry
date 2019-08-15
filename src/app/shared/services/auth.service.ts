@@ -7,7 +7,12 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { User } from '../models/user.model';
 import * as jwt_decode from 'jwt-decode';
+import { Security } from '../models/security.model';
+import { map } from 'rxjs/operators';
+import { NotificationService } from './notification.service';
+import { UserRole } from '../enums/user-role.enum';
 const USER_KEY = 'USER-KEY';
+const USER_PERMISSIONS = 'USER-PERMISSIONS';
 const USER_ACCESSTOKEN = 'ACCESS-TOKEN-KEY';
 const USER_REFRESHTOKEN = 'REFRESH-TOKEN-KEY';
 @Injectable({
@@ -32,27 +37,41 @@ export class AuthService {
     });
   }
 
-  SigIn(email, password) {
+  login(email, password) {
     return this.afAuth.auth
       .signInWithEmailAndPassword(email, password)
       .then(result => {
-        this.ngZone.run(() => {
-          this.router.navigate(['dasboard']);
+        const query = this.afs.collection<Security>('security', t => t.where('userId', '==', result.user.uid));
+        query.get().pipe(map(entities => {
+          return entities.docs.map(entity => {
+            return entity.data();
+          });
+        })).subscribe(results => {
+          if (results) {
+            const security = results[0] as Security;
+            localStorage.setItem(USER_PERMISSIONS, JSON.stringify(security.roles));
+
+            this.ngZone.run(() => {
+              this.router.navigate(['admin']);
+            });
+            this.setUserData(result.user);
+          } else {
+            NotificationService.showErrorMessage('Access denied');
+            this.logOut();
+          }
         });
-        this.SetUserData(result.user);
-        return result.user;
       })
       .catch(error => {
         return error.message;
       });
   }
-  SignUp(email, password) {
-    debugger;
+
+  register(email, password) {
     return this.afAuth.auth
       .createUserWithEmailAndPassword(email, password)
       .then(result => {
-        this.SendVerificationMail();
-        this.SetUserData(result.user);
+        this.sendVerification();
+        this.setUserData(result.user);
         return result;
       })
       .catch(error => {
@@ -60,13 +79,13 @@ export class AuthService {
       });
   }
 
-  SendVerificationMail() {
+  sendVerification() {
     return this.afAuth.auth.currentUser.sendEmailVerification().then(() => {
       this.router.navigate(['verify-email']);
     });
   }
 
-  SetUserData(user) {
+  setUserData(user) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(
       `users/${user.uid}`
     );
@@ -82,10 +101,13 @@ export class AuthService {
     });
   }
 
-  SignOut() {
+  logOut() {
     return this.afAuth.auth.signOut().then(() => {
-      localStorage.setItem(USER_KEY, null);
-      this.router.navigate(['sign-in']);
+      localStorage.removeItem(USER_KEY);
+      localStorage.removeItem(USER_ACCESSTOKEN);
+      localStorage.removeItem(USER_REFRESHTOKEN);
+      localStorage.removeItem(USER_PERMISSIONS);
+      this.router.navigate(['auth', 'login']);
     });
   }
 
@@ -114,12 +136,7 @@ export class AuthService {
   }
 
   get isAdmin() {
-    //TODO: Should implement feature to check role admin. Should implement admin firebase to custom token
-    const tokenInfo = jwt_decode(localStorage.getItem(USER_ACCESSTOKEN));
-    const user = JSON.parse(localStorage.getItem(USER_KEY)) as firebase.User;
-    // Just hard code for this time.
-    if (user.email.indexOf('thanhnguyen') || user.email.indexOf('toannguyen'))
-      return true;
-    return false;
+    const roles = JSON.parse(localStorage.getItem(USER_PERMISSIONS)) as UserRole[];
+    return roles.indexOf(UserRole.Admin) > -1;
   }
 }

@@ -30,13 +30,13 @@ export class RestaurantComponent implements OnInit, OnDestroy {
     private route: Router,
     private activeRoute: ActivatedRoute,
     private orderService: OrderService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.initDataTable();
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void { }
   onCreate() {
     this.showDialog();
   }
@@ -68,7 +68,7 @@ export class RestaurantComponent implements OnInit, OnDestroy {
       ],
       totalPrice: 'totalPrice'
     } as Order;
-    console.log(order);
+
     this.orderService
       .add(order)
       .then(result => {

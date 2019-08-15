@@ -1,6 +1,7 @@
+import { NotificationService } from 'src/app/shared/services/notification.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { AuthService } from 'src/app/shared/services/auth.service';
 
 @Component({
@@ -21,45 +22,26 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   login() {
-    console.log(this.loginForm.value);
-    // this.router.navigate['admin'];
     const formVal = this.loginForm.value;
     this.authService
-      .SigIn(formVal.userName, formVal.password)
-      .then(result => {
-        debugger;
-        if (result) {
-          this.router.navigate(['admin']);
-        }
-      })
-      .catch(error => this.messageFailedCallBack(error));
+      .login(formVal.userName, formVal.password)
+      .catch(() => NotificationService.showErrorMessage('Login failed'));
   }
 
   register() {
     const formVal = this.loginForm.value;
     this.authService
-      .SignUp(formVal.userName, formVal.password)
+      .register(formVal.userName, formVal.password)
       .then(result => {
         if (result) {
           window.alert(result);
         }
       })
-      .catch(error => {
-        console.log(error);
+      .catch(() => {
+        NotificationService.showErrorMessage('Login failed');
       });
-  }
-  // getFontSize() {
-  //   return Math.max(10, [16, Validators.min(10)]);
-  // }
-
-  private messageSuccessCallback(message) {
-    window.alert(message);
-  }
-
-  private messageFailedCallBack(message) {
-    window.alert(message);
   }
 }
