@@ -13,6 +13,7 @@ import {
   AngularFirestoreModule
 } from '@angular/fire/firestore';
 import { RestaurantService } from 'src/app/shared/services/restaurant.service';
+import { OrderService } from 'src/app/shared/services/order.service';
 
 @NgModule({
   imports: [
@@ -24,6 +25,6 @@ import { RestaurantService } from 'src/app/shared/services/restaurant.service';
   ],
   declarations: [RestaurantComponent, RestaurantItemComponent],
   entryComponents: [RestaurantItemComponent],
-  providers: [RestaurantService]
+  providers: [RestaurantService, OrderService]
 })
 export class RestaurantModule {}

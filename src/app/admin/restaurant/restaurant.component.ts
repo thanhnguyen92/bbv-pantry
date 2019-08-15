@@ -10,6 +10,8 @@ import { Subscription } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { OrderService } from 'src/app/shared/services/order.service';
+import { Order } from 'src/app/shared/models/order.model';
 @Component({
   selector: 'app-restaurant',
   templateUrl: './restaurant.component.html',
@@ -26,7 +28,8 @@ export class RestaurantComponent implements OnInit, OnDestroy {
     private restaurantService: RestaurantService,
     private ngZone: NgZone,
     private route: Router,
-    private activeRoute: ActivatedRoute
+    private activeRoute: ActivatedRoute,
+    private orderService: OrderService
   ) {}
 
   ngOnInit() {
@@ -52,6 +55,49 @@ export class RestaurantComponent implements OnInit, OnDestroy {
   }
   applyFilter(filterVal) {
     this.dataSource.filter = filterVal.trim().toLowerCase();
+  }
+
+  testNestedModelOrder() {
+    const order = {
+      customerName: 'customerName',
+      orderItems: [
+        {
+          menuId: 'menuId'
+        },
+        { menuId: 'menuId 2' }
+      ],
+      totalPrice: 'totalPrice'
+    } as Order;
+    console.log(order);
+    this.orderService
+      .add(order)
+      .then(result => {
+        NotificationService.showSuccessMessage('Success');
+        this.loadNestedModelOrder();
+      })
+      .catch(error => {
+        NotificationService.showErrorMessage(error);
+      });
+  }
+
+  loadNestedModelOrder() {
+    const snapShotObserver = this.orderService
+      .gets()
+      .snapshotChanges()
+      .pipe(
+        map(actions => {
+          return actions.map(data => {
+            const result = data.payload.doc.data() as Order;
+            const id = data.payload.doc.id;
+            result.uid = id;
+            return result;
+          });
+        })
+      )
+      .subscribe(result => {
+        console.log(result);
+        snapShotObserver.unsubscribe();
+      });
   }
   private reloadTable() {
     const reloadTableSubcription = this.restaurantService
