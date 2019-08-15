@@ -11,9 +11,7 @@ import { RestaurantService } from 'src/app/shared/services/restaurant.service';
 export class RestaurantItemComponent {
   constructor(
     public dialogRef: MatDialogRef<RestaurantItemComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: RestaurantModel,
-    private restaurantService: RestaurantService,
-  ) {}
+    @Inject(MAT_DIALOG_DATA) public data: RestaurantModel) { }
 
   onCancel(): void {
     this.dialogRef.close();

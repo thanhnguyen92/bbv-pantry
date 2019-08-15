@@ -9,8 +9,7 @@ import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { AppComponent } from './app.component';
 import { environment } from 'src/environments/environment';
 import {
-  MatToolbarModule,
-  MAT_SNACK_BAR_DEFAULT_OPTIONS
+  MatToolbarModule
 } from '@angular/material';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { ConfirmDialogComponent } from './shared/confirm-dialog/confirm-dialog.component';
@@ -42,4 +41,4 @@ import { NotificationComponent } from './shared/components/notification/notifica
   exports: [NotificationComponent],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

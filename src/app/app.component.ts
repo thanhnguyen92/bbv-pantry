@@ -18,7 +18,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private pubSubService: PublishSubcribeService,
-    private authService: AuthService) { }
+    private authService: AuthService) {
+    this.isLogged = this.authService.getIsLogged();
+  }
 
   ngOnInit(): void {
     this.pubSubService.subscribe(PubSubChannel.IS_USER_LOGGED, content => {

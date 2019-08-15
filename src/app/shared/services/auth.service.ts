@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
   AngularFirestore,
   AngularFirestoreDocument
@@ -6,11 +6,7 @@ import {
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { User } from '../models/user.model';
-import { Security } from '../models/security.model';
-import { map } from 'rxjs/operators';
-import { NotificationService } from './notification.service';
 import { UserRole } from '../enums/user-role.enum';
-import { BehaviorSubject } from 'rxjs';
 import { PublishSubcribeService } from './publish-subcribe.service';
 import { PubSubChannel } from '../constants/pub-sub-channel.constant';
 const USER_KEY = 'USER-KEY';
@@ -29,8 +25,7 @@ export class AuthService {
     private pubSubService: PublishSubcribeService,
     private afs: AngularFirestore,
     private afAuth: AngularFireAuth,
-    private router: Router,
-    private ngZone: NgZone) {
+    private router: Router) {
     this.afAuth.authState.subscribe(async result => {
       if (result) {
         this.userData = result;
@@ -42,42 +37,7 @@ export class AuthService {
   }
 
   login(email, password) {
-    return this.afAuth.auth
-      .signInWithEmailAndPassword(email, password)
-      .then(result => {
-        if (result) {
-          const loggedUser = result.user;
-          if (!loggedUser.emailVerified) {
-            NotificationService.showErrorMessage('Please check your email for verification');
-            this.logOut();
-            return;
-          }
-
-          const query = this.afs.collection<Security>('security', t => t.where('userId', '==', loggedUser.uid));
-          query.get().pipe(map(entities => {
-            return entities.docs.map(entity => {
-              return entity.data();
-            });
-          })).subscribe(results => {
-            if (results) {
-              const security = results[0] as Security;
-              localStorage.setItem(USER_PERMISSIONS, JSON.stringify(security.roles));
-
-              this.ngZone.run(() => {
-                this.router.navigate(['admin']);
-              });
-              this.setUserData(loggedUser);
-              this.setIsLogged(true);
-            } else {
-              NotificationService.showErrorMessage('Access denied');
-              this.logOut();
-            }
-          });
-        }
-      })
-      .catch(error => {
-        return error.message;
-      });
+    return this.afAuth.auth.signInWithEmailAndPassword(email, password);
   }
 
   register(email, password) {
@@ -122,6 +82,10 @@ export class AuthService {
     });
   }
 
+  async setUserRoles(roles: UserRole[]) {
+    localStorage.setItem(USER_PERMISSIONS, JSON.stringify(roles));
+  }
+
   private async setStorageUser(user: firebase.User) {
     const accessToken = await user.getIdToken(true);
     const refreshToken = user.refreshToken;
@@ -147,10 +111,10 @@ export class AuthService {
     this.pubSubService.publish(PubSubChannel.IS_USER_LOGGED, this.isLogged);
   }
 
-  getIsLogged() {
+  getIsLogged(): boolean {
     const accessToken = localStorage.getItem(USER_ACCESSTOKEN);
     const user = localStorage.getItem(USER_KEY);
-    return user && accessToken;
+    return (user && accessToken && user !== null && accessToken != null);
   }
 
   get isAdmin() {

@@ -1,21 +1,8 @@
-<mat-toolbar>
+<mat-toolbar class="align-between">
   <span>bbv Pantry</span>
   <button *ngIf="isLogged" mat-raised-button color="accent" (click)="logOut()">Logout</button>
 </mat-toolbar>
-<!-- <router-outlet></router-outlet> -->
 
-<!-- <app-header (onMenuClick)="sidenav.toggle()"></app-header> -->
-<mat-sidenav-container class="example-container">
-  <mat-sidenav #sidenav mode="push" class="sideNavTheme">
-    <!-- <div class="navItems" *ngFor="let route of routes">
-      <nav>
-        <a mat-button routerLink="{{route.link}}">{{route.name}}</a>
-      </nav>
-    </div> -->
-  </mat-sidenav>
+<router-outlet></router-outlet>
 
-  <div class="example-sidenav-content" class="contentTheme">
-    <router-outlet></router-outlet>
-  </div>
-</mat-sidenav-container>
 <app-notification></app-notification>
