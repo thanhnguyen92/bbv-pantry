@@ -20,7 +20,7 @@
     <!-- Price Column -->
     <ng-container matColumnDef="price">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
-        <td mat-cell *matCellDef="let element">{{ element.price }}</td>
+        <td mat-cell *matCellDef="let element">{{ element.price | currency: 'VN': 'VND': '4.0-0' }}</td>
     </ng-container>
 
     <!-- Notes Column -->
