@@ -122,8 +122,7 @@ export class MenuComponent implements OnInit {
 
     diaLogRef.afterClosed().subscribe((data: MenuModel) => {
       if (data) {
-        this.restaurantId = data.uid;
-        this.fetchData();
+        this.router.navigate(['admin', 'restaurant', data.uid, 'menu']);
       }
     });
   }
