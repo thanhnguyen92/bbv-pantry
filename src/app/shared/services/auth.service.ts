@@ -47,22 +47,11 @@ export class AuthService {
   }
 
   register(email, password) {
-    return this.afAuth.auth
-      .createUserWithEmailAndPassword(email, password)
-      .then(result => {
-        this.sendVerification();
-        this.setUserData(result.user);
-        return result;
-      })
-      .catch(error => {
-        return error.message;
-      });
+    return this.afAuth.auth.createUserWithEmailAndPassword(email, password);
   }
 
   sendVerification() {
-    return this.afAuth.auth.currentUser.sendEmailVerification().then(() => {
-      this.router.navigate(['verify-email']);
-    });
+    return this.afAuth.auth.currentUser.sendEmailVerification().then();
   }
 
   setUserData(user) {
@@ -143,6 +132,9 @@ export class AuthService {
     const roles = JSON.parse(
       localStorage.getItem(USER_PERMISSIONS)
     ) as UserRole[];
-    return roles.indexOf(UserRole.Admin) > -1;
+    if (roles) {
+      return roles.indexOf(UserRole.Admin) > -1;
+    }
+    return false;
   }
 }

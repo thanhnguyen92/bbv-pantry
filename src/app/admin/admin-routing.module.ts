@@ -10,5 +10,6 @@ export const AdminRoutingModule = RouterModule.forChild([
     path: 'restaurant',
     loadChildren: './restaurant/restaurant.module#RestaurantModule'
   },
-  { path: 'restaurant/:id/menu', loadChildren: './menu/menu.module#MenuModule' }
+  { path: 'restaurant/:id/menu', loadChildren: './menu/menu.module#MenuModule' },
+  { path: 'menu', loadChildren: './menu/menu.module#MenuModule' }
 ]);

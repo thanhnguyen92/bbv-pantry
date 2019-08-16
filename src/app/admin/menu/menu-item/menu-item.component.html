@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>{{ 'Add Menu Items' }}</h1>
+<h1 mat-dialog-title>{{ data.uid ? 'Edit menu item' : 'Add menu item' }}</h1>
 <div mat-dialog-content>
     <mat-form-field>
         <input matInput placeholder="Name" [(ngModel)]="data.name" />

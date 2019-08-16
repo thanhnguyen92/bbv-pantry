@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>{{ 'Which restaurant menu do you want to see?' }}</h1>
+<mat-form-field>
+    <mat-label>Restaurant</mat-label>
+    <mat-select (selectionChange)="onSelected($event)">
+        <mat-option *ngFor="let restaurant of restaurants" [value]="restaurant.uid">
+            {{restaurant.name}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+<div mat-dialog-actions>
+    <button mat-raised-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>
+        Open
+    </button>
+</div>

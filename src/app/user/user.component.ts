@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MenuModel } from '../shared/models/menu.model';
 
 @Component({
   selector: 'app-user',
@@ -6,10 +7,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./user.component.scss']
 })
 export class UserComponent implements OnInit {
+  currentDate = new Date();
+  menu: MenuModel[] = [];
 
   constructor() { }
 
   ngOnInit() {
+    
   }
-
 }

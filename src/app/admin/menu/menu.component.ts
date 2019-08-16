@@ -1,19 +1,18 @@
+import { AppService } from './../../shared/services/app.service';
 import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { MatDialog, MatTableDataSource, MatSort } from '@angular/material';
-import { Menu } from 'src/app/shared/models/menu.model';
+import { MenuModel } from 'src/app/shared/models/menu.model';
 import { MenuItemComponent } from './menu-item/menu-item.component';
 import {
-  RouterLinkActive,
-  Route,
-  Router,
   ActivatedRoute,
-  ParamMap
+  ParamMap,
+  Router
 } from '@angular/router';
-import { switchMap, finalize, map } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 import { MenuService } from 'src/app/shared/services/menu.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
-import { prepareEventListenerParameters } from '@angular/compiler/src/render3/view/template';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
+import { RestaurantSelectionComponent } from './restaurant-selection/restaurant-selection.component';
 
 @Component({
   selector: 'app-menu',
@@ -30,106 +29,102 @@ export class MenuComponent implements OnInit {
     'restaurantId',
     'actions'
   ];
-  menus: Menu[] = [];
+  menus: MenuModel[] = [];
   dataSource = new MatTableDataSource(this.menus);
   loading = false;
 
   @ViewChild(MatSort, { static: true }) sort: MatSort;
+
   constructor(
     private diaLog: MatDialog,
-    private route: ActivatedRoute,
-    private menuService: MenuService
-  ) {}
+    private router: Router,
+    private appService: AppService,
+    private activatedRoute: ActivatedRoute,
+    private menuService: MenuService) { }
 
   ngOnInit() {
-    this.route.paramMap.subscribe((params: ParamMap) => {
-      this.restaurantId = params.get('id');
-      console.log(this.restaurantId);
+    this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
+      if (params.keys.length === 0) {
+        // Show restaurant selection
+        this.showRestaurantSelection();
+      } else {
+        this.restaurantId = params.get('id');
+        this.fetchData();
+      }
     });
-
-    this.initDatatable();
   }
 
   onCreate() {
     this.showPopupMenuItem();
   }
 
-  onEdit(menuItem: Menu) {
+  onEdit(menuItem: MenuModel) {
     this.showPopupMenuItem(menuItem);
   }
 
-  onDelete(menuItem: Menu) {
+  onDelete(menuItem: MenuModel) {
     this.showDialogConfirmDelete(menuItem);
   }
+
   applyFilter(filterVal) {
     this.dataSource.filter = filterVal.trim().toLowerCase();
   }
-  private initDatatable() {
-    this.dataSource.sort = this.sort;
-    this.menuService
-      .gets()
-      .snapshotChanges()
-      .pipe(
-        finalize(() => (this.loading = false)),
-        map(actions => {
-          this.loading = true;
-          return actions.map(a => {
-            const data = a.payload.doc.data() as Menu;
-            const id = a.payload.doc.id;
-            data.uid = id;
-            return { ...data };
-          });
-        })
-      )
-      .subscribe(result => {
-        this.dataSource.data = result;
-      });
-  }
-  private reloadTable() {
-    const reloadTableSubcription = this.menuService
-      .gets()
-      .valueChanges()
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-          reloadTableSubcription.unsubscribe();
-        }),
-        map(data => {
-          this.loading = true;
-          return { ...data };
-        })
-      )
-      .subscribe(data => {
-        console.log(data);
-        this.dataSource.data = { ...data };
-      });
+
+  goToRestaurant() {
+    this.router.navigate(['admin', 'restaurant']);
   }
 
-  private showPopupMenuItem(menuItem: Menu = new Menu()) {
+  private fetchData() {
+    this.appService.setLoadingStatus(true);
+    this.dataSource.sort = this.sort;
+    this.menuService.getMenuByRestaurantId(this.restaurantId)
+      .subscribe((results: MenuModel[]) => {
+        this.dataSource.data = results;
+        this.appService.setLoadingStatus(false);
+      }, () => this.appService.setLoadingStatus(false));
+  }
+
+  private showPopupMenuItem(menuItem: MenuModel = new MenuModel()) {
     const diaLogRef = this.diaLog.open(MenuItemComponent, {
       width: '250px',
       data: { ...menuItem },
       hasBackdrop: false
     });
 
-    diaLogRef.afterClosed().subscribe((data: Menu) => {
-      console.log(data);
-      let service;
-      if (data.uid) {
-        service = this.menuService.update({ ...data });
-      } else {
-        service = this.menuService.add({
-          ...data,
-          ...{ restaurantId: this.restaurantId }
-        });
+    diaLogRef.afterClosed().subscribe((data: MenuModel) => {
+      if (data) {
+        let service;
+        if (data.uid) {
+          service = this.menuService.update({ ...data });
+        } else {
+          service = this.menuService.add({
+            ...data,
+            ...{ restaurantId: this.restaurantId }
+          });
+        }
+        service
+          .then(() => {
+            NotificationService.showSuccessMessage('Save successful.');
+          })
+          .catch(() => {
+            NotificationService.showErrorMessage('Save item failed.');
+          });
       }
-      service
-        .then(result => {
-          NotificationService.showSuccessMessage('Save successful.');
-        })
-        .catch(error => {
-          NotificationService.showErrorMessage('Save item failed.');
-        });
+    });
+  }
+
+  private showRestaurantSelection() {
+    const diaLogRef = this.diaLog.open(RestaurantSelectionComponent, {
+      width: '250px',
+      data: {},
+      hasBackdrop: false
+    });
+
+    diaLogRef.afterClosed().subscribe((data: MenuModel) => {
+      if (data) {
+        this.restaurantId = data.uid;
+        this.fetchData();
+      }
     });
   }
 
@@ -138,7 +133,7 @@ export class MenuComponent implements OnInit {
       width: '250px',
       data: { ...menuItem }
     });
-    dialogRef.afterClosed().subscribe((result: Menu) => {
+    dialogRef.afterClosed().subscribe((result: MenuModel) => {
       if (result && result.uid) {
         this.menuService
           .delete(result.uid)

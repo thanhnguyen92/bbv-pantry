@@ -4,6 +4,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from './shared/services/auth.service';
 import { Utilities } from './shared/services/utilities';
 import { PubSubChannel } from './shared/constants/pub-sub-channel.constant';
+import { AppService } from './shared/services/app.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -13,13 +15,19 @@ import { PubSubChannel } from './shared/constants/pub-sub-channel.constant';
 export class AppComponent implements OnInit, OnDestroy {
   title = 'bbv-pantry';
   isLogged = false;
+  isLoading = false;
 
   private isLoggedSub: Subscription;
 
   constructor(
+    public authService: AuthService,
+    private route: Router,
     private pubSubService: PublishSubcribeService,
-    private authService: AuthService) {
-    this.isLogged = this.authService.getIsLogged();
+    private appService: AppService) {
+    this.isLogged = authService.getIsLogged();
+    this.appService.isLoading.subscribe((isLoading: boolean) => {
+      this.isLoading = isLoading;
+    });
   }
 
   ngOnInit(): void {
@@ -37,5 +45,21 @@ export class AppComponent implements OnInit, OnDestroy {
       this.authService.setIsLogged(false);
       this.isLogged = false;
     });
+  }
+
+  goToAdmin() {
+    this.route.navigate(['admin']);
+  }
+
+  goToUser() {
+    this.route.navigate(['user']);
+  }
+
+  goToRestaurant() {
+    this.route.navigate(['admin', 'restaurant']);
+  }
+
+  goToMenu() {
+    this.route.navigate(['admin', 'menu']);
   }
 }

@@ -16,6 +16,7 @@ import { ConfirmDialogComponent } from './shared/confirm-dialog/confirm-dialog.c
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './shared/interceptors';
 import { NotificationComponent } from './shared/components/notification/notification.component';
+import { AppService } from './shared/services/app.service';
 
 @NgModule({
   declarations: [AppComponent, ConfirmDialogComponent, NotificationComponent],
@@ -36,7 +37,8 @@ import { NotificationComponent } from './shared/components/notification/notifica
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,
       multi: true
-    }
+    },
+    AppService
   ],
   exports: [NotificationComponent],
   bootstrap: [AppComponent]

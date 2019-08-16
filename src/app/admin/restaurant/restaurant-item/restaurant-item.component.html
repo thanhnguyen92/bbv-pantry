@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>{{ 'Add restaurant' }}</h1>
+<h1 mat-dialog-title>{{ data.uid ? 'Edit restaurant' : 'Add restaurant' }}</h1>
 <div mat-dialog-content>
   <mat-form-field>
     <input matInput placeholder="Name" [(ngModel)]="data.name" />
@@ -11,13 +11,8 @@
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
-  <button mat-raised-button (click)="onCancel()">Cancel</button>
-  <button
-    mat-raised-button
-    color="primary"
-    [mat-dialog-close]="data"
-    cdkFocusInitial
-  >
+  <button mat-raised-button mat-dialog-close (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>
     Save
   </button>
 </div>

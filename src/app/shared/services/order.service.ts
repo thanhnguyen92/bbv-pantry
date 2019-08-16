@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FirebaseService } from './firebase.service';
-import { Menu } from '../models/menu.model';
+import { MenuModel } from '../models/menu.model';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Order } from '../models/order.model';
 

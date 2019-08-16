@@ -1,9 +1,7 @@
-<h1 mat-dialog-title>{{ 'Section selection' }}</h1>
-<div mat-dialog-content>
-    <mat-card (click)="goToAdmin()">
-        Admin
-    </mat-card>
-    <mat-card (click)="goToUser()">
-        User
-    </mat-card>
+<h1 mat-dialog-title style="text-align: center">{{ 'Which section do you want to enter?' }}</h1>
+<div mat-dialog-content class="align-items">
+    <mat-chip-list aria-label="Section selection">
+        <mat-chip color="primary" (click)="goToAdmin()" selected>Admin</mat-chip>
+        <mat-chip color="accent" (click)="goToUser()" selected>User</mat-chip>
+    </mat-chip-list>
 </div>
