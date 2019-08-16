@@ -21,34 +21,23 @@
 </div> -->
 
 
-<mat-card class="example-card">
+<mat-card *ngIf="!isLogged" class="example-card">
     <mat-card-header>
         <mat-card-title>Login</mat-card-title>
     </mat-card-header>
     <mat-card-content>
         <form class="example-form" [formGroup]="loginForm">
-            <table class="example-full-width" cellspacing="0">
-                <tr>
-                    <td>
-                        <mat-form-field class="example-full-width">
-                            <input matInput placeholder="Username" formControlName="userName" name="username" required>
-                        </mat-form-field>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <mat-form-field class="example-full-width">
-                            <input matInput placeholder="Password" formControlName="password" type="password"
-                                name="password" required>
-                        </mat-form-field>
-                    </td>
-                </tr>
-            </table>
+            <mat-form-field class="example-full-width">
+                <input matInput placeholder="Username" formControlName="userName" name="username" required>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <input matInput placeholder="Password" formControlName="password" type="password" name="password"
+                    required>
+            </mat-form-field>
         </form>
-        <mat-spinner [style.display]="showSpinner ? 'block' : 'none'"></mat-spinner>
     </mat-card-content>
     <mat-card-actions>
         <button mat-raised-button (click)="login()" color="primary">Login</button>
-        <button mat-raised-button (click)="register()" color="default">Register</button>
+        <button mat-raised-button (click)="register()" color="accent">Register</button>
     </mat-card-actions>
 </mat-card>

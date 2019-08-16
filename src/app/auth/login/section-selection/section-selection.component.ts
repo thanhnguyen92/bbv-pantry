@@ -4,7 +4,8 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-section-selection',
-  templateUrl: './section-selection.component.html'
+  templateUrl: './section-selection.component.html',
+  styleUrls: ['./section-selection.component.scss']
 })
 export class SectionSelectionComponent {
   constructor(

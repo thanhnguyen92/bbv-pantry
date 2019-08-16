@@ -1,3 +1,4 @@
+import { AppService } from './../../shared/services/app.service';
 import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
 import { MatDialog, MatSort, MatTableDataSource } from '@angular/material';
 
@@ -26,14 +27,14 @@ export class RestaurantComponent implements OnInit, OnDestroy {
   constructor(
     private dialog: MatDialog,
     private restaurantService: RestaurantService,
-    private ngZone: NgZone,
+    private appService: AppService,
     private route: Router,
     private activeRoute: ActivatedRoute,
     private orderService: OrderService
   ) { }
 
   ngOnInit() {
-    this.initDataTable();
+    this.fetchData();
   }
 
   ngOnDestroy(): void { }
@@ -99,46 +100,30 @@ export class RestaurantComponent implements OnInit, OnDestroy {
         snapShotObserver.unsubscribe();
       });
   }
-  private reloadTable() {
-    const reloadTableSubcription = this.restaurantService
-      .gets()
-      .valueChanges()
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-          reloadTableSubcription.unsubscribe();
-        }),
-        map(data => {
-          this.loading = true;
-          return { ...data };
-        })
-      )
-      .subscribe(data => {
-        console.log(data);
-        this.dataSource.data = { ...data };
-      });
+
+  reloadTable() {
+    this.fetchData();
   }
 
-  private initDataTable() {
+  private fetchData() {
+    this.appService.setLoadingStatus(true);
     this.dataSource.sort = this.sort;
     this.restaurantService
       .gets()
       .snapshotChanges()
-      .pipe(
-        finalize(() => (this.loading = false)),
-        map(actions => {
-          this.loading = true;
-          return actions.map(a => {
-            const data = a.payload.doc.data() as RestaurantModel;
-            const id = a.payload.doc.id;
-            data.uid = id;
-            return { ...data };
-          });
-        })
+      .pipe(map(actions => {
+        return actions.map(a => {
+          const data = a.payload.doc.data() as RestaurantModel;
+          const id = a.payload.doc.id;
+          data.uid = id;
+          return { ...data };
+        });
+      })
       )
       .subscribe(result => {
         this.dataSource.data = result;
-      });
+        this.appService.setLoadingStatus(false);
+      }, () => this.appService.setLoadingStatus(false));
   }
 
   private showDialogConfirmDelete(restaurant) {
@@ -169,7 +154,7 @@ export class RestaurantComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(RestaurantItemComponent, {
       width: '250px',
       data: { ...restaurant },
-      hasBackdrop: false
+      hasBackdrop: true
     });
 
     dialogRef.afterClosed().subscribe((result: RestaurantModel) => {

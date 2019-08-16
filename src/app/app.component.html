@@ -1,8 +1,28 @@
 <mat-toolbar class="align-between">
-  <span>bbv Pantry</span>
+  <div>
+    <a class="header-item" [routerLink]="['']">
+      bbv Pantry
+    </a>
+    <button *ngIf="isLogged" mat-icon-button aria-label="Settings" [matMenuTriggerFor]="spaces">
+      <mat-icon>dehaze</mat-icon>
+    </button>
+    <mat-menu #spaces="matMenu">
+      <button mat-menu-item *ngIf="authService.isAdmin" (click)="goToAdmin()"
+        [matMenuTriggerFor]="adminSection">Admin</button>
+      <button mat-menu-item (click)="goToUser()">User</button>
+    </mat-menu>
+    <mat-menu #adminSection="matMenu">
+      <button mat-menu-item *ngIf="authService.isAdmin" (click)="goToRestaurant()">Restaurant</button>
+      <button mat-menu-item *ngIf="authService.isAdmin" (click)="goToMenu()">Menu</button>
+    </mat-menu>
+  </div>
   <button *ngIf="isLogged" mat-raised-button color="accent" (click)="logOut()">Logout</button>
 </mat-toolbar>
 
 <router-outlet></router-outlet>
 
 <app-notification></app-notification>
+
+<div *ngIf="isLoading" class="background">
+  <mat-spinner class="spinner" strokeWidth="5" [diameter]="60"></mat-spinner>
+</div>

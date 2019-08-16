@@ -1,3 +1,29 @@
+$gray-400: #c2cfe0 !default;
+$primary: #109cf1 !default;
+$spinner-size: 60px !default;
+
+.header-item {
+  text-decoration: none;
+  font-weight: bold;
+}
+
 .align-between {
   justify-content: space-between;
+}
+
+.spinner {
+  top: 50%;
+  left: 50%;
+  position: fixed;
+  z-index: 10000;
+}
+
+.background {
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  position: fixed;
+  opacity: 1;
+  background-color: rgba(255, 255, 255, 0.8);
 }
