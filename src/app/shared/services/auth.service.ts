@@ -9,6 +9,7 @@ import { User } from '../models/user.model';
 import { UserRole } from '../enums/user-role.enum';
 import { PublishSubcribeService } from './publish-subcribe.service';
 import { PubSubChannel } from '../constants/pub-sub-channel.constant';
+import { environment } from 'src/environments/environment.prod';
 const USER_KEY = 'USER-KEY';
 const USER_PERMISSIONS = 'USER-PERMISSIONS';
 const USER_ACCESSTOKEN = 'ACCESS-TOKEN-KEY';
@@ -25,7 +26,8 @@ export class AuthService {
     private pubSubService: PublishSubcribeService,
     private afs: AngularFirestore,
     private afAuth: AngularFireAuth,
-    private router: Router) {
+    private router: Router
+  ) {
     this.afAuth.authState.subscribe(async result => {
       if (result) {
         this.userData = result;
@@ -37,7 +39,11 @@ export class AuthService {
   }
 
   login(email, password) {
-    return this.afAuth.auth.signInWithEmailAndPassword(email, password);
+    const result = this.afAuth.auth.signInWithEmailAndPassword(email, password);
+    // if (result && result !== null) {
+    //   setInterval(async () => await this.refreshToken(), 27 * 60 * 1000);
+    // }
+    return result;
   }
 
   register(email, password) {
@@ -88,6 +94,9 @@ export class AuthService {
 
   private async setStorageUser(user: firebase.User) {
     const accessToken = await user.getIdToken(true);
+    if (!environment.production) {
+      console.log(accessToken);
+    }
     const refreshToken = user.refreshToken;
     localStorage.setItem(USER_ACCESSTOKEN, accessToken);
     localStorage.setItem(USER_REFRESHTOKEN, refreshToken);
@@ -101,6 +110,19 @@ export class AuthService {
     localStorage.removeItem(USER_PERMISSIONS);
   }
 
+  async refreshToken() {
+    const user: firebase.User = await new Promise(resolve => {
+      this.afAuth.auth.onAuthStateChanged(
+        currentUser => resolve(currentUser),
+        () => resolve(null)
+      );
+    });
+
+    if (user) {
+      this.setStorageUser(user);
+      return user;
+    }
+  }
   get token() {
     const accessToken = localStorage.getItem(USER_ACCESSTOKEN);
     return accessToken;
@@ -114,11 +136,13 @@ export class AuthService {
   getIsLogged(): boolean {
     const accessToken = localStorage.getItem(USER_ACCESSTOKEN);
     const user = localStorage.getItem(USER_KEY);
-    return (user && accessToken && user !== null && accessToken != null);
+    return user && accessToken && user !== null && accessToken != null;
   }
 
   get isAdmin() {
-    const roles = JSON.parse(localStorage.getItem(USER_PERMISSIONS)) as UserRole[];
+    const roles = JSON.parse(
+      localStorage.getItem(USER_PERMISSIONS)
+    ) as UserRole[];
     return roles.indexOf(UserRole.Admin) > -1;
   }
 }
