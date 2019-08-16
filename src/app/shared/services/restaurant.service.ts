@@ -8,18 +8,32 @@ const ENTITY_NAME = 'restaurant';
 @Injectable({
   providedIn: 'root'
 })
-export class RestaurantService extends FirebaseService<RestaurantModel> {
-  constructor(afs: AngularFirestore) {
-    super(ENTITY_NAME, afs);
-  }
+export class RestaurantService {
+  constructor(private firebaseService: FirebaseService) { }
 
   getRestaurants() {
-    return this.gets().snapshotChanges().pipe(map(entities => {
+    this.firebaseService.setPath(ENTITY_NAME);
+    return this.firebaseService.gets<RestaurantModel>().snapshotChanges().pipe(map(entities => {
       return entities.map(entity => {
         const data = entity.payload.doc.data() as RestaurantModel;
         data.uid = entity.payload.doc.id;
         return data;
       });
     }));
+  }
+
+  add(entity) {
+    this.firebaseService.setPath(ENTITY_NAME);
+    return this.firebaseService.add<RestaurantModel>(entity);
+  }
+
+  update(entity: RestaurantModel) {
+    this.firebaseService.setPath(ENTITY_NAME);
+    return this.firebaseService.update<RestaurantModel>(entity, entity.uid);
+  }
+
+  delete(uid) {
+    this.firebaseService.setPath(ENTITY_NAME);
+    return this.firebaseService.delete(uid);
   }
 }

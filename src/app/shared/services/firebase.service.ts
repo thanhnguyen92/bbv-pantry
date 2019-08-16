@@ -5,39 +5,40 @@ import {
   AngularFirestoreCollection,
   QueryFn
 } from '@angular/fire/firestore';
-import { BaseEntity } from '../models/base.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class FirebaseService<T extends BaseEntity> {
-  entity: AngularFirestoreDocument<T>;
-  entities: AngularFirestoreCollection<T>;
-  constructor(private path: string, private db: AngularFirestore) {
-    this.entities = db.collection<T>(this.path);
+export class FirebaseService {
+  path: string;
+
+  constructor(private db: AngularFirestore) { }
+
+  public setPath(path) {
+    this.path = path;
   }
 
-  public get(id: string): AngularFirestoreDocument {
-    this.entity = this.db.doc<T>(this.path);
-    return this.entity;
+  public get<T>(id: string): AngularFirestoreDocument {
+    return this.db.doc<T>(`${this.path}/${id}`);
   }
 
-  public gets(query?: QueryFn): AngularFirestoreCollection<T> {
-    this.entities = this.db.collection<T>(this.path, query);
-    return this.entities;
+  public gets<T>(query?: QueryFn): AngularFirestoreCollection<T> {
+    return this.db.collection<T>(this.path, query);
   }
 
-  public add(entity: T) {
-    return this.entities.add(entity);
+  public add<T>(entity: T) {
+    const entities = this.db.collection<T>(this.path);
+    return entities.add(entity);
   }
 
-  public update(entity: T) {
-    return this.db.doc(`${this.path}/${entity.uid}`).update(entity);
+  public update<T>(entity: T, uid: string) {
+    return this.db.doc(`${this.path}/${uid}`).update(entity);
   }
 
   public delete(id: string) {
     return this.db.doc(`${this.path}/${id}`).delete();
   }
+
   private errorCallback(message) {
     console.log(message);
   }

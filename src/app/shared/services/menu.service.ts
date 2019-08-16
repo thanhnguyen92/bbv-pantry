@@ -8,18 +8,43 @@ const ENTITY_NAME = 'menu';
 @Injectable({
   providedIn: 'root'
 })
-export class MenuService extends FirebaseService<MenuModel> {
-  constructor(afs: AngularFirestore) {
-    super(ENTITY_NAME, afs);
-  }
+export class MenuService {
+  constructor(private firebaseService: FirebaseService) { }
 
   getMenuByRestaurantId(restaurantId) {
-    return this.gets(t => t.where('restaurantId', '==', restaurantId)).snapshotChanges().pipe(map(entities => {
+    this.firebaseService.setPath(ENTITY_NAME);
+    return this.firebaseService.gets<MenuModel>(t => t.where('restaurantId', '==', restaurantId)).snapshotChanges().pipe(map(entities => {
       return entities.map(entity => {
         const data = entity.payload.doc.data() as MenuModel;
         data.uid = entity.payload.doc.id;
         return data;
       });
     }));
+  }
+
+  getRestaurantByBookingDate(bookingDate: Date) {
+    this.firebaseService.setPath('restaurantBooking');
+    return this.firebaseService.gets<any>(t => t.where('bookingDate', '==', bookingDate)).snapshotChanges().pipe(map(entities => {
+      return entities.map(entity => {
+        const data = entity.payload.doc.data();
+        data.uid = entity.payload.doc.id;
+        return data;
+      });
+    }));
+  }
+
+  add(entity) {
+    this.firebaseService.setPath(ENTITY_NAME);
+    return this.firebaseService.add<MenuModel>(entity);
+  }
+
+  update(entity: MenuModel) {
+    this.firebaseService.setPath(ENTITY_NAME);
+    return this.firebaseService.update<MenuModel>(entity, entity.uid);
+  }
+
+  delete(uid) {
+    this.firebaseService.setPath(ENTITY_NAME);
+    return this.firebaseService.delete(uid);
   }
 }

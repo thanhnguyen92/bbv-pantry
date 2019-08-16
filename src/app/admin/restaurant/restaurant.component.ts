@@ -72,7 +72,7 @@ export class RestaurantComponent implements OnInit, OnDestroy {
 
     this.orderService
       .add(order)
-      .then(result => {
+      .then(() => {
         NotificationService.showSuccessMessage('Success');
         this.loadNestedModelOrder();
       })
@@ -83,18 +83,7 @@ export class RestaurantComponent implements OnInit, OnDestroy {
 
   loadNestedModelOrder() {
     const snapShotObserver = this.orderService
-      .gets()
-      .snapshotChanges()
-      .pipe(
-        map(actions => {
-          return actions.map(data => {
-            const result = data.payload.doc.data() as Order;
-            const id = data.payload.doc.id;
-            result.uid = id;
-            return result;
-          });
-        })
-      )
+      .getAll()
       .subscribe(result => {
         console.log(result);
         snapShotObserver.unsubscribe();
@@ -108,18 +97,7 @@ export class RestaurantComponent implements OnInit, OnDestroy {
   private fetchData() {
     this.appService.setLoadingStatus(true);
     this.dataSource.sort = this.sort;
-    this.restaurantService
-      .gets()
-      .snapshotChanges()
-      .pipe(map(actions => {
-        return actions.map(a => {
-          const data = a.payload.doc.data() as RestaurantModel;
-          const id = a.payload.doc.id;
-          data.uid = id;
-          return { ...data };
-        });
-      })
-      )
+    this.restaurantService.getRestaurants()
       .subscribe(result => {
         this.dataSource.data = result;
         this.appService.setLoadingStatus(false);
