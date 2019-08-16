@@ -4,7 +4,7 @@ import { RestaurantModel } from '../models/restaurant.model';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { map } from 'rxjs/operators';
 
-const ENTITY_NAME = 'Restaurant';
+const ENTITY_NAME = 'restaurant';
 @Injectable({
   providedIn: 'root'
 })
