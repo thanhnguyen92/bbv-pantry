@@ -76,8 +76,8 @@ export class LoginComponent implements OnInit {
           }
 
           this.securityService.getRoles(loggedUser.uid)
-            .pipe(finalize(() => this.appService.setLoadingStatus(false)))
             .subscribe(results => {
+              this.appService.setLoadingStatus(false);
               if (results) {
                 const security = results[0] as Security;
 

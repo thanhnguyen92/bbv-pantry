@@ -5,10 +5,12 @@ import { UserRoutingModule } from './user-routing.module';
 
 /** Components */
 import { UserComponent } from './user.component';
+import { UserCartComponent } from './cart/cart.component';
+import { UserMenuComponent } from './menu/menu.component';
 
 @NgModule({
   imports: [CommonModule, UserRoutingModule, MaterialModule],
-  declarations: [UserComponent],
+  declarations: [UserComponent, UserCartComponent, UserMenuComponent],
   providers: []
 })
 export class UserModule { }

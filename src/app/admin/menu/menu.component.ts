@@ -26,7 +26,7 @@ export class MenuComponent implements OnInit {
     'name',
     'price',
     'notes',
-    'restaurantId',
+    // 'restaurantId',
     'actions'
   ];
   menus: MenuModel[] = [];
