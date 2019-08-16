@@ -22,15 +22,18 @@ export class MenuService {
     }));
   }
 
-  getRestaurantByBookingDate(bookingDate: Date) {
+  getRestaurantByBookingDate(bookingDate) {
+    console.log(bookingDate);
     this.firebaseService.setPath('restaurantBooking');
-    return this.firebaseService.gets<any>(t => t.where('bookingDate', '==', bookingDate)).snapshotChanges().pipe(map(entities => {
-      return entities.map(entity => {
-        const data = entity.payload.doc.data();
-        data.uid = entity.payload.doc.id;
-        return data;
-      });
-    }));
+    return this.firebaseService.gets<any>
+      (t => t.where('bookingFrom', '>=', bookingDate) && t.where('bookingTo', '<=', bookingDate) && t.where('isClosed', '==', false))
+      .snapshotChanges().pipe(map(entities => {
+        return entities.map(entity => {
+          const data = entity.payload.doc.data();
+          data.uid = entity.payload.doc.id;
+          return data;
+        });
+      }));
   }
 
   add(entity) {

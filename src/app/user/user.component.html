@@ -1,16 +1,39 @@
 <mat-label>Current Date: </mat-label>
-<span>{{ currentDate | date: 'dd.MM.y' }}</span>
+<span>{{ currentDate | date: 'dd.MM.y HH:mm:ss' }}</span>
 <mat-divider></mat-divider>
-<mat-grid-list cols="10">
-    <mat-grid-tile [colspan]="6">
+<div class="background">
+    <div class="col-8">
+        <mat-card class="card" *ngFor="let menuItem of menu">
+            <mat-card-header class="card__header">
+                <mat-card-title>{{menuItem.name}}</mat-card-title>
+                <mat-card-subtitle>{{menuItem.price | currency:'VND'}}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-footer class="card__footer">
+                <mat-card-actions class="d-flex justify-content-center">
+                    <button mat-raised-button color="accent" (click)="addToCart(menuItem)">Add to Cart</button>
+                </mat-card-actions>
+            </mat-card-footer>
+        </mat-card>
+    </div>
+    <div class="col-4">
         <mat-list>
-            <mat-list-item *ngFor="let item of menu">
-                <h3 matLine> {{item.name}} </h3>
-                <p matLine>
-                    <span> {{item.price}} </span>
-                </p>
+            <mat-list-item *ngFor="let item of cart">
+                <div matLine class="col-6">{{item.name}}</div>
+                <span matLine> {{item.price | currency:'VND'}} </span>
+                <button mat-icon-button (click)="subtractAmount(item)">
+                    <mat-icon aria-hidden="false" aria-label="Subtract amount">remove_circle</mat-icon>
+                </button>
+                <span> {{item.amount}} </span>
+                <button mat-icon-button (click)="addAmount(item)">
+                    <mat-icon aria-hidden="false" aria-label="Add amount">add_circle</mat-icon>
+                </button>
+                <button mat-icon-button (click)="deleteItem(item)">
+                    <mat-icon aria-hidden="false" aria-label="Delete item">delete</mat-icon>
+                </button>
             </mat-list-item>
         </mat-list>
-    </mat-grid-tile>
-    <mat-grid-tile [colspan]="4">Cart</mat-grid-tile>
-</mat-grid-list>
+        <div *ngIf="cart && cart.length > 0" class="d-flex justify-content-center">
+            <button mat-raised-button color="primary" (click)="proceedOrder()">Proceed Order</button>
+        </div>
+    </div>
+</div>

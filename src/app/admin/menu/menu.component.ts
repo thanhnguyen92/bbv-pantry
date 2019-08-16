@@ -36,7 +36,7 @@ export class MenuComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
 
   constructor(
-    private diaLog: MatDialog,
+    private dialog: MatDialog,
     private router: Router,
     private appService: AppService,
     private activatedRoute: ActivatedRoute,
@@ -85,7 +85,7 @@ export class MenuComponent implements OnInit {
   }
 
   private showPopupMenuItem(menuItem: MenuModel = new MenuModel()) {
-    const diaLogRef = this.diaLog.open(MenuItemComponent, {
+    const diaLogRef = this.dialog.open(MenuItemComponent, {
       width: '250px',
       data: { ...menuItem },
       hasBackdrop: false
@@ -114,7 +114,7 @@ export class MenuComponent implements OnInit {
   }
 
   private showRestaurantSelection() {
-    const diaLogRef = this.diaLog.open(RestaurantSelectionComponent, {
+    const diaLogRef = this.dialog.open(RestaurantSelectionComponent, {
       width: '250px',
       data: {},
       hasBackdrop: false
@@ -128,23 +128,21 @@ export class MenuComponent implements OnInit {
   }
 
   private showDialogConfirmDelete(menuItem) {
-    const dialogRef = this.diaLog.open(ConfirmDialogComponent, {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '250px',
-      data: { ...menuItem }
+      data: { title: 'Confirmation', content: 'Are you sure to delete?', noButton: 'No', yesButton: 'Yes' }
     });
-    dialogRef.afterClosed().subscribe((result: MenuModel) => {
-      if (result && result.uid) {
-        this.menuService
-          .delete(result.uid)
-          .then(() => {
-            NotificationService.showSuccessMessage('Delete successful');
-          })
-          .catch(() => {
-            NotificationService.showErrorMessage(
-              'Something went wrong, please try again'
-            );
-          });
-      }
+    dialogRef.afterClosed().subscribe(() => {
+      this.menuService
+        .delete(menuItem.uid)
+        .then(() => {
+          NotificationService.showSuccessMessage('Delete successful');
+        })
+        .catch(() => {
+          NotificationService.showErrorMessage(
+            'Something went wrong, please try again'
+          );
+        });
     });
   }
 }

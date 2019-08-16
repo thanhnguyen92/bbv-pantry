@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
+@import './app/styles/bootstrap/bootstrap.min.css';
 
 .success-message {
   background: palevioletred;
@@ -29,9 +30,8 @@ th.mat-sort-header-sorted {
   color: black;
 }
 
-.container {
-  padding: 30px;
-  display: block;
+.container-fluid {
+  padding: 25px;
 }
 
 .mat-form-field {

@@ -1,11 +1,8 @@
-<h1 mat-dialog-title>Confirmation</h1>
+<h1 mat-dialog-title>{{data.title}}</h1>
 <div mat-dialog-content>
-    <p>Are you sure to delete?</p>
-    <!-- <mat-form-field>
-        <input matInput [(ngModel)]="data.animal">
-    </mat-form-field> -->
+    <p>{{data.content}}</p>
 </div>
 <div mat-dialog-actions>
-    <button mat-button (click)="onNoClick()">No Thanks</button>
-    <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+    <button mat-raised-button color="default" (click)="onNoClick()">{{data.noButton}}</button>
+    <button mat-raised-button color="accent" [mat-dialog-close]="data" cdkFocusInitial>{{data.yesButton}}</button>
 </div>
