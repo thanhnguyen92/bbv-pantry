@@ -8,8 +8,7 @@ import { map } from 'rxjs/operators';
 const ENTITY_NAME = 'security';
 @Injectable()
 export class SecurityService extends FirebaseService<Security> {
-    constructor(
-        afs: AngularFirestore) {
+    constructor(afs: AngularFirestore) {
         super(ENTITY_NAME, afs);
     }
 

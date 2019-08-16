@@ -4,7 +4,7 @@
       bbv Pantry
     </a>
     <button *ngIf="isLogged" mat-icon-button aria-label="Settings" [matMenuTriggerFor]="spaces">
-      <mat-icon>dehaze</mat-icon>
+      <mat-icon>apps</mat-icon>
     </button>
     <mat-menu #spaces="matMenu">
       <button mat-menu-item *ngIf="authService.isAdmin" (click)="goToAdmin()"
@@ -19,7 +19,9 @@
   <button *ngIf="isLogged" mat-raised-button color="accent" (click)="logOut()">Logout</button>
 </mat-toolbar>
 
-<router-outlet></router-outlet>
+<div class="container">
+  <router-outlet></router-outlet>
+</div>
 
 <app-notification></app-notification>
 
