@@ -14,6 +14,8 @@
     <mat-menu #adminSection="matMenu">
       <button mat-menu-item *ngIf="authService.isAdmin" (click)="goToRestaurant()">Restaurant</button>
       <button mat-menu-item *ngIf="authService.isAdmin" (click)="goToMenu()">Menu</button>
+      <button mat-menu-item *ngIf="authService.isAdmin" (click)="goToBooking()">Booking</button>
+      <button mat-menu-item *ngIf="authService.isAdmin" (click)="goToOrder()">Order</button>
     </mat-menu>
     <mat-menu #userSection="matMenu">
       <button mat-menu-item (click)="goToUser()">Order</button>

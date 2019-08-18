@@ -66,4 +66,12 @@ export class AppComponent implements OnInit, OnDestroy {
   goToUserHistory() {
     this.route.navigate(['user', 'history']);
   }
+
+  goToBooking() {
+    this.route.navigate(['admin', 'booking']);
+  }
+
+  goToOrder() {
+    this.route.navigate(['admin', 'order']);
+  }
 }
