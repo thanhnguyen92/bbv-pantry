@@ -12,4 +12,8 @@ export class Utilities {
       });
     }
   }
+
+  static convertToUTC(date: Date) {
+    return new Date(date.toUTCString());
+  }
 }

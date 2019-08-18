@@ -62,4 +62,8 @@ export class AppComponent implements OnInit, OnDestroy {
   goToMenu() {
     this.route.navigate(['admin', 'menu']);
   }
+
+  goToUserHistory() {
+    this.route.navigate(['user', 'history']);
+  }
 }

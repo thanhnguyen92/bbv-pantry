@@ -3,7 +3,9 @@ import { OrderItem } from './order-item.model';
 
 export class Order implements BaseEntity {
   uid?: string;
-  customerName?: string;
-  totalPrice: string;
+  userId?: string;
+  orderDate?: any;
+  totalPrice?: number;
   orderItems?: Array<OrderItem> = new Array<OrderItem>();
+  isPaid = false;
 }

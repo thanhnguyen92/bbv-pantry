@@ -2,21 +2,13 @@
 <span>{{ currentDate | date: 'dd.MM.y HH:mm:ss' }}</span>
 <mat-divider></mat-divider>
 <div class="background">
-    <div class="col-8">
-        <app-user-menu [date]="currentDate" (addToCart)="addToCart($event)"></app-user-menu>
-        <!-- <mat-card class="card" *ngFor="let menuItem of menu">
-            <mat-card-header class="card__header">
-                <mat-card-title>{{menuItem.name}}</mat-card-title>
-                <mat-card-subtitle>{{menuItem.price | currency:'VND'}}</mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-footer class="card__footer">
-                <mat-card-actions class="d-flex justify-content-center">
-                    <button mat-raised-button color="accent" (click)="addToCart(menuItem)">Add to Cart</button>
-                </mat-card-actions>
-            </mat-card-footer>
-        </mat-card> -->
+    <div class="col-8 pr-0">
+        <app-user-menu [restaurantId]="restaurantId" (addToCart)="addToCart($event)"
+            (menuChanged)="menuChanged($event)"></app-user-menu>
     </div>
+    <mat-divider [vertical]="true"></mat-divider>
     <div class="col-4">
-        <app-user-cart [cart]="cart" (changeCart)="changeCart($event)"></app-user-cart>
+        <app-user-cart [cart]="cart" (changeCart)="changeCart($event)" (submitCart)="submitCart($event)">
+        </app-user-cart>
     </div>
 </div>

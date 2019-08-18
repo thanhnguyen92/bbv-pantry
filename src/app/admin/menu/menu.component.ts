@@ -8,7 +8,6 @@ import {
   ParamMap,
   Router
 } from '@angular/router';
-import { finalize, map } from 'rxjs/operators';
 import { MenuService } from 'src/app/shared/services/menu.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
@@ -21,19 +20,18 @@ import { RestaurantSelectionComponent } from './restaurant-selection/restaurant-
   encapsulation: ViewEncapsulation.Emulated
 })
 export class MenuComponent implements OnInit {
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+
   private restaurantId: string;
   displayedColumns: string[] = [
     'name',
     'price',
     'notes',
-    // 'restaurantId',
     'actions'
   ];
   menus: MenuModel[] = [];
   dataSource = new MatTableDataSource(this.menus);
   loading = false;
-
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
 
   constructor(
     private dialog: MatDialog,
@@ -104,10 +102,10 @@ export class MenuComponent implements OnInit {
         }
         service
           .then(() => {
-            NotificationService.showSuccessMessage('Save successful.');
+            NotificationService.showSuccessMessage('Save successful');
           })
           .catch(() => {
-            NotificationService.showErrorMessage('Save item failed.');
+            NotificationService.showErrorMessage('Save failed');
           });
       }
     });
@@ -132,17 +130,19 @@ export class MenuComponent implements OnInit {
       width: '250px',
       data: { title: 'Confirmation', content: 'Are you sure to delete?', noButton: 'No', yesButton: 'Yes' }
     });
-    dialogRef.afterClosed().subscribe(() => {
-      this.menuService
-        .delete(menuItem.uid)
-        .then(() => {
-          NotificationService.showSuccessMessage('Delete successful');
-        })
-        .catch(() => {
-          NotificationService.showErrorMessage(
-            'Something went wrong, please try again'
-          );
-        });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.menuService
+          .delete(menuItem.uid)
+          .then(() => {
+            NotificationService.showSuccessMessage('Delete successful');
+          })
+          .catch(() => {
+            NotificationService.showErrorMessage(
+              'Something went wrong, please try again'
+            );
+          });
+      }
     });
   }
 }

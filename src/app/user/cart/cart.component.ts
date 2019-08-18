@@ -1,20 +1,23 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { OrderItem } from 'src/app/shared/models/order-item.model';
 import { MatDialog } from '@angular/material';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
+import { OrderService } from 'src/app/shared/services/order.service';
 
 @Component({
   selector: 'app-user-cart',
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.scss']
 })
-export class UserCartComponent implements OnInit {
+export class UserCartComponent {
   @Input() cart: OrderItem[] = [];
   @Output() changeCart: EventEmitter<any> = new EventEmitter<any>();
+  @Output() submitCart: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor(private dialog: MatDialog) { }
+  total = 0;
 
-  ngOnInit() { }
+  constructor(private dialog: MatDialog,
+    public orderService: OrderService) { }
 
   addAmount(item: OrderItem) {
     this.cart.forEach(currentItem => {
@@ -43,13 +46,21 @@ export class UserCartComponent implements OnInit {
     this.changeCart.emit(this.cart);
   }
 
+  clearOrder() {
+    this.cart = [];
+    this.cart = [... this.cart];
+    this.changeCart.emit(this.cart);
+  }
+
   proceedOrder() {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '250px',
       data: { title: 'Confirmation', content: 'Are you sure to process this order?', noButton: 'No', yesButton: 'Yes' }
     });
-    dialogRef.afterClosed().subscribe(() => {
-
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.submitCart.emit(this.cart);
+      }
     });
   }
 }

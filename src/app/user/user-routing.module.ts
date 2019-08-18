@@ -4,5 +4,6 @@ import { RouterModule } from '@angular/router';
 import { UserComponent } from './user.component';
 
 export const UserRoutingModule = RouterModule.forChild([
-  { path: '', component: UserComponent }
+  { path: '', component: UserComponent },
+  { path: 'history', loadChildren: './history/history.module#UserHistoryModule' }
 ]);

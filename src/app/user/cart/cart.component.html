@@ -1,12 +1,12 @@
-<mat-card *ngIf="cart && cart.length > 0" style="margin: 10px;">
-    <mat-list>
+<mat-card class="m-3">
+    <mat-list class="p-0">
         <mat-list-item *ngFor="let item of cart">
-            <div matLine>{{item.name}}</div>
-            <span matLine> {{item.price | currency:'VND'}} </span>
+            <div matLine>{{ item.name }}</div>
+            <span matLine> {{ item.price | currency:'VND' }} </span>
             <button mat-icon-button (click)="subtractAmount(item)">
                 <mat-icon aria-hidden="false" aria-label="Subtract amount">remove_circle</mat-icon>
             </button>
-            <span> {{item.amount}} </span>
+            <span> {{ item.amount }} </span>
             <button mat-icon-button (click)="addAmount(item)">
                 <mat-icon aria-hidden="false" aria-label="Add amount">add_circle</mat-icon>
             </button>
@@ -15,8 +15,18 @@
             </button>
         </mat-list-item>
     </mat-list>
+    <mat-divider></mat-divider>
+    <div class="p-3 d-flex justify-content-between total">
+        <mat-label>Total: </mat-label>
+        <mat-label class="font-weight-bold total__amount">{{ orderService.calculatePrice(cart) | currency:'VND' }}
+        </mat-label>
+    </div>
 </mat-card>
 
-<div *ngIf="cart && cart.length > 0" class="d-flex justify-content-center">
-    <button mat-raised-button color="primary" (click)="proceedOrder()">Proceed Order</button>
+<div class="d-flex justify-content-between">
+    <button mat-raised-button class="m-3" color="basic" [disabled]="!(cart && cart.length > 0)" (click)="clearOrder()">
+        Clear</button>
+    <button mat-raised-button class="m-3" color="primary" [disabled]="!(cart && cart.length > 0)"
+        (click)="proceedOrder()">Proceed
+        Order</button>
 </div>

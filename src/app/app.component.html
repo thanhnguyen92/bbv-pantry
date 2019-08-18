@@ -9,11 +9,15 @@
     <mat-menu #spaces="matMenu">
       <button mat-menu-item *ngIf="authService.isAdmin" (click)="goToAdmin()"
         [matMenuTriggerFor]="adminSection">Admin</button>
-      <button mat-menu-item (click)="goToUser()">User</button>
+      <button mat-menu-item (click)="goToUser()" [matMenuTriggerFor]="userSection">User</button>
     </mat-menu>
     <mat-menu #adminSection="matMenu">
       <button mat-menu-item *ngIf="authService.isAdmin" (click)="goToRestaurant()">Restaurant</button>
       <button mat-menu-item *ngIf="authService.isAdmin" (click)="goToMenu()">Menu</button>
+    </mat-menu>
+    <mat-menu #userSection="matMenu">
+      <button mat-menu-item (click)="goToUser()">Order</button>
+      <button mat-menu-item (click)="goToUserHistory()">History</button>
     </mat-menu>
   </div>
   <button *ngIf="isLogged" mat-raised-button color="accent" (click)="logOut()">Logout</button>

@@ -1,11 +1,13 @@
-<mat-card class="card" *ngFor="let menuItem of menu">
-    <mat-card-header class="card__header">
-        <mat-card-title>{{menuItem.name}}</mat-card-title>
-        <mat-card-subtitle>{{menuItem.price | currency:'VND'}}</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-footer class="card__footer">
-        <mat-card-actions class="d-flex justify-content-center">
-            <button mat-raised-button color="accent" (click)="addCartItem(menuItem)">Add to Cart</button>
-        </mat-card-actions>
-    </mat-card-footer>
-</mat-card>
+<div class="d-inherit">
+    <mat-card class="card m-3" *ngFor="let menuItem of menu">
+        <mat-card-header class="card__header">
+            <mat-card-title class="card__header__title">{{menuItem.name}}</mat-card-title>
+            <mat-card-subtitle>{{menuItem.price | currency:'VND'}}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-footer class="card__footer">
+            <mat-card-actions class="d-flex justify-content-center">
+                <button mat-raised-button color="accent" (click)="addCartItem(menuItem)">Add to Cart</button>
+            </mat-card-actions>
+        </mat-card-footer>
+    </mat-card>
+</div>

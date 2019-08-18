@@ -1,43 +1,47 @@
 import { AppService } from './../../shared/services/app.service';
-import { Component, OnInit, ViewChild, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatDialog, MatSort, MatTableDataSource } from '@angular/material';
 
 /** Components */
 import { RestaurantItemComponent } from './restaurant-item/restaurant-item.component';
 import { RestaurantModel } from 'src/app/shared/models/restaurant.model';
 import { RestaurantService } from 'src/app/shared/services/restaurant.service';
-import { map, finalize } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { OrderService } from 'src/app/shared/services/order.service';
-import { Order } from 'src/app/shared/models/order.model';
+import { Utilities } from 'src/app/shared/services/utilities';
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-restaurant',
   templateUrl: './restaurant.component.html',
   styleUrls: ['./restaurant.component.scss']
 })
 export class RestaurantComponent implements OnInit, OnDestroy {
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+
   restaurants: RestaurantModel[] = [];
   dataSource = new MatTableDataSource(this.restaurants);
   loading = false;
   displayedColumns: string[] = ['name', 'phone', 'location', 'actions'];
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
+
+  private getRestaurantSubscription: Subscription;
+
   constructor(
     private dialog: MatDialog,
     private restaurantService: RestaurantService,
     private appService: AppService,
     private route: Router,
-    private activeRoute: ActivatedRoute,
-    private orderService: OrderService
-  ) { }
+    private activeRoute: ActivatedRoute) { }
 
   ngOnInit() {
     this.fetchData();
   }
 
-  ngOnDestroy(): void { }
+  ngOnDestroy(): void {
+    Utilities.unsubscribe(this.getRestaurantSubscription);
+  }
+
   onCreate() {
     this.showDialog();
   }
@@ -58,38 +62,6 @@ export class RestaurantComponent implements OnInit, OnDestroy {
     this.dataSource.filter = filterVal.trim().toLowerCase();
   }
 
-  testNestedModelOrder() {
-    const order = {
-      customerName: 'customerName',
-      orderItems: [
-        {
-          menuId: 'menuId'
-        },
-        { menuId: 'menuId 2' }
-      ],
-      totalPrice: 'totalPrice'
-    } as Order;
-
-    this.orderService
-      .add(order)
-      .then(() => {
-        NotificationService.showSuccessMessage('Success');
-        this.loadNestedModelOrder();
-      })
-      .catch(error => {
-        NotificationService.showErrorMessage(error);
-      });
-  }
-
-  loadNestedModelOrder() {
-    const snapShotObserver = this.orderService
-      .getAll()
-      .subscribe(result => {
-        console.log(result);
-        snapShotObserver.unsubscribe();
-      });
-  }
-
   reloadTable() {
     this.fetchData();
   }
@@ -97,7 +69,8 @@ export class RestaurantComponent implements OnInit, OnDestroy {
   private fetchData() {
     this.appService.setLoadingStatus(true);
     this.dataSource.sort = this.sort;
-    this.restaurantService.getRestaurants()
+    Utilities.unsubscribe(this.getRestaurantSubscription);
+    this.getRestaurantSubscription = this.restaurantService.getRestaurants()
       .subscribe(result => {
         this.dataSource.data = result;
         this.appService.setLoadingStatus(false);

@@ -17,13 +17,13 @@ export class MenuService {
       return entities.map(entity => {
         const data = entity.payload.doc.data() as MenuModel;
         data.uid = entity.payload.doc.id;
+        data['type'] = entity.type;
         return data;
       });
     }));
   }
 
   getRestaurantByBookingDate(bookingDate) {
-    console.log(bookingDate);
     this.firebaseService.setPath('restaurantBooking');
     return this.firebaseService.gets<any>
       (t => t.where('bookingFrom', '>=', bookingDate) && t.where('bookingTo', '<=', bookingDate) && t.where('isClosed', '==', false))

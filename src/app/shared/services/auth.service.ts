@@ -112,6 +112,7 @@ export class AuthService {
       return user;
     }
   }
+
   get token() {
     const accessToken = localStorage.getItem(USER_ACCESSTOKEN);
     return accessToken;
@@ -136,5 +137,14 @@ export class AuthService {
       return roles.indexOf(UserRole.Admin) > -1;
     }
     return false;
+  }
+
+  get currentUser(): firebase.User {
+    const user = localStorage.getItem(USER_KEY);
+    if (user) {
+      return JSON.parse(user) as firebase.User;
+    }
+
+    return undefined;
   }
 }
