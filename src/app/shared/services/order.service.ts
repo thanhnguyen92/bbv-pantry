@@ -11,12 +11,18 @@ const ENTITY_NAME = 'order';
 export class OrderService {
   constructor(private firebaseService: FirebaseService) { }
 
-  add(newItem) {
+  add(entity: Order) {
     this.firebaseService.setPath(ENTITY_NAME);
-    return this.firebaseService.add<Order>(newItem);
+    entity.uid = this.firebaseService.createId();
+    if (entity.orderItems) {
+      entity.orderItems.forEach(item => {
+        item.uid = this.firebaseService.createId();
+      });
+    }
+    return this.firebaseService.add<Order>(entity);
   }
 
-  gets(isPaid) {
+  getsPaidOrUnpaid(isPaid) {
     this.firebaseService.setPath(ENTITY_NAME);
     return this.firebaseService.gets<Order>(t => t.where('isPaid', '==', isPaid)).snapshotChanges().pipe(map(entities => {
       return entities.map(entity => {

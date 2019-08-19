@@ -33,7 +33,7 @@ export class RestaurantSelectionComponent implements OnInit {
     this.appService.setLoadingStatus(true);
 
     // Fetch restaurant data
-    this.restaurantService.getRestaurants()
+    this.restaurantService.gets()
       .subscribe(results => {
         this.restaurants = [...results];
         this.appService.setLoadingStatus(false);
