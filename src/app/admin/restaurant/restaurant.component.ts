@@ -70,7 +70,7 @@ export class RestaurantComponent implements OnInit, OnDestroy {
     this.appService.setLoadingStatus(true);
     this.dataSource.sort = this.sort;
     Utilities.unsubscribe(this.getRestaurantSubscription);
-    this.getRestaurantSubscription = this.restaurantService.getRestaurants()
+    this.getRestaurantSubscription = this.restaurantService.gets()
       .subscribe(result => {
         this.dataSource.data = result;
         this.appService.setLoadingStatus(false);

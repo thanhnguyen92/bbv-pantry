@@ -1,14 +1,20 @@
-import { AppService } from './../shared/services/app.service';
-import { MenuService } from './../shared/services/menu.service';
+
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MenuModel } from '../shared/models/menu.model';
-import { OrderItem } from '../shared/models/order-item.model';
+import { Subscription } from 'rxjs';
+
+/** Services */
+import { RestaurantService } from '../shared/services/restaurant.service';
 import { NotificationService } from '../shared/services/notification.service';
 import { OrderService } from '../shared/services/order.service';
-import { Order } from '../shared/models/order.model';
 import { AuthService } from '../shared/services/auth.service';
+import { AppService } from './../shared/services/app.service';
+import { MenuService } from './../shared/services/menu.service';
 import { Utilities } from '../shared/services/utilities';
-import { Subscription } from 'rxjs';
+
+/** Models */
+import { MenuModel } from '../shared/models/menu.model';
+import { OrderItem } from '../shared/models/order-item.model';
+import { Order } from '../shared/models/order.model';
 
 @Component({
   selector: 'app-user',
@@ -22,10 +28,12 @@ export class UserComponent implements OnInit, OnDestroy {
   restaurantId;
 
   private getMenuSubscription: Subscription;
+  private getRestaurantSubscription: Subscription;
 
   constructor(private appService: AppService,
     private authService: AuthService,
     private menuService: MenuService,
+    private restaurantService: RestaurantService,
     private orderService: OrderService) {
     this.currentDate.setDate(19);
     this.currentDate.setHours(17, 0, 0, 0);
@@ -33,18 +41,28 @@ export class UserComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.appService.setLoadingStatus(true);
-    this.menuService.getRestaurantByBookingDate(Utilities.convertToUTC(this.currentDate)).subscribe(results => {
-      if (results && results.length > 0) {
-        this.restaurantId = results[0].restaurantId;
-      } else {
-        NotificationService.showInfoMessage(`Don't have any available menus at the moment`);
-      }
-      this.appService.setLoadingStatus(false);
-    }, () => this.appService.setLoadingStatus(false));
+    Utilities.unsubscribe(this.getRestaurantSubscription);
+    this.getRestaurantSubscription = this.restaurantService.getByBookingDate(Utilities.convertToUTC(this.currentDate))
+      .subscribe(results => {
+        console.log(results);
+
+        if (results && results.length > 0) {
+          this.restaurantService.getByRestaurantIds(results.map(t => t.restaurantId)).subscribe(res => {
+
+          });
+
+          this.restaurantId = results[0].restaurantId;
+        } else {
+          NotificationService.showInfoMessage(`Don't have any available menus at the moment`);
+        }
+
+        this.appService.setLoadingStatus(false);
+      }, () => this.appService.setLoadingStatus(false));
   }
 
   ngOnDestroy(): void {
     Utilities.unsubscribe(this.getMenuSubscription);
+    Utilities.unsubscribe(this.getRestaurantSubscription);
   }
 
   menuChanged(menuItems: MenuModel[]) {
@@ -89,7 +107,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
     this.appService.setLoadingStatus(true);
     Utilities.unsubscribe(this.getMenuSubscription);
-    this.getMenuSubscription = this.menuService.getMenuByRestaurantId(this.restaurantId).subscribe(menuItems => {
+    this.getMenuSubscription = this.menuService.getByRestaurantId(this.restaurantId).subscribe(menuItems => {
       // Check latest price
       cart.forEach(cartItem => {
         const dbItem = menuItems.find(t => t.uid === cartItem.menuId);
@@ -108,10 +126,8 @@ export class UserComponent implements OnInit, OnDestroy {
         userId: this.authService.currentUser.uid,
         isPaid: false,
       } as Order;
-      console.log(order);
 
-      this.orderService
-        .add(order)
+      this.orderService.add(order)
         .then(() => {
           NotificationService.showSuccessMessage('Order successful');
           this.cart = [];

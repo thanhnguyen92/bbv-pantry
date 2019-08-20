@@ -47,7 +47,7 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
     this.appService.setLoadingStatus(true);
     this.dataSource.sort = this.sort;
     Utilities.unsubscribe(this.getOrdersSubscription);
-    this.getOrdersSubscription = this.orderService.gets(isPaid).subscribe(results => {
+    this.getOrdersSubscription = this.orderService.getsPaidOrUnpaid(isPaid).subscribe(results => {
       results.forEach(item => {
         item.orderDate = new Date(item.orderDate.seconds * 1000)
       });

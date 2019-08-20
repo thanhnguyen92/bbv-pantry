@@ -11,7 +11,7 @@ const ENTITY_NAME = 'menu';
 export class MenuService {
   constructor(private firebaseService: FirebaseService) { }
 
-  getMenuByRestaurantId(restaurantId) {
+  getByRestaurantId(restaurantId) {
     this.firebaseService.setPath(ENTITY_NAME);
     return this.firebaseService.gets<MenuModel>(t => t.where('restaurantId', '==', restaurantId)).snapshotChanges().pipe(map(entities => {
       return entities.map(entity => {
@@ -23,21 +23,9 @@ export class MenuService {
     }));
   }
 
-  getRestaurantByBookingDate(bookingDate) {
-    this.firebaseService.setPath('restaurantBooking');
-    return this.firebaseService.gets<any>
-      (t => t.where('bookingFrom', '>=', bookingDate) && t.where('bookingTo', '<=', bookingDate) && t.where('isClosed', '==', false))
-      .snapshotChanges().pipe(map(entities => {
-        return entities.map(entity => {
-          const data = entity.payload.doc.data();
-          data.uid = entity.payload.doc.id;
-          return data;
-        });
-      }));
-  }
-
-  add(entity) {
+  add(entity: MenuModel) {
     this.firebaseService.setPath(ENTITY_NAME);
+    entity.uid = this.firebaseService.createId();
     return this.firebaseService.add<MenuModel>(entity);
   }
 

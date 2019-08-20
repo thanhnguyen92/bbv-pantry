@@ -44,7 +44,7 @@ export class UserMenuComponent implements OnInit, OnDestroy, OnChanges {
       this.appService.setLoadingStatus(true);
       
       Utilities.unsubscribe(this.getMenuSubscription);
-      this.getMenuSubscription = this.menuService.getMenuByRestaurantId(restaurantId).subscribe(menuItems => {
+      this.getMenuSubscription = this.menuService.getByRestaurantId(restaurantId).subscribe(menuItems => {
         const itemChanged = menuItems.find(t => t['type'] === 'modified');
         if (itemChanged) {
           NotificationService.showInfoMessage(`There are a few updates on your menu, please check again`);

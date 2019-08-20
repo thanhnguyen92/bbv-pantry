@@ -18,6 +18,10 @@ export class FirebaseService {
     this.path = path;
   }
 
+  public createId(){
+    return this.db.createId();
+  }
+
   public get<T>(id: string): AngularFirestoreDocument {
     return this.db.doc<T>(`${this.path}/${id}`);
   }

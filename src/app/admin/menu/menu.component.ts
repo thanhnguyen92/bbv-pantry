@@ -75,7 +75,7 @@ export class MenuComponent implements OnInit {
   private fetchData() {
     this.appService.setLoadingStatus(true);
     this.dataSource.sort = this.sort;
-    this.menuService.getMenuByRestaurantId(this.restaurantId)
+    this.menuService.getByRestaurantId(this.restaurantId)
       .subscribe((results: MenuModel[]) => {
         this.dataSource.data = results;
         this.appService.setLoadingStatus(false);
