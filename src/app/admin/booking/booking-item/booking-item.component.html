@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>{{ data.uid ? 'Edit booking' : 'Add booking' }}</h1>
+<div mat-dialog-content>
+    <mat-form-field>
+        <input matInput placeholder="Date From" [(ngModel)]="data.bookingFrom" />
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Date To" [(ngModel)]="data.bookingTo" />
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Phone" [(ngModel)]="data.phone" />
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button mat-dialog-close (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>
+        Save
+    </button>
+</div>

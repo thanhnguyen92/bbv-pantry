@@ -9,7 +9,7 @@ const ENTITY_NAME = 'order';
   providedIn: 'root'
 })
 export class OrderService {
-  constructor(private firebaseService: FirebaseService) { }
+  constructor(private firebaseService: FirebaseService) {}
 
   add(newItem) {
     this.firebaseService.setPath(ENTITY_NAME);
@@ -18,13 +18,18 @@ export class OrderService {
 
   gets(isPaid) {
     this.firebaseService.setPath(ENTITY_NAME);
-    return this.firebaseService.gets<Order>(t => t.where('isPaid', '==', isPaid)).snapshotChanges().pipe(map(entities => {
-      return entities.map(entity => {
-        const data = entity.payload.doc.data() as Order;
-        data.uid = entity.payload.doc.id;
-        return data;
-      });
-    }));
+    return this.firebaseService
+      .gets<Order>(t => t.where('isPaid', '==', isPaid))
+      .snapshotChanges()
+      .pipe(
+        map(entities => {
+          return entities.map(entity => {
+            const data = entity.payload.doc.data() as Order;
+            data.uid = entity.payload.doc.id;
+            return data;
+          });
+        })
+      );
   }
 
   calculatePrice(cart: OrderItem[]) {

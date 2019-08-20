@@ -9,17 +9,22 @@ const ENTITY_NAME = 'restaurant';
   providedIn: 'root'
 })
 export class RestaurantService {
-  constructor(private firebaseService: FirebaseService) { }
+  constructor(private firebaseService: FirebaseService) {}
 
   getRestaurants() {
     this.firebaseService.setPath(ENTITY_NAME);
-    return this.firebaseService.gets<RestaurantModel>().snapshotChanges().pipe(map(entities => {
-      return entities.map(entity => {
-        const data = entity.payload.doc.data() as RestaurantModel;
-        data.uid = entity.payload.doc.id;
-        return data;
-      });
-    }));
+    return this.firebaseService
+      .gets<RestaurantModel>()
+      .snapshotChanges()
+      .pipe(
+        map(entities => {
+          return entities.map(entity => {
+            const data = entity.payload.doc.data() as RestaurantModel;
+            data.uid = entity.payload.doc.id;
+            return data;
+          });
+        })
+      );
   }
 
   add(entity) {
