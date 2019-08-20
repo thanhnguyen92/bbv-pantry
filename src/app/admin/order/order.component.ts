@@ -1,14 +1,9 @@
-<<<<<<< HEAD
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { Order } from 'src/app/shared/models/order.model';
 import { MatSort } from '@angular/material/sort';
 import { AppService } from 'src/app/shared/services/app.service';
-=======
-import { Component, OnInit } from '@angular/core';
-import { OrderService } from 'src/app/shared/services/order.service';
->>>>>>> 5498246818741e915f4fa7fdc36653b875a6106a
 
 @Component({
   selector: 'app-order',
