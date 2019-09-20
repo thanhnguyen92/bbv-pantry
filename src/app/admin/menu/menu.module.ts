@@ -16,7 +16,6 @@ import { MaterialModule } from 'src/app/shared/modules/material.module';
     CommonModule,
     MenuRoutingModule,
     FormsModule,
-    CommonModule,
     AngularFirestoreModule,
     MaterialModule
   ],

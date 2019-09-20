@@ -20,7 +20,8 @@ export class UserMenuComponent implements OnInit, OnDestroy, OnChanges {
 
   private getMenuSubscription: Subscription;
 
-  constructor(private appService: AppService,
+  constructor(
+    private appService: AppService,
     private menuService: MenuService) { }
 
   ngOnInit() {
@@ -42,7 +43,7 @@ export class UserMenuComponent implements OnInit, OnDestroy, OnChanges {
   private fetchData(restaurantId) {
     if (restaurantId) {
       this.appService.setLoadingStatus(true);
-      
+
       Utilities.unsubscribe(this.getMenuSubscription);
       this.getMenuSubscription = this.menuService.getByRestaurantId(restaurantId).subscribe(menuItems => {
         const itemChanged = menuItems.find(t => t['type'] === 'modified');

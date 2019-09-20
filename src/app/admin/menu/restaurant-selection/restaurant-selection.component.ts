@@ -2,9 +2,7 @@ import { AppService } from './../../../shared/services/app.service';
 import { RestaurantModel } from 'src/app/shared/models/restaurant.model';
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { Router } from '@angular/router';
 import { RestaurantService } from 'src/app/shared/services/restaurant.service';
-import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-restaurant-selection',
@@ -17,7 +15,6 @@ export class RestaurantSelectionComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<any>,
     @Inject(MAT_DIALOG_DATA) public data: RestaurantModel,
-    private router: Router,
     private appService: AppService,
     private restaurantService: RestaurantService) { }
 

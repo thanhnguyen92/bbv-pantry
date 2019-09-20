@@ -1,4 +1,4 @@
-export class OrderItem implements OrderItem {
+export class OrderItem {
   uid?: string;
   menuId?: string;
   name?: string;

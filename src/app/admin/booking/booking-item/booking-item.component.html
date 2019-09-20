@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>{{ data.uid ? 'Edit booking item' : 'Add booking item' }}</h1>
+<div mat-dialog-content>
+    <mat-label>Restaurant</mat-label>
+    <mat-select (selectionChange)="onRestaurantSelected($event)">
+        <mat-option *ngFor="let restaurant of restaurants" [value]="restaurant.uid">
+            {{restaurant.name}}
+        </mat-option>
+    </mat-select>
+
+    <mat-form-field>
+        <mat-checkbox [(ngModel)]="data.isClosed">Is Closed</mat-checkbox>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()">Save</button>
+    <!-- <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>
+        Save
+    </button> -->
+</div>

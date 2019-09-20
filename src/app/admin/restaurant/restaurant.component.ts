@@ -86,19 +86,22 @@ export class RestaurantComponent implements OnInit, OnDestroy {
       width: '250px',
       data: { title: 'Confirmation', content: 'Are you sure to delete?', noButton: 'No', yesButton: 'Yes' }
     });
-    dialogRef.afterClosed().subscribe(() => {
-      this.restaurantService
-        .delete(restaurant.uid)
-        .then(() => {
-          NotificationService.showSuccessMessage('Delete successful');
-        })
-        .catch(() => {
-          NotificationService.showErrorMessage(
-            'Something went wrong, please try again'
-          );
-        });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.restaurantService
+          .delete(restaurant.uid)
+          .then(() => {
+            NotificationService.showSuccessMessage('Delete successful');
+          })
+          .catch(() => {
+            NotificationService.showErrorMessage(
+              'Something went wrong, please try again'
+            );
+          });
+      }
     });
   }
+
   private showDialog(restaurant: RestaurantModel = new RestaurantModel()) {
     const dialogRef = this.dialog.open(RestaurantItemComponent, {
       width: '250px',
