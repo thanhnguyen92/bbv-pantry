@@ -6,17 +6,18 @@ import { BookingComponent } from './booking.component';
 import { BookingRoutingModule } from './booking-routing.module';
 import { MaterialModule } from 'src/app/shared/modules/material.module';
 import { BookingItemComponent } from './booking-item/booking-item.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [BookingComponent, BookingItemComponent],
   entryComponents: [BookingItemComponent],
   imports: [
-    MaterialModule,
     CommonModule,
     FormsModule,
     BookingRoutingModule,
-    AngularFirestoreModule
+    AngularFirestoreModule,
+    MaterialModule,
+    ReactiveFormsModule
   ],
   providers: [BookingService]
 })

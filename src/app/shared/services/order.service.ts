@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { FirebaseService } from './firebase.service';
-import { Order } from '../models/order.model';
+import { OrderModel } from '../models/order.model';
 import { map } from 'rxjs/operators';
 import { OrderItem } from '../models/order-item.model';
+import { Utilities } from './utilities';
 
 const ENTITY_NAME = 'order';
 @Injectable({
@@ -11,7 +12,38 @@ const ENTITY_NAME = 'order';
 export class OrderService {
   constructor(private firebaseService: FirebaseService) { }
 
-  add(entity: Order) {
+  gets() {
+    this.firebaseService.setPath(ENTITY_NAME);
+    return this.firebaseService.gets<OrderModel>().snapshotChanges()
+      .pipe(map(entities => {
+        return entities.map(entity => {
+          const data = entity.payload.doc.data();
+          data.orderDate = Utilities.convertTimestampToDate(data.orderDate);
+          data.uid = entity.payload.doc.id;
+          return data;
+        });
+      }));
+  }
+
+  getByRestaurantId(restaurantId: string) {
+    this.firebaseService.setPath(ENTITY_NAME);
+    return this.firebaseService.gets<OrderModel>().snapshotChanges()
+      .pipe(map(entities => {
+        return entities.filter(entity => {
+          const data = entity.payload.doc.data();
+          if (restaurantId === data.restaurantId) {
+            return entity;
+          }
+        }).map(entity => {
+          const data = entity.payload.doc.data();
+          data.orderDate = Utilities.convertTimestampToDate(data.orderDate);
+          data.uid = entity.payload.doc.id;
+          return data;
+        });
+      }));
+  }
+
+  add(entity: OrderModel) {
     this.firebaseService.setPath(ENTITY_NAME);
     entity.uid = this.firebaseService.createId();
     if (entity.orderItems) {
@@ -19,14 +51,14 @@ export class OrderService {
         item.uid = this.firebaseService.createId();
       });
     }
-    return this.firebaseService.add<Order>(entity);
+    return this.firebaseService.add<OrderModel>(entity);
   }
 
   getsPaidOrUnpaid(isPaid) {
     this.firebaseService.setPath(ENTITY_NAME);
-    return this.firebaseService.gets<Order>(t => t.where('isPaid', '==', isPaid)).snapshotChanges().pipe(map(entities => {
+    return this.firebaseService.gets<OrderModel>(t => t.where('isPaid', '==', isPaid)).snapshotChanges().pipe(map(entities => {
       return entities.map(entity => {
-        const data = entity.payload.doc.data() as Order;
+        const data = entity.payload.doc.data() as OrderModel;
         data.uid = entity.payload.doc.id;
         return data;
       });

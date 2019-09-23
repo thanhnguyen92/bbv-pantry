@@ -24,8 +24,10 @@ import { Utilities } from 'src/app/shared/services/utilities';
 })
 export class BookingComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-  dataSource = new MatTableDataSource();
-  displayedColumns: string[] = ['bookingFrom', 'bookingTo', 'isClosed', 'isPreBooking', 'restaurantName', 'actions'];
+
+  bookingItems: BookingModel[] = [];
+  dataSource = new MatTableDataSource(this.bookingItems);
+  displayedColumns: string[] = ['restaurantName', 'bookingFrom', 'bookingTo', 'isClosed', 'isPreBooking', 'actions'];
 
   private getBookingSub: Subscription;
 
@@ -61,22 +63,18 @@ export class BookingComponent implements OnInit, OnDestroy {
 
     this.getBookingSub = this.bookingService.gets().subscribe(bookings => {
       if (bookings && bookings.length > 0) {
-        const restaurantSub = this.restaurantService.gets()
-          .pipe(finalize(() => {
-            this.appService.setLoadingStatus(false);
-            Utilities.unsubscribe(restaurantSub);
-          }))
-          .subscribe(restaurants => {
-            if (restaurants && restaurants.length > 0) {
-              bookings.forEach(item => {
-                const restaurant = restaurants.find(t => t.uid === item.restaurantId);
-                if (restaurant) {
-                  item['restaurantName'] = restaurant.name;
-                }
-              });
-            }
-            this.dataSource.data = bookings;
-          });
+        this.restaurantService.gets().subscribe(restaurants => {
+          if (restaurants && restaurants.length > 0) {
+            bookings.forEach(item => {
+              const restaurant = restaurants.find(t => t.uid === item.restaurantId);
+              if (restaurant) {
+                item['restaurantName'] = restaurant.name;
+              }
+            });
+          }
+          this.dataSource.data = bookings;
+          this.appService.setLoadingStatus(false);
+        }, () => this.appService.setLoadingStatus(false));
       } else {
         this.appService.setLoadingStatus(false);
       }

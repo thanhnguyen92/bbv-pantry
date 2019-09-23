@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { FirebaseService } from './firebase.service';
 import { BookingModel } from '../models/booking.model';
 import { map } from 'rxjs/operators';
+import { Utilities } from './utilities';
 
 const ENTITY_NAME = 'restaurantBooking';
 @Injectable({
@@ -12,14 +13,37 @@ export class BookingService {
 
     gets() {
         this.firebaseService.setPath(ENTITY_NAME);
-        return this.firebaseService.gets<BookingModel>().snapshotChanges().pipe(map(entities => {
-            return entities.map(entity => {
-                const data = entity.payload.doc.data() as BookingModel;
-                data.uid = entity.payload.doc.id;
-                return data;
-            });
-        }));
+        return this.firebaseService.gets<BookingModel>().snapshotChanges()
+            .pipe(map(entities => {
+                return entities.map(entity => {
+                    const data = entity.payload.doc.data();
+                    data.bookingFrom = Utilities.convertTimestampToDate(data.bookingFrom);
+                    data.bookingTo = Utilities.convertTimestampToDate(data.bookingTo);
+                    data.uid = entity.payload.doc.id;
+                    return data;
+                });
+            }));
     }
+
+    getByIds(bookingIds: string[]) {
+        this.firebaseService.setPath(ENTITY_NAME);
+        return this.firebaseService.gets<BookingModel>().snapshotChanges()
+            .pipe(map(entities => {
+                return entities.filter(entity => {
+                    const data = entity.payload.doc.data();
+                    if (bookingIds.find(t => t === data.uid)) {
+                        return entity;
+                    }
+                }).map(entity => {
+                    const data = entity.payload.doc.data();
+                    data.bookingFrom = Utilities.convertTimestampToDate(data.bookingFrom);
+                    data.bookingTo = Utilities.convertTimestampToDate(data.bookingTo);
+                    data.uid = entity.payload.doc.id;
+                    return data;
+                });
+            }));
+    }
+
 
     add(entity: BookingModel) {
         this.firebaseService.setPath(ENTITY_NAME);

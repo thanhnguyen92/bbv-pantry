@@ -1,20 +1,37 @@
 <h1 mat-dialog-title>{{ data.uid ? 'Edit booking item' : 'Add booking item' }}</h1>
 <div mat-dialog-content>
-    <mat-label>Restaurant</mat-label>
-    <mat-select (selectionChange)="onRestaurantSelected($event)">
-        <mat-option *ngFor="let restaurant of restaurants" [value]="restaurant.uid">
-            {{restaurant.name}}
-        </mat-option>
-    </mat-select>
-
-    <mat-form-field>
-        <mat-checkbox [(ngModel)]="data.isClosed">Is Closed</mat-checkbox>
-    </mat-form-field>
+    <form [formGroup]="form">
+        <div class="mat-item">
+            <mat-label>Restaurant</mat-label>
+            <mat-select (selectionChange)="onRestaurantSelected($event)" [(value)]="restaurantId">
+                <mat-option *ngFor="let restaurant of restaurants" [value]="restaurant.uid">
+                    {{restaurant.name}}
+                </mat-option>
+            </mat-select>
+        </div>
+        <div class="mat-item">
+            <mat-label>Booking From</mat-label>
+            <input matInput [matDatepicker]="fromPicker" placeholder="Choose a date" formControlName="bookingFrom">
+            <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+            <mat-datepicker #fromPicker></mat-datepicker>
+            <mat-error *ngIf="checkControlInvalid('bookingFrom')">{{ getErrorMsg('bookingFrom') }}</mat-error>
+        </div>
+        <div class="mat-item">
+            <mat-label>Booking To</mat-label>
+            <input matInput [matDatepicker]="toPicker" placeholder="Choose a date" formControlName="bookingTo">
+            <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+            <mat-datepicker #toPicker></mat-datepicker>
+            <mat-error *ngIf="checkControlInvalid('bookingTo')">{{ getErrorMsg('bookingTo') }}</mat-error>
+        </div>
+        <div class="mat-item">
+            <mat-checkbox matInput formControlName="isClosed">Is Closed</mat-checkbox>
+        </div>
+        <div class="mat-item">
+            <mat-checkbox matInput formControlName="isPreBooking">Is Pre-Booking</mat-checkbox>
+        </div>
+    </form>
 </div>
 <div mat-dialog-actions>
     <button mat-raised-button (click)="onCancel()">Cancel</button>
     <button mat-raised-button color="primary" (click)="onSubmit()">Save</button>
-    <!-- <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>
-        Save
-    </button> -->
 </div>

@@ -5,7 +5,7 @@ import {
 } from '@angular/fire/firestore';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { User } from '../models/user.model';
+import { UserModel } from '../models/user.model';
 import { UserRole } from '../enums/user-role.enum';
 import { PublishSubcribeService } from './publish-subcribe.service';
 import { PubSubChannel } from '../constants/pub-sub-channel.constant';
@@ -58,7 +58,7 @@ export class AuthService {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(
       `users/${user.uid}`
     );
-    const userData: User = {
+    const userData: UserModel = {
       uid: user.uid,
       email: user.email,
       displayName: user.displayName,
