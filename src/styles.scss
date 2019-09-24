@@ -39,3 +39,7 @@ th.mat-sort-header-sorted {
   font-size: 14px;
   width: 100%;
 }
+
+.timepicker-overlay {
+  z-index: 1001 !important;
+}

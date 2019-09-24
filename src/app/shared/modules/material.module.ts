@@ -35,6 +35,7 @@ import {
   MatDividerModule,
   MatFormFieldModule
 } from '@angular/material';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 @NgModule({
   imports: [
@@ -70,7 +71,8 @@ import {
     MatTooltipModule,
     MatStepperModule,
     MatDividerModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    NgxMaterialTimepickerModule
   ],
   exports: [
     MatAutocompleteModule,
@@ -105,7 +107,8 @@ import {
     MatTooltipModule,
     MatStepperModule,
     MatDividerModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    NgxMaterialTimepickerModule
   ]
 })
 export class MaterialModule {}

@@ -9,6 +9,7 @@ import { RestaurantModel } from './../../../shared/models/restaurant.model';
 import { AppService } from 'src/app/shared/services/app.service';
 import { RestaurantService } from 'src/app/shared/services/restaurant.service';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
+import { Utilities } from 'src/app/shared/services/utilities';
 
 @Component({
   selector: 'app-booking-item',
@@ -19,6 +20,8 @@ export class BookingItemComponent implements OnInit {
   form: FormGroup;
   restaurants: RestaurantModel[] = [];
   restaurantId: string;
+  bookingFromTime: string;
+  bookingToTime: string;
 
   constructor(
     public dialogRef: MatDialogRef<any>,
@@ -34,6 +37,8 @@ export class BookingItemComponent implements OnInit {
       isPreBooking: new FormControl(false),
       restaurantId: new FormControl('', [Validators.required])
     });
+    this.bookingFromTime = `${new Date().getHours()}:${new Date().getMinutes()}`;
+    this.bookingToTime = `${new Date().getHours()}:${new Date().getMinutes()}`;
   }
 
   ngOnInit() {
@@ -57,12 +62,23 @@ export class BookingItemComponent implements OnInit {
   onSubmit() {
     if (this.form.valid) {
       this.data = this.form.value as BookingModel;
+      console.log(this.bookingFromTime.split(':'), this.bookingToTime.split(':'));
+      this.data.bookingFrom.setHours(this.bookingFromTime.split(':')[0], this.bookingFromTime.split(':')[1], 0, 0);
+      this.data.bookingTo.setHours(this.bookingToTime.split(':')[0], this.bookingToTime.split(':')[1], 0, 0);
       this.dialogRef.close(this.data);
     }
   }
 
   onCancel(): void {
     this.dialogRef.close();
+  }
+
+  onFromTimeSet(event) {
+    this.bookingFromTime = event;
+  }
+
+  onToTimeSet(event) {
+    this.bookingToTime = event;
   }
 
   onRestaurantSelected(event) {
