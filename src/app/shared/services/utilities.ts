@@ -61,4 +61,25 @@ export class Utilities {
     }
     return moment(date1tmp).diff(moment(date2tmp));
   }
+
+  public static pushNotification(msg?: string, options?: NotificationOptions) {
+    if (!('Notification' in window)) {
+      alert('This browser does not support system notifications');
+      // This is not how you would really do things if they aren't supported. :)
+    } else {
+      // Let's check whether notification permissions have already been granted
+      if (Notification.permission === 'denied') {
+        Notification.requestPermission(permission => {
+          // If the user accepts, let's create a notification
+          if (permission === 'granted') {
+            const notification = new Notification('Thanks for your permission. Welcome to bbv Pantry!', options);
+          }
+        });
+      } else {
+        if (msg) {
+          const notification = new Notification(msg, options);
+        }
+      }
+    }
+  }
 }

@@ -45,7 +45,7 @@ export class OrderComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private bookingService: BookingService,
     private restaurantService: RestaurantService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.appService.setLoadingStatus(true);
@@ -84,6 +84,10 @@ export class OrderComponent implements OnInit, OnDestroy {
 
   onRemindPayment(element) {
     // Push notification to remind user for payment
+    const restaurant = this.restaurants.find(t => t.uid === element.restaurantId);
+    if (restaurant) {
+      Utilities.pushNotification(`Please complete the payment for your order at ${restaurant.name}. Thank you!`);
+    }
   }
 
   private fetchOrderData(restaurantId) {

@@ -41,8 +41,7 @@ export class UserComponent implements OnInit, OnDestroy {
     private menuService: MenuService,
     private restaurantService: RestaurantService,
     private orderService: OrderService) {
-    // this.currentDate.setDate(19);
-    // this.currentDate.setHours(17, 0, 0, 0);
+    this.registerNotification();
   }
 
   ngOnInit(): void {
@@ -159,5 +158,9 @@ export class UserComponent implements OnInit, OnDestroy {
           this.appService.setLoadingStatus(false);
         });
     }, () => this.appService.setLoadingStatus(false));
+  }
+
+  private registerNotification() {
+    Utilities.pushNotification();
   }
 }
