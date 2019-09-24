@@ -12,6 +12,8 @@ import { MenuService } from 'src/app/shared/services/menu.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { RestaurantSelectionComponent } from './restaurant-selection/restaurant-selection.component';
+import { finalize } from 'rxjs/operators';
+import { Utilities } from 'src/app/shared/services/utilities';
 
 @Component({
   selector: 'app-menu',
@@ -118,11 +120,13 @@ export class MenuComponent implements OnInit {
       hasBackdrop: false
     });
 
-    diaLogRef.afterClosed().subscribe((data: MenuModel) => {
-      if (data) {
-        this.router.navigate(['admin', 'restaurant', data.uid, 'menu']);
-      }
-    });
+    const restaurantSelectionSub = diaLogRef.afterClosed()
+      .pipe(finalize(() => Utilities.unsubscribe(restaurantSelectionSub)))
+      .subscribe((data: MenuModel) => {
+        if (data) {
+          this.router.navigate(['admin', 'restaurant', data.uid, 'menu']);
+        }
+      });
   }
 
   private showDialogConfirmDelete(menuItem) {
@@ -130,19 +134,21 @@ export class MenuComponent implements OnInit {
       width: '250px',
       data: { title: 'Confirmation', content: 'Are you sure to delete?', noButton: 'No', yesButton: 'Yes' }
     });
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        this.menuService
-          .delete(menuItem.uid)
-          .then(() => {
-            NotificationService.showSuccessMessage('Delete successful');
-          })
-          .catch(() => {
-            NotificationService.showErrorMessage(
-              'Something went wrong, please try again'
-            );
-          });
-      }
-    });
+    const deleteConfirmationSub = dialogRef.afterClosed()
+      .pipe(finalize(() => Utilities.unsubscribe(deleteConfirmationSub)))
+      .subscribe(res => {
+        if (res) {
+          this.menuService
+            .delete(menuItem.uid)
+            .then(() => {
+              NotificationService.showSuccessMessage('Delete successful');
+            })
+            .catch(() => {
+              NotificationService.showErrorMessage(
+                'Something went wrong, please try again'
+              );
+            });
+        }
+      });
   }
 }

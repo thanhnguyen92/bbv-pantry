@@ -1,3 +1,4 @@
+import { BookingModel } from 'src/app/shared/models/booking.model';
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
@@ -14,7 +15,8 @@ import { Utilities } from '../shared/services/utilities';
 /** Models */
 import { MenuModel } from '../shared/models/menu.model';
 import { OrderItem } from '../shared/models/order-item.model';
-import { Order } from '../shared/models/order.model';
+import { OrderModel } from '../shared/models/order.model';
+import { RestaurantModel } from '../shared/models/restaurant.model';
 
 @Component({
   selector: 'app-user',
@@ -26,17 +28,21 @@ export class UserComponent implements OnInit, OnDestroy {
   menu: MenuModel[] = [];
   cart: OrderItem[] = [];
   restaurantId;
+  restaurants: RestaurantModel[] = [];
+  bookingId: string;
+  bookings: BookingModel[] = [];
 
   private getMenuSubscription: Subscription;
   private getRestaurantSubscription: Subscription;
 
-  constructor(private appService: AppService,
+  constructor(
+    private appService: AppService,
     private authService: AuthService,
     private menuService: MenuService,
     private restaurantService: RestaurantService,
     private orderService: OrderService) {
-    this.currentDate.setDate(19);
-    this.currentDate.setHours(17, 0, 0, 0);
+    // this.currentDate.setDate(19);
+    // this.currentDate.setHours(17, 0, 0, 0);
   }
 
   ngOnInit(): void {
@@ -44,18 +50,25 @@ export class UserComponent implements OnInit, OnDestroy {
     Utilities.unsubscribe(this.getRestaurantSubscription);
     this.getRestaurantSubscription = this.restaurantService.getByBookingDate(Utilities.convertToUTC(this.currentDate))
       .subscribe(results => {
-        console.log(results);
-
-        if (results && results.length > 0) {
-          this.restaurantService.getByRestaurantIds(results.map(t => t.restaurantId)).subscribe(res => {
-
-          });
-
-          this.restaurantId = results[0].restaurantId;
-        } else {
-          NotificationService.showInfoMessage(`Don't have any available menus at the moment`);
+        if (results) {
+          this.bookings = results;
+          if (this.bookings.length > 0) {
+            this.restaurantService.getByRestaurantIds(this.bookings.map(t => t.restaurantId)).subscribe(res => {
+              if (res) {
+                // this.restaurants = res;
+                this.bookings.forEach(booking => {
+                  const restaurant = res.find(t => t.uid === booking.restaurantId);
+                  booking['restaurantName'] = restaurant ? restaurant.name : '(null)';
+                });
+                this.restaurantId = this.bookings[0].uid;
+              }
+              this.appService.setLoadingStatus(false);
+            }, () => this.appService.setLoadingStatus(false));
+            return;
+          }
         }
 
+        NotificationService.showInfoMessage(`Don't have any available menus at the moment`);
         this.appService.setLoadingStatus(false);
       }, () => this.appService.setLoadingStatus(false));
   }
@@ -63,6 +76,13 @@ export class UserComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     Utilities.unsubscribe(this.getMenuSubscription);
     Utilities.unsubscribe(this.getRestaurantSubscription);
+  }
+
+  onBookingChanged(event) {
+    const booking = this.bookings.find(t => t.uid === event.value);
+    if (booking) {
+      this.restaurantId = booking.restaurantId;
+    }
   }
 
   menuChanged(menuItems: MenuModel[]) {
@@ -125,7 +145,9 @@ export class UserComponent implements OnInit, OnDestroy {
         totalPrice: this.orderService.calculatePrice(cart),
         userId: this.authService.currentUser.uid,
         isPaid: false,
-      } as Order;
+        restaurantId: this.restaurantId,
+        bookingId: this.bookingId
+      } as OrderModel;
 
       this.orderService.add(order)
         .then(() => {

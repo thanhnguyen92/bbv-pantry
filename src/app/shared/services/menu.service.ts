@@ -13,14 +13,15 @@ export class MenuService {
 
   getByRestaurantId(restaurantId) {
     this.firebaseService.setPath(ENTITY_NAME);
-    return this.firebaseService.gets<MenuModel>(t => t.where('restaurantId', '==', restaurantId)).snapshotChanges().pipe(map(entities => {
-      return entities.map(entity => {
-        const data = entity.payload.doc.data() as MenuModel;
-        data.uid = entity.payload.doc.id;
-        data['type'] = entity.type;
-        return data;
-      });
-    }));
+    return this.firebaseService.gets<MenuModel>(t => t.where('restaurantId', '==', restaurantId)).snapshotChanges()
+      .pipe(map(entities => {
+        return entities.map(entity => {
+          const data = entity.payload.doc.data() as MenuModel;
+          data.uid = entity.payload.doc.id;
+          data['type'] = entity.type;
+          return data;
+        });
+      }));
   }
 
   add(entity: MenuModel) {

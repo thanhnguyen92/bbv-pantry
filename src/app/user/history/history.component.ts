@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatTableDataSource, MatSort } from '@angular/material';
-import { Order } from 'src/app/shared/models/order.model';
+import { OrderModel } from 'src/app/shared/models/order.model';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { AppService } from 'src/app/shared/services/app.service';
 import { Subscription } from 'rxjs';
@@ -18,11 +18,12 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
     'orderDate',
     'totalPrice'
   ];
-  orders: Order[] = [];
+  orders: OrderModel[] = [];
   dataSource = new MatTableDataSource(this.orders);
   private getOrdersSubscription: Subscription;
 
-  constructor(private appService: AppService,
+  constructor(
+    private appService: AppService,
     private orderService: OrderService) { }
 
   ngOnInit() {
@@ -49,7 +50,7 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
     Utilities.unsubscribe(this.getOrdersSubscription);
     this.getOrdersSubscription = this.orderService.getsPaidOrUnpaid(isPaid).subscribe(results => {
       results.forEach(item => {
-        item.orderDate = new Date(item.orderDate.seconds * 1000)
+        item.orderDate = Utilities.convertTimestampToDate(item.orderDate);
       });
       this.dataSource.data = results;
 
