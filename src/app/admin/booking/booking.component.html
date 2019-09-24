@@ -12,13 +12,13 @@
     <!-- Booking From Date Column -->
     <ng-container matColumnDef="bookingFrom">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>From Date</th>
-        <td mat-cell *matCellDef="let element">{{ element.bookingFrom | date: 'dd.MM.y' }}</td>
+        <td mat-cell *matCellDef="let element">{{ element.bookingFrom | date: 'dd.MM.y - HH:mm' }}</td>
     </ng-container>
 
     <!-- Booking To Date Column -->
     <ng-container matColumnDef="bookingTo">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>To Date</th>
-        <td mat-cell *matCellDef="let element">{{ element.bookingTo | date: 'dd.MM.y' }}</td>
+        <td mat-cell *matCellDef="let element">{{ element.bookingTo | date: 'dd.MM.y - HH:mm' }}</td>
     </ng-container>
 
     <!-- Is Closed Column -->

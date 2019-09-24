@@ -34,7 +34,14 @@
     <!-- Email Column -->
     <ng-container matColumnDef="bookingInfo">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Booking Information</th>
-        <td mat-cell *matCellDef="let element">{{ element.bookingInfo.bookingFrom | date: 'dd.MM.y' }} - {{ element.bookingInfo.bookingTo | date: 'dd.MM.y' }}</td>
+        <td mat-cell *matCellDef="let element">
+            <div>
+                From: {{ element.bookingInfo.bookingFrom | date: 'dd.MM.y - HH:mm' }}
+            </div>
+            <div>
+                To: {{ element.bookingInfo.bookingTo | date: 'dd.MM.y - HH:mm' }}
+            </div>
+        </td>
     </ng-container>
 
     <!-- Order Date Column -->
