@@ -1,21 +1,26 @@
 <div class="pb-4">
     <button mat-raised-button color="accent">Create</button>
-    <div style="max-width: 250px">
-        <mat-label>Restaurant: </mat-label>
-        <mat-select (selectionChange)="onRestaurantSelected($event)" [(value)]="restaurantId">
-            <mat-option *ngFor="let restaurant of restaurants" [value]="restaurant.uid">
-                {{restaurant.name}}
-            </mat-option>
-        </mat-select>
+    <div class="mat-item">
+        <div style="max-width: 250px">
+            <mat-label>Restaurant: </mat-label>
+            <mat-select (selectionChange)="onRestaurantSelected($event)" [(value)]="restaurantId">
+                <mat-option *ngFor="let restaurant of restaurants" [value]="restaurant.uid">
+                    {{ restaurant.name }}
+                </mat-option>
+            </mat-select>
+        </div>
     </div>
-    <!-- <div style="max-width: 250px">
-        <mat-label>Booking time: </mat-label>
-        <mat-select (selectionChange)="onBookingSelected($event)" [(value)]="bookingId">
-            <mat-option *ngFor="let booking of bookings" [value]="booking.uid">
-                {{booking.name}}
-            </mat-option>
-        </mat-select>
-    </div> -->
+    <div class="mat-item">
+        <div style="max-width: 350px">
+            <mat-label>Booking time: </mat-label>
+            <mat-select (selectionChange)="onBookingSelected($event)" [(value)]="bookingId">
+                <mat-option *ngFor="let booking of bookings" [value]="booking.uid">
+                    {{ booking.bookingFrom | date: 'dd.MM.y - HH:mm' }} to
+                    {{ booking.bookingTo | date: 'dd.MM.y - HH:mm' }}
+                </mat-option>
+            </mat-select>
+        </div>
+    </div>
 </div>
 
 <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
@@ -70,7 +75,7 @@
     <ng-container matColumnDef="isPaid">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Is Paid</th>
         <td mat-cell *matCellDef="let element">
-            <mat-icon *ngIf="element.isPaid" aria-hidden="false" aria-label="Paid">check_circle</mat-icon>
+            <mat-icon *ngIf="element.isPaid" aria-hidden="false" aria-label="Paid" title="Paid">check_circle</mat-icon>
         </td>
     </ng-container>
 
@@ -78,11 +83,11 @@
     <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let element">
-            <button mat-icon-button (click)="onPayOrder(element)">
+            <button [disabled]="element.isPaid" mat-icon-button (click)="onPayOrder(element)" title="Pay an order">
                 <mat-icon aria-hidden="false" aria-label="Pay an order">payment</mat-icon>
             </button>
-            <button mat-icon-button (click)="onRemindPayment(element)">
-                <mat-icon aria-hidden="false" aria-label="Remind payment">notification_important</mat-icon>
+            <button mat-icon-button (click)="onRemindPayment(element)" title="Remind for payment">
+                <mat-icon aria-hidden="false" aria-label="Remind for payment">notification_important</mat-icon>
             </button>
         </td>
     </ng-container>

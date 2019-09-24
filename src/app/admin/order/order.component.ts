@@ -58,13 +58,23 @@ export class OrderComponent implements OnInit, OnDestroy {
       res => {
         if (res) {
           this.restaurants = res;
-          this.restaurants.unshift({
-            uid: ALL_RESTAURANT,
-            name: 'All'
-          } as RestaurantModel);
-          this.restaurantId = this.restaurants[0].uid;
+          // this.restaurants.unshift({
+          //   uid: ALL_RESTAURANT,
+          //   name: 'All'
+          // } as RestaurantModel);
+          this.restaurantId = res.length > 0 ? res[0].uid : undefined;
+          this.bookingService.getByRestaurantId(this.restaurantId).subscribe(bookings => {
+            if (bookings) {
+              this.bookings = bookings;
+              this.bookingId = bookings.length > 0 ? bookings[0].uid : undefined;
+              this.fetchOrderData(this.bookingId);
+            } else {
+              this.appService.setLoadingStatus(false);
+            }
+          }, () => this.appService.setLoadingStatus(false));
+        } else {
+          this.appService.setLoadingStatus(false);
         }
-        this.fetchOrderData(this.restaurantId);
       },
       () => this.appService.setLoadingStatus(false)
     );
@@ -75,17 +85,29 @@ export class OrderComponent implements OnInit, OnDestroy {
   }
 
   onRestaurantSelected(event) {
+    this.appService.setLoadingStatus(true);
     this.restaurantId = event.value;
-    this.fetchOrderData(this.restaurantId);
+    this.bookingService.getByRestaurantId(this.restaurantId).subscribe(bookings => {
+      if (bookings) {
+        this.bookings = bookings;
+        this.bookingId = bookings.length > 0 ? bookings[0].uid : undefined;
+        this.fetchOrderData(this.bookingId);
+      } else {
+        this.appService.setLoadingStatus(false);
+      }
+    }, () => this.appService.setLoadingStatus(false));
+
+    // this.fetchOrderData(this.restaurantId);
   }
 
   onBookingSelected(event) {
     this.bookingId = event.value;
+    this.fetchOrderData(this.bookingId);
   }
 
   onPayOrder(element) {
     let dialogRef;
-    if (dialogRef) {
+    if (dialogRef && element.isPaid) {
       return;
     }
     dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -133,20 +155,11 @@ export class OrderComponent implements OnInit, OnDestroy {
     }
   }
 
-  private fetchOrderData(restaurantId) {
+  private fetchOrderData(bookingId) {
     this.dataSource.sort = this.sort;
     Utilities.unsubscribe(this.getOrderSubscription);
 
-    let queryService: Observable<OrderModel[]>;
-    if (restaurantId !== ALL_RESTAURANT) {
-      // Get orders by restaurant identifier
-      queryService = this.orderService.getByRestaurantId(this.restaurantId);
-    } else {
-      // Get all orders
-      queryService = this.orderService.gets();
-    }
-
-    this.getOrderSubscription = queryService.subscribe(
+    this.orderService.getByBookingId(bookingId).subscribe(
       results => {
         if (results) {
           let isDecoratedUsers = false;
@@ -207,5 +220,16 @@ export class OrderComponent implements OnInit, OnDestroy {
       },
       () => this.appService.setLoadingStatus(false)
     );
+
+    // let queryService: Observable<OrderModel[]>;
+    // if (bookingId !== ALL_RESTAURANT) {
+    //   // Get orders by restaurant identifier
+    //   queryService = this.orderService.getByRestaurantId(this.restaurantId);
+    // } else {
+    //   // Get all orders
+    //   queryService = this.orderService.gets();
+    // }
+
+    // this.getOrderSubscription = queryService
   }
 }

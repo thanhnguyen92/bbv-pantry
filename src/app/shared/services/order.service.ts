@@ -63,6 +63,30 @@ export class OrderService {
       );
   }
 
+  getByBookingId(bookingId: string) {
+    this.firebaseService.setPath(ENTITY_NAME);
+    return this.firebaseService
+      .gets<OrderModel>()
+      .snapshotChanges()
+      .pipe(
+        map(entities => {
+          return entities
+            .filter(entity => {
+              const data = entity.payload.doc.data() as OrderModel;
+              if (bookingId === data.bookingId) {
+                return entity;
+              }
+            })
+            .map(entity => {
+              const data = entity.payload.doc.data();
+              data.orderDate = Utilities.convertTimestampToDate(data.orderDate);
+              data.uid = entity.payload.doc.id;
+              return data;
+            });
+        })
+      );
+  }
+
   add(entity: OrderModel) {
     this.firebaseService.setPath(ENTITY_NAME);
     entity.uid = this.firebaseService.createId();

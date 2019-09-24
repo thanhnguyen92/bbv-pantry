@@ -20,9 +20,7 @@ export class BookingService {
         map(entities => {
           return entities.map(entity => {
             const data = entity.payload.doc.data();
-            data.bookingFrom = Utilities.convertTimestampToDate(
-              data.bookingFrom
-            );
+            data.bookingFrom = Utilities.convertTimestampToDate(data.bookingFrom);
             data.bookingTo = Utilities.convertTimestampToDate(data.bookingTo);
             data.uid = entity.payload.doc.id;
             return data;
@@ -53,6 +51,33 @@ export class BookingService {
             .filter(entity => {
               const data = entity.payload.doc.data();
               if (bookingIds.find(t => t === data.uid)) {
+                return entity;
+              }
+            })
+            .map(entity => {
+              const data = entity.payload.doc.data();
+              data.bookingFrom = Utilities.convertTimestampToDate(
+                data.bookingFrom
+              );
+              data.bookingTo = Utilities.convertTimestampToDate(data.bookingTo);
+              data.uid = entity.payload.doc.id;
+              return data;
+            });
+        })
+      );
+  }
+
+  getByRestaurantId(restaurantId: string) {
+    this.firebaseService.setPath(ENTITY_NAME);
+    return this.firebaseService
+      .gets<BookingModel>()
+      .snapshotChanges()
+      .pipe(
+        map(entities => {
+          return entities
+            .filter(entity => {
+              const data = entity.payload.doc.data();
+              if (restaurantId === data.restaurantId) {
                 return entity;
               }
             })
