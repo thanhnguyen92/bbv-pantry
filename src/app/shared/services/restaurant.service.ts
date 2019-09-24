@@ -11,56 +11,78 @@ const RESTAURANT_BOOKING_ENTITY = 'restaurantBooking';
   providedIn: 'root'
 })
 export class RestaurantService {
-  constructor(private firebaseService: FirebaseService) { }
+  constructor(private firebaseService: FirebaseService) {}
 
   gets() {
     this.firebaseService.setPath(RESTAURANT_ENTITY);
-    return this.firebaseService.gets<RestaurantModel>().snapshotChanges()
-      .pipe(map(entities => {
-        return entities.map(entity => {
-          const data = entity.payload.doc.data() as RestaurantModel;
-          data.uid = entity.payload.doc.id;
-          return data;
-        });
-      }));
+    return this.firebaseService
+      .gets<RestaurantModel>()
+      .snapshotChanges()
+      .pipe(
+        map(entities => {
+          return entities.map(entity => {
+            const data = entity.payload.doc.data() as RestaurantModel;
+            data.uid = entity.payload.doc.id;
+            return data;
+          });
+        })
+      );
   }
 
   getByRestaurantIds(restaurantIds: string[]) {
     this.firebaseService.setPath(RESTAURANT_ENTITY);
-    return this.firebaseService.gets<RestaurantModel>()
-      .snapshotChanges().pipe(map(entities => {
-        return entities.filter(entity => {
-          const data = entity.payload.doc.data();
-          if (restaurantIds.find(uid => uid === data.uid)) {
-            return entity;
-          }
-        }).map(entity => {
-          const data = entity.payload.doc.data();
-          data.uid = entity.payload.doc.id;
-          return data;
-        });
-      }));
+    return this.firebaseService
+      .gets<RestaurantModel>()
+      .snapshotChanges()
+      .pipe(
+        map(entities => {
+          return entities
+            .filter(entity => {
+              const data = entity.payload.doc.data();
+              if (restaurantIds.find(uid => uid === data.uid)) {
+                return entity;
+              }
+            })
+            .map(entity => {
+              const data = entity.payload.doc.data();
+              data.uid = entity.payload.doc.id;
+              return data;
+            });
+        })
+      );
   }
 
   getByBookingDate(bookingDate) {
     this.firebaseService.setPath(RESTAURANT_BOOKING_ENTITY);
-    return this.firebaseService.gets<BookingModel>(t => t.where('isClosed', '==', false))
-      .snapshotChanges().pipe(map(entities => {
-        return entities.filter(entity => {
-          const data = entity.payload.doc.data();
-          const bookingFrom = Utilities.convertTimestampToDate(data.bookingFrom);
-          const bookingTo = Utilities.convertTimestampToDate(data.bookingTo);
-          if (bookingFrom <= bookingDate && bookingDate <= bookingTo) {
-            return entity;
-          }
-        }).map(entity => {
-          const data = entity.payload.doc.data();
-          data.bookingFrom = Utilities.convertTimestampToDate(data.bookingFrom);
-          data.bookingTo = Utilities.convertTimestampToDate(data.bookingTo);
-          data.uid = entity.payload.doc.id;
-          return data;
-        });
-      }));
+    return this.firebaseService
+      .gets<BookingModel>(t => t.where('isClosed', '==', false))
+      .snapshotChanges()
+      .pipe(
+        map(entities => {
+          return entities
+            .filter(entity => {
+              const data = entity.payload.doc.data();
+              const bookingFrom = Utilities.convertTimestampToDate(
+                data.bookingFrom
+              );
+              const bookingTo = Utilities.convertTimestampToDate(
+                data.bookingTo
+              );
+              if (bookingFrom <= bookingDate && bookingDate <= bookingTo) {
+                return entity;
+              }
+            })
+            .map(entity => {
+              const data = entity.payload.doc.data();
+              data.bookingFrom = Utilities.convertTimestampToDate(
+                data.bookingFrom
+              );
+              data.bookingTo = Utilities.convertTimestampToDate(data.bookingTo);
+              data.uid = entity.payload.doc.id;
+              return data;
+            });
+        })
+      );
   }
 
   add(entity: RestaurantModel) {

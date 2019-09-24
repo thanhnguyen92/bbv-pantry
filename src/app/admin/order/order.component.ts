@@ -22,7 +22,15 @@ export class OrderComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   orders: OrderModel[] = [];
   dataSource = new MatTableDataSource(this.orders);
-  displayedColumns: string[] = ['displayName', 'email', 'bookingInfo', 'orderDate', 'totalPrice', 'isPaid', 'actions'];
+  displayedColumns: string[] = [
+    'displayName',
+    'email',
+    'bookingInfo',
+    'orderDate',
+    'totalPrice',
+    'isPaid',
+    'actions'
+  ];
   restaurantId;
   restaurants: RestaurantModel[] = [];
   bookingId;
@@ -36,18 +44,25 @@ export class OrderComponent implements OnInit, OnDestroy {
     private orderService: OrderService,
     private userService: UserService,
     private bookingService: BookingService,
-    private restaurantService: RestaurantService) { }
+    private restaurantService: RestaurantService
+  ) {}
 
   ngOnInit() {
     this.appService.setLoadingStatus(true);
-    this.restaurantService.gets().subscribe(res => {
-      if (res) {
-        this.restaurants = res;
-        this.restaurants.unshift({ uid: ALL_RESTAURANT, name: 'All' } as RestaurantModel);
-        this.restaurantId = this.restaurants[0].uid;
-      }
-      this.fetchOrderData(this.restaurantId);
-    }, () => this.appService.setLoadingStatus(false));
+    this.restaurantService.gets().subscribe(
+      res => {
+        if (res) {
+          this.restaurants = res;
+          this.restaurants.unshift({
+            uid: ALL_RESTAURANT,
+            name: 'All'
+          } as RestaurantModel);
+          this.restaurantId = this.restaurants[0].uid;
+        }
+        this.fetchOrderData(this.restaurantId);
+      },
+      () => this.appService.setLoadingStatus(false)
+    );
   }
 
   ngOnDestroy(): void {
@@ -84,56 +99,66 @@ export class OrderComponent implements OnInit, OnDestroy {
       queryService = this.orderService.gets();
     }
 
-    this.getOrderSubscription = queryService.subscribe(results => {
-      if (results) {
-        let isDecoratedUsers = false;
-        let isDecoratedBookings = false;
+    this.getOrderSubscription = queryService.subscribe(
+      results => {
+        if (results) {
+          let isDecoratedUsers = false;
+          let isDecoratedBookings = false;
 
-        // Decorate user information
-        this.userService.getByUserIds(results.map(t => t.userId))
-          .subscribe(users => {
-            if (users) {
-              // Map user information to list orders
-              results.forEach(order => {
-                const user = users.find(t => t.uid === order.userId);
-                if (user) {
-                  order['displayName'] = user.displayName && user.displayName.length > 0 ? user.displayName : '(null)';
-                  order['email'] = user.email;
-                }
-              });
-            }
+          // Decorate user information
+          this.userService.getByUserIds(results.map(t => t.userId)).subscribe(
+            users => {
+              if (users) {
+                // Map user information to list orders
+                results.forEach(order => {
+                  const user = users.find(t => t.uid === order.userId);
+                  if (user) {
+                    order['displayName'] =
+                      user.displayName && user.displayName.length > 0
+                        ? user.displayName
+                        : '(null)';
+                    order['email'] = user.email;
+                  }
+                });
+              }
 
-            isDecoratedUsers = true;
-            if (isDecoratedBookings) {
-              this.orders = results;
-              this.dataSource.data = this.orders;
-              this.appService.setLoadingStatus(false);
-            }
-          }, () => this.appService.setLoadingStatus(false));
+              isDecoratedUsers = true;
+              if (isDecoratedBookings) {
+                this.orders = results;
+                this.dataSource.data = this.orders;
+                this.appService.setLoadingStatus(false);
+              }
+            },
+            () => this.appService.setLoadingStatus(false)
+          );
 
-        // Decorate booking information
-        this.bookingService.getByIds(results.map(t => t.bookingId))
-          .subscribe(bookings => {
-            if (bookings) {
-              // Map user information to list orders
-              results.forEach(order => {
-                const booking = bookings.find(t => t.uid === order.bookingId);
-                if (booking) {
-                  order['bookingInfo'] = booking;
-                }
-              });
-            }
+          // Decorate booking information
+          this.bookingService.getByIds(results.map(t => t.bookingId)).subscribe(
+            bookings => {
+              if (bookings) {
+                // Map user information to list orders
+                results.forEach(order => {
+                  const booking = bookings.find(t => t.uid === order.bookingId);
+                  if (booking) {
+                    order['bookingInfo'] = booking;
+                  }
+                });
+              }
 
-            isDecoratedBookings = true;
-            if (isDecoratedUsers) {
-              this.orders = results;
-              this.dataSource.data = this.orders;
-              this.appService.setLoadingStatus(false);
-            }
-          }, () => this.appService.setLoadingStatus(false));
-      } else {
-        this.appService.setLoadingStatus(false);
-      }
-    }, () => this.appService.setLoadingStatus(false));
+              isDecoratedBookings = true;
+              if (isDecoratedUsers) {
+                this.orders = results;
+                this.dataSource.data = this.orders;
+                this.appService.setLoadingStatus(false);
+              }
+            },
+            () => this.appService.setLoadingStatus(false)
+          );
+        } else {
+          this.appService.setLoadingStatus(false);
+        }
+      },
+      () => this.appService.setLoadingStatus(false)
+    );
   }
 }

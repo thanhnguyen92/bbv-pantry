@@ -18,17 +18,21 @@ export class AppComponent implements OnInit, OnDestroy {
   isLoading = false;
 
   private isLoggedSub: Subscription;
-
+  private isLoadingSub: Subscription;
   constructor(
     public authService: AuthService,
     private route: Router,
     private pubSubService: PublishSubcribeService,
     private appService: AppService,
-    private cdr: ChangeDetectorRef) {
+    private cdr: ChangeDetectorRef
+  ) {
     this.isLogged = authService.getIsLogged();
-    this.appService.isLoading.subscribe((isLoading: boolean) => {
-      this.isLoading = isLoading;
-    });
+    this.isLoadingSub = this.appService.isLoading.subscribe(
+      (isLoading: boolean) => {
+        console.log(isLoading);
+        this.isLoading = isLoading;
+      }
+    );
   }
 
   ngOnInit(): void {
@@ -39,11 +43,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     Utilities.unsubscribe(this.isLoggedSub);
+    Utilities.unsubscribe(this.isLoadingSub);
   }
 
-  ngAfterViewChecked(){
+  ngAfterViewChecked() {
     this.cdr.detectChanges();
- }
+  }
 
   logOut() {
     this.authService.logOut().then(() => {

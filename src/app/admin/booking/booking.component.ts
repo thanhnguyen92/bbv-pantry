@@ -27,7 +27,14 @@ export class BookingComponent implements OnInit, OnDestroy {
 
   bookingItems: BookingModel[] = [];
   dataSource = new MatTableDataSource(this.bookingItems);
-  displayedColumns: string[] = ['restaurantName', 'bookingFrom', 'bookingTo', 'isClosed', 'isPreBooking', 'actions'];
+  displayedColumns: string[] = [
+    'restaurantName',
+    'bookingFrom',
+    'bookingTo',
+    'isClosed',
+    'isPreBooking',
+    'actions'
+  ];
 
   private getBookingSub: Subscription;
 
@@ -35,7 +42,8 @@ export class BookingComponent implements OnInit, OnDestroy {
     private appService: AppService,
     private dialog: MatDialog,
     private bookingService: BookingService,
-    private restaurantService: RestaurantService) { }
+    private restaurantService: RestaurantService
+  ) {}
 
   ngOnInit() {
     this.fetchData();
@@ -61,24 +69,32 @@ export class BookingComponent implements OnInit, OnDestroy {
     this.appService.setLoadingStatus(true);
     this.dataSource.sort = this.sort;
 
-    this.getBookingSub = this.bookingService.gets().subscribe(bookings => {
-      if (bookings && bookings.length > 0) {
-        this.restaurantService.gets().subscribe(restaurants => {
-          if (restaurants && restaurants.length > 0) {
-            bookings.forEach(item => {
-              const restaurant = restaurants.find(t => t.uid === item.restaurantId);
-              if (restaurant) {
-                item['restaurantName'] = restaurant.name;
+    this.getBookingSub = this.bookingService.gets().subscribe(
+      bookings => {
+        if (bookings && bookings.length > 0) {
+          this.restaurantService.gets().subscribe(
+            restaurants => {
+              if (restaurants && restaurants.length > 0) {
+                bookings.forEach(item => {
+                  const restaurant = restaurants.find(
+                    t => t.uid === item.restaurantId
+                  );
+                  if (restaurant) {
+                    item['restaurantName'] = restaurant.name;
+                  }
+                });
               }
-            });
-          }
-          this.dataSource.data = bookings;
+              this.dataSource.data = bookings;
+              this.appService.setLoadingStatus(false);
+            },
+            () => this.appService.setLoadingStatus(false)
+          );
+        } else {
           this.appService.setLoadingStatus(false);
-        }, () => this.appService.setLoadingStatus(false));
-      } else {
-        this.appService.setLoadingStatus(false);
-      }
-    }, () => this.appService.setLoadingStatus(false));
+        }
+      },
+      () => this.appService.setLoadingStatus(false)
+    );
   }
 
   private showPopupBookingItem(bookingItem: BookingModel = new BookingModel()) {
@@ -88,7 +104,8 @@ export class BookingComponent implements OnInit, OnDestroy {
       hasBackdrop: false
     });
 
-    const popupBookingItemSub = diaLogRef.afterClosed()
+    const popupBookingItemSub = diaLogRef
+      .afterClosed()
       .pipe(finalize(() => Utilities.unsubscribe(popupBookingItemSub)))
       .subscribe((data: BookingModel) => {
         if (data) {
@@ -97,7 +114,7 @@ export class BookingComponent implements OnInit, OnDestroy {
             service = this.bookingService.update({ ...data });
           } else {
             service = this.bookingService.add({
-              ...data,
+              ...data
               // ...{ restaurantId: this.restaurantId }
             });
           }
@@ -119,10 +136,16 @@ export class BookingComponent implements OnInit, OnDestroy {
     }
     dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '250px',
-      data: { title: 'Confirmation', content: 'Are you sure to delete?', noButton: 'No', yesButton: 'Yes' }
+      data: {
+        title: 'Confirmation',
+        content: 'Are you sure to delete?',
+        noButton: 'No',
+        yesButton: 'Yes'
+      }
     });
 
-    const deleteConfirmationSub = dialogRef.afterClosed()
+    const deleteConfirmationSub = dialogRef
+      .afterClosed()
       .pipe(finalize(() => Utilities.unsubscribe(deleteConfirmationSub)))
       .subscribe(res => {
         if (res) {

@@ -21,4 +21,4 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   ],
   providers: [BookingService]
 })
-export class BookingModule { }
+export class BookingModule {}

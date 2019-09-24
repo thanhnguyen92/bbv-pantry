@@ -28,7 +28,8 @@ export class BookingItemComponent implements OnInit {
     public dialogRef: MatDialogRef<any>,
     @Inject(MAT_DIALOG_DATA) public data: BookingModel,
     private appService: AppService,
-    private restaurantService: RestaurantService) {
+    private restaurantService: RestaurantService
+  ) {
     this.form = new FormGroup({
       uid: new FormControl(''),
       bookingFrom: new FormControl(new Date(), [Validators.required]),
@@ -50,11 +51,13 @@ export class BookingItemComponent implements OnInit {
     this.appService.setLoadingStatus(true);
 
     // Fetch restaurant data
-    this.restaurantService.gets()
-      .subscribe(results => {
+    this.restaurantService.gets().subscribe(
+      results => {
         this.restaurants = [...results];
         this.appService.setLoadingStatus(false);
-      }, () => this.appService.setLoadingStatus(false));
+      },
+      () => this.appService.setLoadingStatus(false)
+    );
   }
 
   onSubmit() {

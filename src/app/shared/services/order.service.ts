@@ -10,37 +10,47 @@ const ENTITY_NAME = 'order';
   providedIn: 'root'
 })
 export class OrderService {
-  constructor(private firebaseService: FirebaseService) { }
+  constructor(private firebaseService: FirebaseService) {}
 
   gets() {
     this.firebaseService.setPath(ENTITY_NAME);
-    return this.firebaseService.gets<OrderModel>().snapshotChanges()
-      .pipe(map(entities => {
-        return entities.map(entity => {
-          const data = entity.payload.doc.data();
-          data.orderDate = Utilities.convertTimestampToDate(data.orderDate);
-          data.uid = entity.payload.doc.id;
-          return data;
-        });
-      }));
+    return this.firebaseService
+      .gets<OrderModel>()
+      .snapshotChanges()
+      .pipe(
+        map(entities => {
+          return entities.map(entity => {
+            const data = entity.payload.doc.data();
+            data.orderDate = Utilities.convertTimestampToDate(data.orderDate);
+            data.uid = entity.payload.doc.id;
+            return data;
+          });
+        })
+      );
   }
 
   getByRestaurantId(restaurantId: string) {
     this.firebaseService.setPath(ENTITY_NAME);
-    return this.firebaseService.gets<OrderModel>().snapshotChanges()
-      .pipe(map(entities => {
-        return entities.filter(entity => {
-          const data = entity.payload.doc.data();
-          if (restaurantId === data.restaurantId) {
-            return entity;
-          }
-        }).map(entity => {
-          const data = entity.payload.doc.data();
-          data.orderDate = Utilities.convertTimestampToDate(data.orderDate);
-          data.uid = entity.payload.doc.id;
-          return data;
-        });
-      }));
+    return this.firebaseService
+      .gets<OrderModel>()
+      .snapshotChanges()
+      .pipe(
+        map(entities => {
+          return entities
+            .filter(entity => {
+              const data = entity.payload.doc.data();
+              if (restaurantId === data.restaurantId) {
+                return entity;
+              }
+            })
+            .map(entity => {
+              const data = entity.payload.doc.data();
+              data.orderDate = Utilities.convertTimestampToDate(data.orderDate);
+              data.uid = entity.payload.doc.id;
+              return data;
+            });
+        })
+      );
   }
 
   add(entity: OrderModel) {
@@ -56,13 +66,18 @@ export class OrderService {
 
   getsPaidOrUnpaid(isPaid) {
     this.firebaseService.setPath(ENTITY_NAME);
-    return this.firebaseService.gets<OrderModel>(t => t.where('isPaid', '==', isPaid)).snapshotChanges().pipe(map(entities => {
-      return entities.map(entity => {
-        const data = entity.payload.doc.data() as OrderModel;
-        data.uid = entity.payload.doc.id;
-        return data;
-      });
-    }));
+    return this.firebaseService
+      .gets<OrderModel>(t => t.where('isPaid', '==', isPaid))
+      .snapshotChanges()
+      .pipe(
+        map(entities => {
+          return entities.map(entity => {
+            const data = entity.payload.doc.data() as OrderModel;
+            data.uid = entity.payload.doc.id;
+            return data;
+          });
+        })
+      );
   }
 
   calculatePrice(cart: OrderItem[]) {
