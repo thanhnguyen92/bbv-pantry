@@ -84,7 +84,6 @@ export class AuthService {
   private async setStorageUser(user: firebase.User) {
     const accessToken = await user.getIdToken(true);
     if (!environment.production) {
-      console.log(accessToken);
     }
     const refreshToken = user.refreshToken;
     localStorage.setItem(USER_ACCESSTOKEN, accessToken);

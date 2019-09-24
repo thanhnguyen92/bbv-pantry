@@ -37,10 +37,13 @@
     <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let element">
+            <button [disabled]="element.isClosed" mat-icon-button (click)="onCloseBooking(element)">
+                <mat-icon aria-hidden="false" aria-label="Close booking">close</mat-icon>
+            </button>
             <button mat-icon-button (click)="onEdit(element)">
                 <mat-icon aria-hidden="false" aria-label="Edit booking">edit</mat-icon>
             </button>
-            <button mat-icon-button (click)="onDelete(element)">
+            <button [disabled]="element.isClosed" mat-icon-button (click)="onDelete(element)">
                 <mat-icon aria-hidden="false" aria-label="Delete booking">delete</mat-icon>
             </button>
         </td>

@@ -5,19 +5,25 @@
 
 <div class="pt-3">
     <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+        <!-- Restaurant Column -->
+        <ng-container matColumnDef="restaurantName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Restaurant</th>
+            <td mat-cell *matCellDef="let element">{{ element.restaurantName }}</td>
+        </ng-container>
+
         <!-- Order Items Column -->
         <ng-container matColumnDef="orderItems">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Order Items</th>
             <td mat-cell *matCellDef="let element">
                 <div *ngFor="let orderItem of element.orderItems">
-                    {{ orderItem.name }}({{ orderItem.amount }}) - {{ orderItem.price }}
+                    {{ orderItem.name }} ({{ orderItem.amount }}) - {{ orderItem.price }}
                 </div>
             </td>
         </ng-container>
 
         <!-- Order Date Column -->
         <ng-container matColumnDef="orderDate">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Order Date</th>
             <td mat-cell *matCellDef="let element">{{ element.orderDate | date: 'dd.MM.y - HH:mm:ss'}}</td>
         </ng-container>
 

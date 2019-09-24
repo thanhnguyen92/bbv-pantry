@@ -1,6 +1,6 @@
 <mat-label>Current Date: </mat-label>
 <span>{{ currentDate | date: 'dd.MM.y HH:mm:ss' }}</span>
-<div style="max-width: 250px">
+<div class="py-4" style="max-width: 450px">
     <mat-label>Restaurant: </mat-label>
     <mat-select (selectionChange)="onBookingChanged($event)" [(value)]="bookingId">
         <mat-option *ngFor="let booking of bookings" [value]="booking.uid"

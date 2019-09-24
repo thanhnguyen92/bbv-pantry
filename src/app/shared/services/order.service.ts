@@ -108,14 +108,19 @@ export class OrderService {
     return this.firebaseService.delete(uid);
   }
 
-  getsPaidOrUnpaid(isPaid) {
+  getsByPaymentState(isPaid, userId) {
     this.firebaseService.setPath(ENTITY_NAME);
     return this.firebaseService
       .gets<OrderModel>(t => t.where('isPaid', '==', isPaid))
       .snapshotChanges()
       .pipe(
         map(entities => {
-          return entities.map(entity => {
+          return entities.filter(entity => {
+            const data = entity.payload.doc.data() as OrderModel;
+            if (data.userId === userId) {
+              return entity;
+            }
+          }).map(entity => {
             const data = entity.payload.doc.data() as OrderModel;
             data.uid = entity.payload.doc.id;
             return data;

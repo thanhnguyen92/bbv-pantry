@@ -29,7 +29,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.isLogged = authService.getIsLogged();
     this.isLoadingSub = this.appService.isLoading.subscribe(
       (isLoading: boolean) => {
-        console.log(isLoading);
         this.isLoading = isLoading;
       }
     );

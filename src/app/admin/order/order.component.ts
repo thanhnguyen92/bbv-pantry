@@ -96,8 +96,6 @@ export class OrderComponent implements OnInit, OnDestroy {
         this.appService.setLoadingStatus(false);
       }
     }, () => this.appService.setLoadingStatus(false));
-
-    // this.fetchOrderData(this.restaurantId);
   }
 
   onBookingSelected(event) {

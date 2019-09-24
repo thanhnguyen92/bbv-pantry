@@ -43,7 +43,7 @@ export class BookingComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private bookingService: BookingService,
     private restaurantService: RestaurantService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.fetchData();
@@ -55,6 +55,27 @@ export class BookingComponent implements OnInit, OnDestroy {
 
   onCreate() {
     this.showPopupBookingItem();
+  }
+
+  onCloseBooking(element) {
+    this.appService.setLoadingStatus(true);
+    const getBookingSubscription = this.bookingService.getById(element.uid)
+      .pipe(finalize(() => Utilities.unsubscribe(getBookingSubscription)))
+      .subscribe(booking => {
+        if (booking) {
+          booking.isClosed = true;
+          this.bookingService.update(booking)
+            .then(() => {
+              NotificationService.showSuccessMessage('Update successful');
+              this.appService.setLoadingStatus(false);
+            }).catch(() => {
+              NotificationService.showErrorMessage('Update failed, please try again');
+              this.appService.setLoadingStatus(false);
+            });
+        } else {
+          this.appService.setLoadingStatus(false);
+        }
+      });
   }
 
   onEdit(bookingItem: BookingModel) {

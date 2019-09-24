@@ -1,3 +1,4 @@
+import { AuthService } from './../../shared/services/auth.service';
 import { BookingService } from 'src/app/shared/services/booking.service';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatTableDataSource, MatSort } from '@angular/material';
@@ -8,6 +9,7 @@ import { Subscription } from 'rxjs';
 import { Utilities } from 'src/app/shared/services/utilities';
 import { finalize } from 'rxjs/operators';
 import { NotificationService } from 'src/app/shared/services/notification.service';
+import { RestaurantService } from 'src/app/shared/services/restaurant.service';
 
 @Component({
   selector: 'app-history',
@@ -18,6 +20,7 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
 
   displayedColumns: string[] = [
+    'restaurantName',
     'orderDate',
     'orderItems',
     'totalPrice',
@@ -28,8 +31,10 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
   private getOrdersSubscription: Subscription;
 
   constructor(
+    private authService: AuthService,
     private appService: AppService,
     private orderService: OrderService,
+    private restaurantService: RestaurantService,
     private bookingService: BookingService) { }
 
   ngOnInit() {
@@ -42,7 +47,6 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
 
   onCancelOrder(element: OrderModel) {
     if (element && !element.isPaid) {
-      console.log(element);
       this.appService.setLoadingStatus(true);
       const getBookingSubscription = this.bookingService.getById(element.bookingId)
         .pipe(finalize(() => Utilities.unsubscribe(getBookingSubscription)))
@@ -80,12 +84,26 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
     this.appService.setLoadingStatus(true);
     this.dataSource.sort = this.sort;
     Utilities.unsubscribe(this.getOrdersSubscription);
-    this.getOrdersSubscription = this.orderService.getsPaidOrUnpaid(isPaid)
+    this.getOrdersSubscription = this.orderService.getsByPaymentState(isPaid, this.authService.currentUser.uid)
       .subscribe(results => {
-        results.forEach(item => {
-          item.orderDate = Utilities.convertTimestampToDate(item.orderDate);
-        });
-        this.dataSource.data = results;
+        if (results) {
+          if (results.length > 0) {
+            this.restaurantService.gets().subscribe(restaurants => {
+              results.forEach(item => {
+                if (restaurants) {
+                  const restaurant = restaurants.find(t => t.uid === item.restaurantId);
+                  item['restaurantName'] = restaurant.name;
+                }
+                item.orderDate = Utilities.convertTimestampToDate(item.orderDate);
+              });
+              this.dataSource.data = results;
+            });
+          } else {
+            this.dataSource.data = results;
+          }
+        } else {
+          this.dataSource.data = results;
+        }
 
         this.appService.setLoadingStatus(false);
       }, () => this.appService.setLoadingStatus(false));
