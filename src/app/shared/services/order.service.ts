@@ -10,7 +10,7 @@ const ENTITY_NAME = 'order';
   providedIn: 'root'
 })
 export class OrderService {
-  constructor(private firebaseService: FirebaseService) {}
+  constructor(private firebaseService: FirebaseService) { }
 
   gets() {
     this.firebaseService.setPath(ENTITY_NAME);
@@ -27,6 +27,16 @@ export class OrderService {
           });
         })
       );
+  }
+
+  getById(orderId: string) {
+    this.firebaseService.setPath(ENTITY_NAME);
+    return this.firebaseService.get<OrderModel>(orderId).get()
+      .pipe(map(entity => {
+        const data = entity.data() as OrderModel;
+        data.uid = entity.id;
+        return data;
+      }));
   }
 
   getByRestaurantId(restaurantId: string) {
@@ -62,6 +72,16 @@ export class OrderService {
       });
     }
     return this.firebaseService.add<OrderModel>(entity);
+  }
+
+  update(entity: OrderModel) {
+    this.firebaseService.setPath(ENTITY_NAME);
+    return this.firebaseService.update<OrderModel>(entity, entity.uid);
+  }
+
+  delete(uid) {
+    this.firebaseService.setPath(ENTITY_NAME);
+    return this.firebaseService.delete(uid);
   }
 
   getsPaidOrUnpaid(isPaid) {

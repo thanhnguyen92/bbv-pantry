@@ -9,7 +9,7 @@
     <mat-menu #spaces="matMenu">
       <button mat-menu-item *ngIf="authService.isAdmin" (click)="goToAdmin()"
         [matMenuTriggerFor]="adminSection">Admin</button>
-      <button mat-menu-item (click)="goToUser()" [matMenuTriggerFor]="userSection">User</button>
+      <button mat-menu-item [matMenuTriggerFor]="userSection">User</button>
     </mat-menu>
     <mat-menu #adminSection="matMenu">
       <button mat-menu-item *ngIf="authService.isAdmin" (click)="goToRestaurant()">Restaurant</button>

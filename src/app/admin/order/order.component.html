@@ -31,8 +31,8 @@
         <td mat-cell *matCellDef="let element">{{ element.email }}</td>
     </ng-container>
 
-    <!-- Email Column -->
-    <ng-container matColumnDef="bookingInfo">
+    <!-- Booking Information Column -->
+    <!-- <ng-container matColumnDef="bookingInfo">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Booking Information</th>
         <td mat-cell *matCellDef="let element">
             <div>
@@ -42,12 +42,22 @@
                 To: {{ element.bookingInfo.bookingTo | date: 'dd.MM.y - HH:mm' }}
             </div>
         </td>
+    </ng-container> -->
+
+    <!-- Order Items Column -->
+    <ng-container matColumnDef="orderItems">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Order Items</th>
+        <td mat-cell *matCellDef="let element">
+            <div *ngFor="let orderItem of element.orderItems">
+                {{ orderItem.name }}({{ orderItem.amount }}) - {{ orderItem.price }}
+            </div>
+        </td>
     </ng-container>
 
     <!-- Order Date Column -->
     <ng-container matColumnDef="orderDate">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Order Date</th>
-        <td mat-cell *matCellDef="let element">{{ element.orderDate | date: 'dd.MM.y' }}</td>
+        <td mat-cell *matCellDef="let element">{{ element.orderDate | date: 'dd.MM.y HH:mm' }}</td>
     </ng-container>
 
     <!-- Total Price Column -->
@@ -59,22 +69,21 @@
     <!-- Is Paid Column -->
     <ng-container matColumnDef="isPaid">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Is Paid</th>
-        <td mat-cell *matCellDef="let element">{{ element.isPaid }}</td>
+        <td mat-cell *matCellDef="let element">
+            <mat-icon *ngIf="element.isPaid" aria-hidden="false" aria-label="Paid">check_circle</mat-icon>
+        </td>
     </ng-container>
 
-    <!-- Edit Column -->
+    <!-- Actions Column -->
     <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let element">
-            <button mat-icon-button (click)="onShowDetails(element)">
-                <mat-icon aria-hidden="false" aria-label="Show details">search</mat-icon>
+            <button mat-icon-button (click)="onPayOrder(element)">
+                <mat-icon aria-hidden="false" aria-label="Pay an order">payment</mat-icon>
             </button>
             <button mat-icon-button (click)="onRemindPayment(element)">
                 <mat-icon aria-hidden="false" aria-label="Remind payment">notification_important</mat-icon>
             </button>
-            <!-- <button mat-icon-button (click)="onDelete(element)">
-                <mat-icon aria-hidden="false" aria-label="Delete booking">delete</mat-icon>
-            </button> -->
         </td>
     </ng-container>
 

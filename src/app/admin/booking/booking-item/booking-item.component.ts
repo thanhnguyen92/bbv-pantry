@@ -65,7 +65,8 @@ export class BookingItemComponent implements OnInit {
       this.data = this.form.value as BookingModel;
       this.data.bookingFrom.setHours(this.bookingFromTime.split(':')[0], this.bookingFromTime.split(':')[1], 0, 0);
       this.data.bookingTo.setHours(this.bookingToTime.split(':')[0], this.bookingToTime.split(':')[1], 0, 0);
-
+      this.data.bookingFrom = Utilities.convertToUTC(this.data.bookingFrom);
+      this.data.bookingTo = Utilities.convertToUTC(this.data.bookingTo);
       if (Utilities.compareDates(this.data.bookingFrom, this.data.bookingTo) < 0) {
         this.dialogRef.close(this.data);
       } else {

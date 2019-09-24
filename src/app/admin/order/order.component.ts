@@ -5,11 +5,14 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { Utilities } from 'src/app/shared/services/utilities';
 import { OrderModel } from 'src/app/shared/models/order.model';
-import { MatTableDataSource, MatSort } from '@angular/material';
+import { MatTableDataSource, MatSort, MatDialogRef, MatDialog } from '@angular/material';
 import { UserService } from 'src/app/shared/services/user.service';
 import { RestaurantModel } from 'src/app/shared/models/restaurant.model';
 import { RestaurantService } from 'src/app/shared/services/restaurant.service';
 import { BookingService } from 'src/app/shared/services/booking.service';
+import { NotificationService } from 'src/app/shared/services/notification.service';
+import { finalize } from 'rxjs/operators';
+import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 
 const ALL_RESTAURANT = '0';
 @Component({
@@ -25,7 +28,8 @@ export class OrderComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = [
     'displayName',
     'email',
-    'bookingInfo',
+    // 'bookingInfo',
+    'orderItems',
     'orderDate',
     'totalPrice',
     'isPaid',
@@ -40,6 +44,7 @@ export class OrderComponent implements OnInit, OnDestroy {
   private getBookingSubscription: Subscription;
 
   constructor(
+    private dialog: MatDialog,
     private appService: AppService,
     private orderService: OrderService,
     private userService: UserService,
@@ -78,8 +83,46 @@ export class OrderComponent implements OnInit, OnDestroy {
     this.bookingId = event.value;
   }
 
-  onShowDetails(element) {
-    console.log(element);
+  onPayOrder(element) {
+    let dialogRef;
+    if (dialogRef) {
+      return;
+    }
+    dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '250px',
+      data: {
+        title: 'Confirmation',
+        content: 'Are you sure to mark this Order as Paid? It cannot be reverted.',
+        noButton: 'No',
+        yesButton: 'Yes'
+      }
+    });
+
+    const payConfirmationSub = dialogRef
+      .afterClosed()
+      .pipe(finalize(() => Utilities.unsubscribe(payConfirmationSub)))
+      .subscribe(res => {
+        if (res) {
+          this.appService.setLoadingStatus(true);
+          const getOrderSubscription = this.orderService.getById(element.uid)
+            .pipe(finalize(() => Utilities.unsubscribe(getOrderSubscription)))
+            .subscribe(order => {
+              if (order) {
+                order.isPaid = true;
+                this.orderService.update(order)
+                  .then(() => {
+                    NotificationService.showSuccessMessage('Pay successful');
+                    this.appService.setLoadingStatus(false);
+                  }).catch(() => {
+                    NotificationService.showErrorMessage('Pay failed, please try again');
+                    this.appService.setLoadingStatus(false);
+                  });
+              } else {
+                this.appService.setLoadingStatus(false);
+              }
+            });
+        }
+      });
   }
 
   onRemindPayment(element) {

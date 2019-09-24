@@ -9,7 +9,7 @@ const ENTITY_NAME = 'restaurantBooking';
   providedIn: 'root'
 })
 export class BookingService {
-  constructor(private firebaseService: FirebaseService) {}
+  constructor(private firebaseService: FirebaseService) { }
 
   gets() {
     this.firebaseService.setPath(ENTITY_NAME);
@@ -29,6 +29,17 @@ export class BookingService {
           });
         })
       );
+  }
+
+  getById(bookingId: string) {
+    this.firebaseService.setPath(ENTITY_NAME);
+    return this.firebaseService
+      .get<BookingModel>(bookingId).get()
+      .pipe(map(entity => {
+        const data = entity.data() as BookingModel;
+        data.uid = entity.id;
+        return data;
+      }));
   }
 
   getByIds(bookingIds: string[]) {
