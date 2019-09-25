@@ -5,7 +5,12 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { Utilities } from 'src/app/shared/services/utilities';
 import { OrderModel } from 'src/app/shared/models/order.model';
-import { MatTableDataSource, MatSort, MatDialogRef, MatDialog } from '@angular/material';
+import {
+  MatTableDataSource,
+  MatSort,
+  MatDialogRef,
+  MatDialog
+} from '@angular/material';
 import { UserService } from 'src/app/shared/services/user.service';
 import { RestaurantModel } from 'src/app/shared/models/restaurant.model';
 import { RestaurantService } from 'src/app/shared/services/restaurant.service';
@@ -13,6 +18,7 @@ import { BookingService } from 'src/app/shared/services/booking.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { finalize } from 'rxjs/operators';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
+import { PushNotificationService } from 'src/app/shared/services/push-notification.service';
 
 const ALL_RESTAURANT = '0';
 @Component({
@@ -49,8 +55,9 @@ export class OrderComponent implements OnInit, OnDestroy {
     private orderService: OrderService,
     private userService: UserService,
     private bookingService: BookingService,
-    private restaurantService: RestaurantService
-  ) { }
+    private restaurantService: RestaurantService,
+    private pushNotificationService: PushNotificationService
+  ) {}
 
   ngOnInit() {
     this.appService.setLoadingStatus(true);
@@ -63,15 +70,19 @@ export class OrderComponent implements OnInit, OnDestroy {
           //   name: 'All'
           // } as RestaurantModel);
           this.restaurantId = res.length > 0 ? res[0].uid : undefined;
-          this.bookingService.getByRestaurantId(this.restaurantId).subscribe(bookings => {
-            if (bookings) {
-              this.bookings = bookings;
-              this.bookingId = bookings.length > 0 ? bookings[0].uid : undefined;
-              this.fetchOrderData(this.bookingId);
-            } else {
-              this.appService.setLoadingStatus(false);
-            }
-          }, () => this.appService.setLoadingStatus(false));
+          this.bookingService.getByRestaurantId(this.restaurantId).subscribe(
+            bookings => {
+              if (bookings) {
+                this.bookings = bookings;
+                this.bookingId =
+                  bookings.length > 0 ? bookings[0].uid : undefined;
+                this.fetchOrderData(this.bookingId);
+              } else {
+                this.appService.setLoadingStatus(false);
+              }
+            },
+            () => this.appService.setLoadingStatus(false)
+          );
         } else {
           this.appService.setLoadingStatus(false);
         }
@@ -87,15 +98,18 @@ export class OrderComponent implements OnInit, OnDestroy {
   onRestaurantSelected(event) {
     this.appService.setLoadingStatus(true);
     this.restaurantId = event.value;
-    this.bookingService.getByRestaurantId(this.restaurantId).subscribe(bookings => {
-      if (bookings) {
-        this.bookings = bookings;
-        this.bookingId = bookings.length > 0 ? bookings[0].uid : undefined;
-        this.fetchOrderData(this.bookingId);
-      } else {
-        this.appService.setLoadingStatus(false);
-      }
-    }, () => this.appService.setLoadingStatus(false));
+    this.bookingService.getByRestaurantId(this.restaurantId).subscribe(
+      bookings => {
+        if (bookings) {
+          this.bookings = bookings;
+          this.bookingId = bookings.length > 0 ? bookings[0].uid : undefined;
+          this.fetchOrderData(this.bookingId);
+        } else {
+          this.appService.setLoadingStatus(false);
+        }
+      },
+      () => this.appService.setLoadingStatus(false)
+    );
   }
 
   onBookingSelected(event) {
@@ -112,7 +126,8 @@ export class OrderComponent implements OnInit, OnDestroy {
       width: '250px',
       data: {
         title: 'Confirmation',
-        content: 'Are you sure to mark this Order as Paid? It cannot be reverted.',
+        content:
+          'Are you sure to mark this Order as Paid? It cannot be reverted.',
         noButton: 'No',
         yesButton: 'Yes'
       }
@@ -124,17 +139,22 @@ export class OrderComponent implements OnInit, OnDestroy {
       .subscribe(res => {
         if (res) {
           this.appService.setLoadingStatus(true);
-          const getOrderSubscription = this.orderService.getById(element.uid)
+          const getOrderSubscription = this.orderService
+            .getById(element.uid)
             .pipe(finalize(() => Utilities.unsubscribe(getOrderSubscription)))
             .subscribe(order => {
               if (order) {
                 order.isPaid = true;
-                this.orderService.update(order)
+                this.orderService
+                  .update(order)
                   .then(() => {
                     NotificationService.showSuccessMessage('Pay successful');
                     this.appService.setLoadingStatus(false);
-                  }).catch(() => {
-                    NotificationService.showErrorMessage('Pay failed, please try again');
+                  })
+                  .catch(() => {
+                    NotificationService.showErrorMessage(
+                      'Pay failed, please try again'
+                    );
                     this.appService.setLoadingStatus(false);
                   });
               } else {
@@ -147,9 +167,18 @@ export class OrderComponent implements OnInit, OnDestroy {
 
   onRemindPayment(element) {
     // Push notification to remind user for payment
-    const restaurant = this.restaurants.find(t => t.uid === element.restaurantId);
+    const restaurant = this.restaurants.find(
+      t => t.uid === element.restaurantId
+    );
     if (restaurant) {
-      Utilities.pushNotification(`Please complete the payment for your order at ${restaurant.name}. Thank you!`);
+      this.pushNotificationService.push({
+        email: element.email,
+        uid: '',
+        type: 1
+      });
+      // Utilities.pushNotification(
+      //   `Please complete the payment for your order at ${restaurant.name}. Thank you!`
+      // );
     }
   }
 

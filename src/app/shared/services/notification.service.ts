@@ -60,4 +60,18 @@ export class NotificationService {
       timeout
     });
   }
+
+  static showNotificationWindows(type) {
+    if (!('Notification' in window)) {
+      alert('This browser does not support system notifications');
+    } else if (Notification.permission === 'granted') {
+      const notification = new Notification('show Notification success!!');
+    } else if (Notification.permission !== 'denied') {
+      Notification.requestPermission((permission) => {
+        if (permission === 'granted') {
+          const notification = new Notification('show Notification success!!');
+        }
+      });
+    }
+  }
 }

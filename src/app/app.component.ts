@@ -6,6 +6,10 @@ import { Utilities } from './shared/services/utilities';
 import { PubSubChannel } from './shared/constants/pub-sub-channel.constant';
 import { AppService } from './shared/services/app.service';
 import { Router } from '@angular/router';
+import { PushNotificationService } from './shared/services/push-notification.service';
+import { NotificationModel } from './shared/models/notification.model';
+import { NotificationService } from './shared/services/notification.service';
+import { PushNotificationModel } from './shared/models/push-notification.model';
 
 @Component({
   selector: 'app-root',
@@ -24,7 +28,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private route: Router,
     private pubSubService: PublishSubcribeService,
     private appService: AppService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private pushNotificationService: PushNotificationService
   ) {
     this.isLogged = authService.getIsLogged();
     this.isLoadingSub = this.appService.isLoading.subscribe(
@@ -35,9 +40,25 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    const user = this.authService.currentUser;
     this.pubSubService.subscribe(PubSubChannel.IS_USER_LOGGED, content => {
       this.isLogged = content;
     });
+
+    if (user) {
+      this.pushNotificationService
+        .getByEmailOrUserId(user.email, user.uid)
+        .subscribe(res => {
+          if (res && res !== []) {
+            NotificationService.showNotificationWindows(
+              (res as PushNotificationModel).type
+            );
+            this.pushNotificationService
+              .delete((res as PushNotificationModel).uid)
+              .then(result => console.log(result));
+          }
+        });
+    }
   }
 
   ngOnDestroy(): void {
