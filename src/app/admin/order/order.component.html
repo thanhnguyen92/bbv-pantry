@@ -1,26 +1,36 @@
 <div class="pb-4">
-    <button mat-raised-button color="accent">Create</button>
-    <div class="mat-item">
-        <div style="max-width: 250px">
-            <mat-label>Restaurant: </mat-label>
-            <mat-select (selectionChange)="onRestaurantSelected($event)" [(value)]="restaurantId">
-                <mat-option *ngFor="let restaurant of restaurants" [value]="restaurant.uid">
-                    {{ restaurant.name }}
-                </mat-option>
-            </mat-select>
-        </div>
+    <!-- <div>
+        <button mat-raised-button color="accent">Create</button>
+    </div> -->
+    <div>
+        <mat-card>
+            <div class="row">
+                <div class="col-3">
+                    <div class="mat-item">
+                        <mat-label>Restaurant: </mat-label>
+                        <mat-select (selectionChange)="onRestaurantSelected($event)" [(value)]="restaurantId">
+                            <mat-option *ngFor="let restaurant of restaurants" [value]="restaurant.uid">
+                                {{ restaurant.name }}
+                            </mat-option>
+                        </mat-select>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="mat-item">
+                        <mat-label>Booking time: </mat-label>
+                        <mat-select (selectionChange)="onBookingSelected($event)" [(value)]="bookingId">
+                            <mat-option *ngFor="let booking of bookings" [value]="booking.uid">
+                                <b> {{ booking.bookingFrom | date: 'dd.MM.y - HH:mm' }}</b> to
+                                <b> {{ booking.bookingTo | date: 'dd.MM.y - HH:mm' }}</b>
+                            </mat-option>
+                        </mat-select>
+                    </div>
+                </div>
+
+            </div>
+        </mat-card>
     </div>
-    <div class="mat-item">
-        <div style="max-width: 350px">
-            <mat-label>Booking time: </mat-label>
-            <mat-select (selectionChange)="onBookingSelected($event)" [(value)]="bookingId">
-                <mat-option *ngFor="let booking of bookings" [value]="booking.uid">
-                    {{ booking.bookingFrom | date: 'dd.MM.y - HH:mm' }} to
-                    {{ booking.bookingTo | date: 'dd.MM.y - HH:mm' }}
-                </mat-option>
-            </mat-select>
-        </div>
-    </div>
+
 </div>
 
 <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
@@ -53,8 +63,13 @@
     <ng-container matColumnDef="orderItems">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Order Items</th>
         <td mat-cell *matCellDef="let element">
-            <div *ngFor="let orderItem of element.orderItems">
-                {{ orderItem.name }}({{ orderItem.amount }}) - {{ orderItem.price }}
+            <div *ngFor="let orderItem of element.orderItems" class="order-items">
+                <div>
+                    <span>{{ orderItem.name }}</span>
+                    <span>({{ orderItem.amount }})</span>
+                </div>
+
+                <span class="price">{{ orderItem.price | currency:'VND' }}</span>
             </div>
         </td>
     </ng-container>
@@ -68,7 +83,7 @@
     <!-- Total Price Column -->
     <ng-container matColumnDef="totalPrice">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Total Price</th>
-        <td mat-cell *matCellDef="let element">{{ element.totalPrice | currency:'VND'}}</td>
+        <td mat-cell *matCellDef="let element" class="price">{{ element.totalPrice | currency:'VND'}}</td>
     </ng-container>
 
     <!-- Is Paid Column -->
