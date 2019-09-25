@@ -17,6 +17,8 @@ import { MenuModel } from '../shared/models/menu.model';
 import { OrderItem } from '../shared/models/order-item.model';
 import { OrderModel } from '../shared/models/order.model';
 import { RestaurantModel } from '../shared/models/restaurant.model';
+import { PushNotificationModel } from '../shared/models/push-notification.model';
+import { PushNotificationService } from '../shared/services/push-notification.service';
 
 @Component({
   selector: 'app-user',
@@ -40,36 +42,55 @@ export class UserComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private menuService: MenuService,
     private restaurantService: RestaurantService,
-    private orderService: OrderService) {
+    private orderService: OrderService,
+    private pushNotificationService: PushNotificationService
+  ) {
     this.registerNotification();
   }
 
   ngOnInit(): void {
     this.appService.setLoadingStatus(true);
     Utilities.unsubscribe(this.getRestaurantSubscription);
-    this.getRestaurantSubscription = this.restaurantService.getByBookingDate(Utilities.convertToUTC(this.currentDate))
-      .subscribe(results => {
-        if (results) {
-          this.bookings = results;
-          if (this.bookings.length > 0) {
-            this.restaurantService.getByRestaurantIds(this.bookings.map(t => t.restaurantId)).subscribe(res => {
-              if (res) {
-                // this.restaurants = res;
-                this.bookings.forEach(booking => {
-                  const restaurant = res.find(t => t.uid === booking.restaurantId);
-                  booking['restaurantName'] = restaurant ? restaurant.name : '(null)';
-                });
-                this.restaurantId = this.bookings[0].uid;
-              }
-              this.appService.setLoadingStatus(false);
-            }, () => this.appService.setLoadingStatus(false));
-            return;
+    this.getRestaurantSubscription = this.restaurantService
+      .getByBookingDate(Utilities.convertToUTC(this.currentDate))
+      .subscribe(
+        results => {
+          if (results) {
+            this.bookings = results;
+            if (this.bookings.length > 0) {
+              this.restaurantService
+                .getByRestaurantIds(this.bookings.map(t => t.restaurantId))
+                .subscribe(
+                  res => {
+                    if (res) {
+                      // this.restaurants = res;
+                      this.bookings.forEach(booking => {
+                        const restaurant = res.find(
+                          t => t.uid === booking.restaurantId
+                        );
+                        booking['restaurantName'] = restaurant
+                          ? restaurant.name
+                          : '(null)';
+                      });
+                      this.restaurantId = this.bookings[0].uid;
+                    }
+                    this.appService.setLoadingStatus(false);
+                  },
+                  () => this.appService.setLoadingStatus(false)
+                );
+              return;
+            }
           }
-        }
 
-        NotificationService.showInfoMessage(`Don't have any available menus at the moment`);
-        this.appService.setLoadingStatus(false);
-      }, () => this.appService.setLoadingStatus(false));
+          NotificationService.showInfoMessage(
+            `Don't have any available menus at the moment`
+          );
+          this.appService.setLoadingStatus(false);
+        },
+        () => this.appService.setLoadingStatus(false)
+      );
+
+    this.setupNotification();
   }
 
   ngOnDestroy(): void {
@@ -126,41 +147,69 @@ export class UserComponent implements OnInit, OnDestroy {
 
     this.appService.setLoadingStatus(true);
     Utilities.unsubscribe(this.getMenuSubscription);
-    this.getMenuSubscription = this.menuService.getByRestaurantId(this.restaurantId).subscribe(menuItems => {
-      // Check latest price
-      cart.forEach(cartItem => {
-        const dbItem = menuItems.find(t => t.uid === cartItem.menuId);
-        if (dbItem && cartItem.price !== dbItem.price) {
-          NotificationService.showInfoMessage(`There are a few updates on your menu, please check again`);
-          this.appService.setLoadingStatus(false);
-          return;
-        }
-      });
+    this.getMenuSubscription = this.menuService
+      .getByRestaurantId(this.restaurantId)
+      .subscribe(
+        menuItems => {
+          // Check latest price
+          cart.forEach(cartItem => {
+            const dbItem = menuItems.find(t => t.uid === cartItem.menuId);
+            if (dbItem && cartItem.price !== dbItem.price) {
+              NotificationService.showInfoMessage(
+                `There are a few updates on your menu, please check again`
+              );
+              this.appService.setLoadingStatus(false);
+              return;
+            }
+          });
 
-      // Process order
-      const order = {
-        orderItems: cart,
-        orderDate: Utilities.convertToUTC(new Date()),
-        totalPrice: this.orderService.calculatePrice(cart),
-        userId: this.authService.currentUser.uid,
-        isPaid: false,
-        restaurantId: this.restaurantId,
-        bookingId: this.bookingId
-      } as OrderModel;
+          // Process order
+          const order = {
+            orderItems: cart,
+            orderDate: Utilities.convertToUTC(new Date()),
+            totalPrice: this.orderService.calculatePrice(cart),
+            userId: this.authService.currentUser.uid,
+            isPaid: false,
+            restaurantId: this.restaurantId,
+            bookingId: this.bookingId
+          } as OrderModel;
 
-      this.orderService.add(order)
-        .then(() => {
-          NotificationService.showSuccessMessage('Order successful');
-          this.cart = [];
-          this.appService.setLoadingStatus(false);
-        }).catch(() => {
-          NotificationService.showErrorMessage('Order failed');
-          this.appService.setLoadingStatus(false);
-        });
-    }, () => this.appService.setLoadingStatus(false));
+          this.orderService
+            .add(order)
+            .then(() => {
+              NotificationService.showSuccessMessage('Order successful');
+              this.cart = [];
+              this.appService.setLoadingStatus(false);
+            })
+            .catch(() => {
+              NotificationService.showErrorMessage('Order failed');
+              this.appService.setLoadingStatus(false);
+            });
+        },
+        () => this.appService.setLoadingStatus(false)
+      );
   }
 
   private registerNotification() {
     Utilities.pushNotification();
+  }
+
+  private setupNotification() {
+    const user = this.authService.currentUser;
+    if (user) {
+      this.pushNotificationService
+        .getByEmailOrUserId(user.email, user.uid)
+        .subscribe(res => {
+          console.log(res);
+          if (res && res !== []) {
+            NotificationService.showNotificationWindows(
+              (res as PushNotificationModel).type
+            );
+            this.pushNotificationService
+              .delete((res as PushNotificationModel).uid)
+              .then(result => console.log(result));
+          }
+        });
+    }
   }
 }

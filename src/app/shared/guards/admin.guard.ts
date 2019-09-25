@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
-import { CanActivate } from '@angular/router';
+import { CanActivate, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { NotificationService } from '../services/notification.service';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class AdminGuard implements CanActivate {
-    constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private route: Router) {}
 
-    canActivate() {
-        if (this.authService.isAdmin) {
-            // Access granted
-            return true;
-        }
-
-        NotificationService.showErrorMessage('Access denied');
-        return false;
+  canActivate() {
+    if (this.authService.isAdmin) {
+      // Access granted
+      return true;
     }
+
+    NotificationService.showErrorMessage('Access denied');
+    this.route.navigate(['']);
+  }
 }

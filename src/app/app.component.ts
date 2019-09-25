@@ -40,25 +40,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const user = this.authService.currentUser;
+    NotificationService.requestPermissionNotificationWindows();
+    
     this.pubSubService.subscribe(PubSubChannel.IS_USER_LOGGED, content => {
       this.isLogged = content;
     });
-
-    if (user) {
-      this.pushNotificationService
-        .getByEmailOrUserId(user.email, user.uid)
-        .subscribe(res => {
-          if (res && res !== []) {
-            NotificationService.showNotificationWindows(
-              (res as PushNotificationModel).type
-            );
-            this.pushNotificationService
-              .delete((res as PushNotificationModel).uid)
-              .then(result => console.log(result));
-          }
-        });
-    }
   }
 
   ngOnDestroy(): void {

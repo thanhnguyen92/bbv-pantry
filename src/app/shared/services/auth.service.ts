@@ -129,11 +129,12 @@ export class AuthService {
   }
 
   get isAdmin() {
+    debugger
     const roles = JSON.parse(
       localStorage.getItem(USER_PERMISSIONS)
     ) as UserRole[];
     if (roles) {
-      return roles.indexOf(UserRole.Admin) > -1;
+      return roles.indexOf(UserRole.Admin) !== -1;
     }
     return false;
   }

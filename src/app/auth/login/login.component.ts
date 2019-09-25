@@ -65,40 +65,45 @@ export class LoginComponent implements OnInit {
   login() {
     this.appService.setLoadingStatus(true);
     const formVal = this.loginForm.value;
-    this.authService.login(formVal.userName, formVal.password)
+    this.authService
+      .login(formVal.userName, formVal.password)
       .then(result => {
         if (result) {
           const loggedUser = result.user;
           if (!loggedUser.emailVerified) {
-            NotificationService.showErrorMessage('Please check your email for verification');
+            NotificationService.showErrorMessage(
+              'Please check your email for verification'
+            );
             this.authService.logOut();
             return;
           }
 
-          this.securityService.getRoles(loggedUser.uid)
-            .subscribe(results => {
-              this.appService.setLoadingStatus(false);
-              if (results) {
-                const security = results[0] as Security;
+          this.securityService.getRoles(loggedUser.uid).subscribe(results => {
+            this.appService.setLoadingStatus(false);
+            if (results) {
+              const security = results[0] as Security;
 
-                this.authService.setIsLogged(true);
-                this.authService.setUserRoles(security.roles);
-                this.isLogged = true;
-                if (this.authService.isAdmin) {
-                  // Show selection
-                  this.showSectionSelection();
-                } else {
-                  // Navigate to User
-                  this.router.navigate(['user']);
-                }
+              this.authService.setIsLogged(true);
+              this.authService.setUserRoles(security.roles);
+              this.isLogged = true;
+              if (this.authService.isAdmin) {
+                // Show selection
+                this.showSectionSelection();
               } else {
-                NotificationService.showErrorMessage('Access denied');
-                this.authService.logOut();
+                // Navigate to User
+                this.router.navigate(['user']);
               }
-            });
+            } else {
+              NotificationService.showErrorMessage('Access denied');
+              this.authService.logOut();
+            }
+          });
         }
-      }).catch(() => {
-        NotificationService.showErrorMessage(`Login failed. Please check your email and password`);
+      })
+      .catch(() => {
+        NotificationService.showErrorMessage(
+          `Login failed. Please check your email and password`
+        );
         this.appService.setLoadingStatus(false);
         this.isLogged = false;
       });
@@ -107,12 +112,16 @@ export class LoginComponent implements OnInit {
   register() {
     const formVal = this.loginForm.value;
     this.authService
-      .register(formVal.userName, formVal.password).then(result => {
+      .register(formVal.userName, formVal.password)
+      .then(result => {
         const newUser = result.user;
 
         // Add roles
         if (this.adminAccess) {
-          this.securityService.assignRoles(newUser.uid, [UserRole.Admin, UserRole.User]);
+          this.securityService.assignRoles(newUser.uid, [
+            UserRole.Admin,
+            UserRole.User
+          ]);
         } else {
           this.securityService.assignRoles(newUser.uid, [UserRole.User]);
         }
@@ -120,8 +129,11 @@ export class LoginComponent implements OnInit {
         this.authService.sendVerification();
         this.authService.setUserData(result.user);
 
-        NotificationService.showSuccessMessage('Register successful. Please check your email for verification');
-      }).catch(error => {
+        NotificationService.showSuccessMessage(
+          'Register successful. Please check your email for verification'
+        );
+      })
+      .catch(error => {
         NotificationService.showErrorMessage(error.message);
       });
   }
@@ -130,7 +142,7 @@ export class LoginComponent implements OnInit {
     const dialogRef = this.dialog.open(SectionSelectionComponent, {
       width: '250px',
       data: {},
-      hasBackdrop: true
+      hasBackdrop: false
     });
 
     dialogRef.afterClosed().subscribe();

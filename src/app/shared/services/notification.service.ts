@@ -67,11 +67,17 @@ export class NotificationService {
     } else if (Notification.permission === 'granted') {
       const notification = new Notification('show Notification success!!');
     } else if (Notification.permission !== 'denied') {
-      Notification.requestPermission((permission) => {
+      Notification.requestPermission(permission => {
         if (permission === 'granted') {
           const notification = new Notification('show Notification success!!');
         }
       });
     }
+  }
+
+  static requestPermissionNotificationWindows() {
+    Notification.requestPermission().then(res => {
+      console.log('granted');
+    });
   }
 }
