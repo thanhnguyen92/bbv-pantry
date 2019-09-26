@@ -1,4 +1,5 @@
 export class OrderItem {
+  id?: string;
   uid?: string;
   menuId?: string;
   name?: string;

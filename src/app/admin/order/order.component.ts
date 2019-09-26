@@ -8,7 +8,6 @@ import { OrderModel } from 'src/app/shared/models/order.model';
 import {
   MatTableDataSource,
   MatSort,
-  MatDialogRef,
   MatDialog
 } from '@angular/material';
 import { UserService } from 'src/app/shared/services/user.service';
@@ -19,8 +18,8 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
 import { finalize } from 'rxjs/operators';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { PushNotificationService } from 'src/app/shared/services/push-notification.service';
+import { OrderItem } from 'src/app/shared/models/order-item.model';
 
-const ALL_RESTAURANT = '0';
 @Component({
   selector: 'app-order',
   templateUrl: './order.component.html',
@@ -57,7 +56,7 @@ export class OrderComponent implements OnInit, OnDestroy {
     private bookingService: BookingService,
     private restaurantService: RestaurantService,
     private pushNotificationService: PushNotificationService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.appService.setLoadingStatus(true);
@@ -69,13 +68,13 @@ export class OrderComponent implements OnInit, OnDestroy {
           //   uid: ALL_RESTAURANT,
           //   name: 'All'
           // } as RestaurantModel);
-          this.restaurantId = res.length > 0 ? res[0].uid : undefined;
+          this.restaurantId = res.length > 0 ? res[0].id : undefined;
           this.bookingService.getByRestaurantId(this.restaurantId).subscribe(
             bookings => {
               if (bookings) {
                 this.bookings = bookings;
                 this.bookingId =
-                  bookings.length > 0 ? bookings[0].uid : undefined;
+                  bookings.length > 0 ? bookings[0].id : undefined;
                 this.fetchOrderData(this.bookingId);
               } else {
                 this.appService.setLoadingStatus(false);
@@ -95,6 +94,44 @@ export class OrderComponent implements OnInit, OnDestroy {
     Utilities.unsubscribe(this.getOrderSubscription);
   }
 
+  onCopyOrderItems() {
+    console.log(this.orders);
+    if (this.orders && this.orders.length > 0) {
+      const orderedItems: OrderItem[] = [];
+
+      this.orders.forEach(order => {
+        if (order && order.orderItems && order.orderItems.length > 0) {
+          order.orderItems.forEach(item => {
+            const orderedItem = orderedItems.find(t => t.menuId === item.menuId);
+            if (orderedItem) {
+              orderedItem.amount += item.amount;
+            } else {
+              orderedItems.push(item);
+            }
+          });
+        }
+      });
+
+      let clipboardText = '';
+      orderedItems.forEach((item, idx) => {
+        clipboardText += `${item.name} (${item.amount})`;
+        if (idx < orderedItems.length - 1) {
+          clipboardText += `\r\n`;
+        }
+      });
+
+      const listener = (e: ClipboardEvent) => {
+        e.clipboardData.setData('text/plain', (clipboardText));
+        e.preventDefault();
+      };
+
+      document.addEventListener('copy', listener);
+      document.execCommand('copy');
+      document.removeEventListener('copy', listener);
+      NotificationService.showSuccessMessage('Copied to clipboard');
+    }
+  }
+
   onRestaurantSelected(event) {
     this.appService.setLoadingStatus(true);
     this.restaurantId = event.value;
@@ -102,7 +139,7 @@ export class OrderComponent implements OnInit, OnDestroy {
       bookings => {
         if (bookings) {
           this.bookings = bookings;
-          this.bookingId = bookings.length > 0 ? bookings[0].uid : undefined;
+          this.bookingId = bookings.length > 0 ? bookings[0].id : undefined;
           this.fetchOrderData(this.bookingId);
         } else {
           this.appService.setLoadingStatus(false);
@@ -140,7 +177,7 @@ export class OrderComponent implements OnInit, OnDestroy {
         if (res) {
           this.appService.setLoadingStatus(true);
           const getOrderSubscription = this.orderService
-            .getById(element.uid)
+            .getById(element.id)
             .pipe(finalize(() => Utilities.unsubscribe(getOrderSubscription)))
             .subscribe(order => {
               if (order) {
@@ -168,17 +205,14 @@ export class OrderComponent implements OnInit, OnDestroy {
   onRemindPayment(element) {
     // Push notification to remind user for payment
     const restaurant = this.restaurants.find(
-      t => t.uid === element.restaurantId
+      t => t.id === element.restaurantId
     );
     if (restaurant) {
       this.pushNotificationService.push({
         email: element.email,
-        uid: '',
-        type: 1
+        type: 1,
+        message: `Please complete the payment for your order at ${restaurant.name} (ignore this message if you're already paid). Thank you!`
       });
-      // Utilities.pushNotification(
-      //   `Please complete the payment for your order at ${restaurant.name}. Thank you!`
-      // );
     }
   }
 
@@ -198,7 +232,7 @@ export class OrderComponent implements OnInit, OnDestroy {
               if (users) {
                 // Map user information to list orders
                 results.forEach(order => {
-                  const user = users.find(t => t.uid === order.userId);
+                  const user = users.find(t => t.id === order.userId);
                   if (user) {
                     order['displayName'] =
                       user.displayName && user.displayName.length > 0
@@ -225,7 +259,7 @@ export class OrderComponent implements OnInit, OnDestroy {
               if (bookings) {
                 // Map user information to list orders
                 results.forEach(order => {
-                  const booking = bookings.find(t => t.uid === order.bookingId);
+                  const booking = bookings.find(t => t.id === order.bookingId);
                   if (booking) {
                     order['bookingInfo'] = booking;
                   }
@@ -247,16 +281,5 @@ export class OrderComponent implements OnInit, OnDestroy {
       },
       () => this.appService.setLoadingStatus(false)
     );
-
-    // let queryService: Observable<OrderModel[]>;
-    // if (bookingId !== ALL_RESTAURANT) {
-    //   // Get orders by restaurant identifier
-    //   queryService = this.orderService.getByRestaurantId(this.restaurantId);
-    // } else {
-    //   // Get all orders
-    //   queryService = this.orderService.gets();
-    // }
-
-    // this.getOrderSubscription = queryService
   }
 }

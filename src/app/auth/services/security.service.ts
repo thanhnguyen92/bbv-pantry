@@ -15,8 +15,8 @@ export class SecurityService {
         return this.firebaseService.gets<Security>(t => t.where('userId', '==', userId)).snapshotChanges().pipe(map(entities => {
             return entities.map(entity => {
                 const data = entity.payload.doc.data() as Security;
-                data.uid = entity.payload.doc.id;
-                return data;
+                const id = entity.payload.doc.id;
+                return { id, ...data };
             });
         }));
     }

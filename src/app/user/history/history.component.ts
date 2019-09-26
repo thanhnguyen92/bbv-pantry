@@ -51,8 +51,8 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
       const getBookingSubscription = this.bookingService.getById(element.bookingId)
         .pipe(finalize(() => Utilities.unsubscribe(getBookingSubscription)))
         .subscribe(booking => {
-          if (booking && booking.isClosed) {
-            this.orderService.delete(element.uid)
+          if (booking && !booking.isClosed) {
+            this.orderService.delete(element.id)
               .then(() => {
                 NotificationService.showSuccessMessage('Cancel order successful');
                 this.appService.setLoadingStatus(false);
@@ -68,6 +68,32 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
     } else {
       NotificationService.showWarningMessage('Unfortunately, you cannot cancel this order');
     }
+  }
+
+  onNotifyPaid(element: OrderModel) {
+    this.appService.setLoadingStatus(true);
+    const getOrderSubscription = this.orderService
+      .getById(element.id)
+      .pipe(finalize(() => Utilities.unsubscribe(getOrderSubscription)))
+      .subscribe(order => {
+        if (order) {
+          order.isPaymentNotified = true;
+          this.orderService
+            .update(order)
+            .then(() => {
+              NotificationService.showSuccessMessage('Notify successful');
+              this.appService.setLoadingStatus(false);
+            })
+            .catch(() => {
+              NotificationService.showErrorMessage(
+                'Notify failed, please try again'
+              );
+              this.appService.setLoadingStatus(false);
+            });
+        } else {
+          this.appService.setLoadingStatus(false);
+        }
+      });
   }
 
   filterChanged(event) {
@@ -91,7 +117,7 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
             this.restaurantService.gets().subscribe(restaurants => {
               results.forEach(item => {
                 if (restaurants) {
-                  const restaurant = restaurants.find(t => t.uid === item.restaurantId);
+                  const restaurant = restaurants.find(t => t.id === item.restaurantId);
                   item['restaurantName'] = restaurant.name;
                 }
                 item.orderDate = Utilities.convertTimestampToDate(item.orderDate);

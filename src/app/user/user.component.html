@@ -1,9 +1,9 @@
-<mat-label>Current Date: </mat-label>
-<span>{{ currentDate | date: 'dd.MM.y HH:mm:ss' }}</span>
-<div class="py-4" style="max-width: 450px">
-    <mat-label>Restaurant: </mat-label>
+<!-- <mat-label>Current Date: </mat-label> -->
+<!-- <span>{{ currentDate | date: 'dd.MM.y HH:mm:ss' }}</span> -->
+<div class="pb-4" style="max-width: 450px">
+    <mat-label class="font-weight-bold">Restaurant: </mat-label>
     <mat-select (selectionChange)="onBookingChanged($event)" [(value)]="bookingId">
-        <mat-option *ngFor="let booking of bookings" [value]="booking.uid"
+        <mat-option *ngFor="let booking of bookings" [value]="booking.id"
             title="{{ booking['restaurantName'] }} ({{ booking.bookingFrom | date: 'dd.MM.y' }} - {{ booking.bookingTo | date: 'dd.MM.y' }})">
             {{ booking['restaurantName'] }} ({{ booking.bookingFrom | date: 'dd.MM.y' }} -
             {{ booking.bookingTo | date: 'dd.MM.y' }})

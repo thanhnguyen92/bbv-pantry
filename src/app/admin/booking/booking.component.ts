@@ -13,7 +13,7 @@ import { AppService } from './../../shared/services/app.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { RestaurantService } from 'src/app/shared/services/restaurant.service';
 import { BookingService } from 'src/app/shared/services/booking.service';
-import { forkJoin, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { Utilities } from 'src/app/shared/services/utilities';
 
@@ -59,11 +59,11 @@ export class BookingComponent implements OnInit, OnDestroy {
 
   onCloseBooking(element) {
     this.appService.setLoadingStatus(true);
-    const getBookingSubscription = this.bookingService.getById(element.uid)
+    const getBookingSubscription = this.bookingService.getById(element.id)
       .pipe(finalize(() => Utilities.unsubscribe(getBookingSubscription)))
       .subscribe(booking => {
         if (booking) {
-          booking.isClosed = true;
+          booking.isClosed = !element.isClosed;
           this.bookingService.update(booking)
             .then(() => {
               NotificationService.showSuccessMessage('Update successful');
@@ -98,7 +98,7 @@ export class BookingComponent implements OnInit, OnDestroy {
               if (restaurants && restaurants.length > 0) {
                 bookings.forEach(item => {
                   const restaurant = restaurants.find(
-                    t => t.uid === item.restaurantId
+                    t => t.id === item.restaurantId
                   );
                   if (restaurant) {
                     item['restaurantName'] = restaurant.name;
@@ -118,7 +118,7 @@ export class BookingComponent implements OnInit, OnDestroy {
     );
   }
 
-  private showPopupBookingItem(bookingItem: BookingModel = new BookingModel()) {
+  private showPopupBookingItem(bookingItem?: BookingModel) {
     const diaLogRef = this.dialog.open(BookingItemComponent, {
       width: '250px',
       data: { ...bookingItem },
@@ -131,7 +131,7 @@ export class BookingComponent implements OnInit, OnDestroy {
       .subscribe((data: BookingModel) => {
         if (data) {
           let service;
-          if (data.uid) {
+          if (data.id) {
             service = this.bookingService.update({ ...data });
           } else {
             service = this.bookingService.add({
@@ -171,7 +171,7 @@ export class BookingComponent implements OnInit, OnDestroy {
       .subscribe(res => {
         if (res) {
           this.bookingService
-            .delete(bookingItem.uid)
+            .delete(bookingItem.id)
             .then(() => {
               NotificationService.showSuccessMessage('Delete successful');
             })

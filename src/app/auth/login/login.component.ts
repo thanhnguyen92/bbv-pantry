@@ -1,3 +1,4 @@
+import { UserService } from 'src/app/shared/services/user.service';
 import { SectionSelectionComponent } from './section-selection/section-selection.component';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { Component, OnInit } from '@angular/core';
@@ -31,11 +32,11 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private appService: AppService
-  ) {
+    private appService: AppService,
+    private userService: UserService) {
     this.loginForm = this.formBuilder.group({
-      userName: ['toannguyen@yopmail.com'],
-      password: ['123456']
+      userName: [''],
+      password: ['']
     });
   }
 
@@ -74,8 +75,17 @@ export class LoginComponent implements OnInit {
             NotificationService.showErrorMessage(
               'Please check your email for verification'
             );
+            this.appService.setLoadingStatus(false);
             this.authService.logOut();
             return;
+          } else {
+            // Update state in database
+            this.userService.get(loggedUser.uid).subscribe(user => {
+              if (!user.emailVerified) {
+                user.emailVerified = true;
+                this.authService.setUserData(user);
+              }
+            });
           }
 
           this.securityService.getRoles(loggedUser.uid).subscribe(results => {

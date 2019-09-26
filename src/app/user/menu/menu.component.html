@@ -3,6 +3,7 @@
         <mat-card-header class="card__header">
             <mat-card-title class="card__header__title">{{menuItem.name}}</mat-card-title>
             <mat-card-subtitle>{{menuItem.price | currency:'VND'}}</mat-card-subtitle>
+            <mat-card-subtitle class="font-italic">{{menuItem.notes}}</mat-card-subtitle>
         </mat-card-header>
         <mat-card-footer class="card__footer">
             <mat-card-actions class="d-flex justify-content-center">

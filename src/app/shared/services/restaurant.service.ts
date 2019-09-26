@@ -11,7 +11,7 @@ const RESTAURANT_BOOKING_ENTITY = 'restaurantBooking';
   providedIn: 'root'
 })
 export class RestaurantService {
-  constructor(private firebaseService: FirebaseService) {}
+  constructor(private firebaseService: FirebaseService) { }
 
   gets() {
     this.firebaseService.setPath(RESTAURANT_ENTITY);
@@ -22,8 +22,8 @@ export class RestaurantService {
         map(entities => {
           return entities.map(entity => {
             const data = entity.payload.doc.data() as RestaurantModel;
-            data.uid = entity.payload.doc.id;
-            return data;
+            const id = entity.payload.doc.id;
+            return { id, ...data };
           });
         })
       );
@@ -38,15 +38,15 @@ export class RestaurantService {
         map(entities => {
           return entities
             .filter(entity => {
-              const data = entity.payload.doc.data();
-              if (restaurantIds.find(uid => uid === data.uid)) {
+              const id = entity.payload.doc.id;
+              if (restaurantIds.find(restaurantId => restaurantId === id)) {
                 return entity;
               }
             })
             .map(entity => {
               const data = entity.payload.doc.data();
-              data.uid = entity.payload.doc.id;
-              return data;
+              const id = entity.payload.doc.id;
+              return { id, ...data };
             });
         })
       );
@@ -68,7 +68,8 @@ export class RestaurantService {
               const bookingTo = Utilities.convertTimestampToDate(
                 data.bookingTo
               );
-              if (bookingFrom <= bookingDate && bookingDate <= bookingTo) {
+              if ((bookingFrom <= bookingDate && bookingDate <= bookingTo)
+                || (bookingDate <= bookingTo && data.isPreBooking)) {
                 return entity;
               }
             })
@@ -78,8 +79,8 @@ export class RestaurantService {
                 data.bookingFrom
               );
               data.bookingTo = Utilities.convertTimestampToDate(data.bookingTo);
-              data.uid = entity.payload.doc.id;
-              return data;
+              const id = entity.payload.doc.id;
+              return { id, ...data };
             });
         })
       );
@@ -87,13 +88,12 @@ export class RestaurantService {
 
   add(entity: RestaurantModel) {
     this.firebaseService.setPath(RESTAURANT_ENTITY);
-    entity.uid = this.firebaseService.createId();
     return this.firebaseService.add<RestaurantModel>(entity);
   }
 
   update(entity: RestaurantModel) {
     this.firebaseService.setPath(RESTAURANT_ENTITY);
-    return this.firebaseService.update<RestaurantModel>(entity, entity.uid);
+    return this.firebaseService.update<RestaurantModel>(entity, entity.id);
   }
 
   delete(uid) {

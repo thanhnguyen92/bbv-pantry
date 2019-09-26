@@ -22,8 +22,8 @@ export class OrderService {
           return entities.map(entity => {
             const data = entity.payload.doc.data();
             data.orderDate = Utilities.convertTimestampToDate(data.orderDate);
-            data.uid = entity.payload.doc.id;
-            return data;
+            const id = entity.payload.doc.id;
+            return { id, ...data };
           });
         })
       );
@@ -34,8 +34,8 @@ export class OrderService {
     return this.firebaseService.get<OrderModel>(orderId).get()
       .pipe(map(entity => {
         const data = entity.data() as OrderModel;
-        data.uid = entity.id;
-        return data;
+        const id = entity.id;
+        return { id, ...data };
       }));
   }
 
@@ -56,8 +56,8 @@ export class OrderService {
             .map(entity => {
               const data = entity.payload.doc.data();
               data.orderDate = Utilities.convertTimestampToDate(data.orderDate);
-              data.uid = entity.payload.doc.id;
-              return data;
+              const id = entity.payload.doc.id;
+              return { id, ...data };
             });
         })
       );
@@ -80,8 +80,8 @@ export class OrderService {
             .map(entity => {
               const data = entity.payload.doc.data();
               data.orderDate = Utilities.convertTimestampToDate(data.orderDate);
-              data.uid = entity.payload.doc.id;
-              return data;
+              const id = entity.payload.doc.id;
+              return { id, ...data };
             });
         })
       );
@@ -89,18 +89,12 @@ export class OrderService {
 
   add(entity: OrderModel) {
     this.firebaseService.setPath(ENTITY_NAME);
-    entity.uid = this.firebaseService.createId();
-    if (entity.orderItems) {
-      entity.orderItems.forEach(item => {
-        item.uid = this.firebaseService.createId();
-      });
-    }
     return this.firebaseService.add<OrderModel>(entity);
   }
 
   update(entity: OrderModel) {
     this.firebaseService.setPath(ENTITY_NAME);
-    return this.firebaseService.update<OrderModel>(entity, entity.uid);
+    return this.firebaseService.update<OrderModel>(entity, entity.id);
   }
 
   delete(uid) {
@@ -122,8 +116,8 @@ export class OrderService {
             }
           }).map(entity => {
             const data = entity.payload.doc.data() as OrderModel;
-            data.uid = entity.payload.doc.id;
-            return data;
+            const id = entity.payload.doc.id;
+            return { id, ...data };
           });
         })
       );

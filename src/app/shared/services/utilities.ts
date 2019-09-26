@@ -15,6 +15,10 @@ export class Utilities {
     }
   }
 
+  static isObjectEmpty(obj) {
+    return Object.keys(obj).length > 0 ? false : true;
+  }
+
   static convertToUTC(date: Date) {
     return new Date(date.toUTCString());
   }

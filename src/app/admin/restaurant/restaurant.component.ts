@@ -53,11 +53,13 @@ export class RestaurantComponent implements OnInit, OnDestroy {
   onDelete(restaurant) {
     this.showDialogConfirmDelete(restaurant);
   }
-  onGotoMenu(restaurant) {
-    this.route.navigate([restaurant.uid, 'menu'], {
+
+  onGotoMenu(restaurant: RestaurantModel) {
+    this.route.navigate([restaurant.id, 'menu'], {
       relativeTo: this.activeRoute
     });
   }
+
   applyFilter(filterVal) {
     this.dataSource.filter = filterVal.trim().toLowerCase();
   }
@@ -89,7 +91,7 @@ export class RestaurantComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         this.restaurantService
-          .delete(restaurant.uid)
+          .delete(restaurant.id)
           .then(() => {
             NotificationService.showSuccessMessage('Delete successful');
           })
@@ -115,7 +117,7 @@ export class RestaurantComponent implements OnInit, OnDestroy {
       }
 
       let service;
-      if (result.uid) {
+      if (result.id) {
         // Edit
         service = this.restaurantService.update({ ...result });
       } else {

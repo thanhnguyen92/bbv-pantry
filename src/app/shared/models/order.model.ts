@@ -2,6 +2,7 @@ import { BaseEntity } from './base.model';
 import { OrderItem } from './order-item.model';
 
 export class OrderModel implements BaseEntity {
+  id?: string;
   uid?: string;
   userId?: string;
   orderDate?: any;
@@ -10,4 +11,5 @@ export class OrderModel implements BaseEntity {
   restaurantId?: string;
   bookingId?: string;
   isPaid = false;
+  isPaymentNotified = false;
 }

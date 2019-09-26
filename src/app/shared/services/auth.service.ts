@@ -56,10 +56,11 @@ export class AuthService {
 
   setUserData(user) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(
-      `users/${user.uid}`
+      `users/${user.id}`
     );
     const userData: UserModel = {
-      uid: user.uid,
+      id: user.id,
+      // uid: user.id,
       email: user.email,
       displayName: user.displayName,
       photoURL: user.photoURL,
@@ -129,7 +130,6 @@ export class AuthService {
   }
 
   get isAdmin() {
-    debugger
     const roles = JSON.parse(
       localStorage.getItem(USER_PERMISSIONS)
     ) as UserRole[];

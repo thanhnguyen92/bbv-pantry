@@ -26,10 +26,9 @@ export class BookingItemComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<any>,
-    @Inject(MAT_DIALOG_DATA) public data: BookingModel,
     private appService: AppService,
-    private restaurantService: RestaurantService
-  ) {
+    private restaurantService: RestaurantService,
+    @Inject(MAT_DIALOG_DATA) public data: BookingModel) {
     this.form = new FormGroup({
       uid: new FormControl(''),
       bookingFrom: new FormControl(new Date(), [Validators.required]),
@@ -43,9 +42,11 @@ export class BookingItemComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.data) {
+    if (!Utilities.isObjectEmpty(this.data)) {
       this.restaurantId = this.data.restaurantId;
       this.form.patchValue(this.data);
+      this.bookingFromTime = `${this.data.bookingFrom.getHours()}:${this.data.bookingFrom.getMinutes()}`;
+      this.bookingToTime = `${this.data.bookingTo.getHours()}:${this.data.bookingTo.getMinutes()}`;
     }
 
     this.appService.setLoadingStatus(true);
@@ -88,10 +89,10 @@ export class BookingItemComponent implements OnInit {
   }
 
   onRestaurantSelected(event) {
-    const restaurant = this.restaurants.find(t => t.uid === event.value);
+    const restaurant = this.restaurants.find(t => t.id === event.value);
     if (restaurant) {
-      this.restaurantId = restaurant.uid;
-      this.form.patchValue({ restaurantId: restaurant.uid });
+      this.restaurantId = restaurant.id;
+      this.form.patchValue({ restaurantId: restaurant.id });
     }
   }
 

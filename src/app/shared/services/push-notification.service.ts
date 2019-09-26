@@ -12,7 +12,7 @@ export class PushNotificationService {
   /**
    *
    */
-  constructor(private fireService: FirebaseService) {}
+  constructor(private fireService: FirebaseService) { }
 
   getByEmailOrUserId(email, userId) {
     this.fireService.setPath(ENTITY_NAME);
@@ -33,8 +33,8 @@ export class PushNotificationService {
             })
             .map(entity => {
               const data = entity.payload.doc.data();
-              data.uid = entity.payload.doc.id;
-              return data;
+              const id = entity.payload.doc.id;
+              return { id, ...data };
             });
         })
       );
@@ -42,7 +42,7 @@ export class PushNotificationService {
 
   push(pushNotificationModel: PushNotificationModel) {
     this.fireService.setPath(ENTITY_NAME);
-    return this.fireService.add<PushNotificationModel>(pushNotificationModel);
+    // return this.fireService.add<PushNotificationModel>(pushNotificationModel);
   }
 
   delete(uid) {

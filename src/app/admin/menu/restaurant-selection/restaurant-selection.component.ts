@@ -23,7 +23,7 @@ export class RestaurantSelectionComponent implements OnInit {
   }
 
   onSelected(event) {
-    this.data = this.restaurants.find(t => t.uid === event.value);
+    this.data = this.restaurants.find(t => t.id === event.value);
   }
 
   ngOnInit() {

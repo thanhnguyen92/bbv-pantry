@@ -1,10 +1,10 @@
-<h1 mat-dialog-title>{{ data.uid ? 'Edit booking item' : 'Add booking item' }}</h1>
+<h1 mat-dialog-title>{{ data.id ? 'Edit booking item' : 'Add booking item' }}</h1>
 <div mat-dialog-content>
     <form [formGroup]="form">
         <div class="mat-item">
             <mat-label>Restaurant</mat-label>
             <mat-select (selectionChange)="onRestaurantSelected($event)" [(value)]="restaurantId">
-                <mat-option *ngFor="let restaurant of restaurants" [value]="restaurant.uid">
+                <mat-option *ngFor="let restaurant of restaurants" [value]="restaurant.id">
                     {{restaurant.name}}
                 </mat-option>
             </mat-select>

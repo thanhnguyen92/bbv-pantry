@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { BookingModel } from 'src/app/shared/models/booking.model';
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
@@ -43,7 +44,7 @@ export class UserComponent implements OnInit, OnDestroy {
     private menuService: MenuService,
     private restaurantService: RestaurantService,
     private orderService: OrderService,
-    private pushNotificationService: PushNotificationService
+    private router: Router
   ) {
     this.registerNotification();
   }
@@ -58,21 +59,20 @@ export class UserComponent implements OnInit, OnDestroy {
           if (results) {
             this.bookings = results;
             if (this.bookings.length > 0) {
+              this.bookingId = this.bookings[0].id;
               this.restaurantService
                 .getByRestaurantIds(this.bookings.map(t => t.restaurantId))
                 .subscribe(
-                  res => {
-                    if (res) {
+                  restaurants => {
+                    if (restaurants) {
                       // this.restaurants = res;
                       this.bookings.forEach(booking => {
-                        const restaurant = res.find(
-                          t => t.uid === booking.restaurantId
-                        );
+                        const restaurant = restaurants.find(t => t.id === booking.restaurantId);
                         booking['restaurantName'] = restaurant
                           ? restaurant.name
                           : '(null)';
                       });
-                      this.restaurantId = this.bookings[0].uid;
+                      this.restaurantId = this.bookings[0].restaurantId;
                     }
                     this.appService.setLoadingStatus(false);
                   },
@@ -99,7 +99,7 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   onBookingChanged(event) {
-    const booking = this.bookings.find(t => t.uid === event.value);
+    const booking = this.bookings.find(t => t.id === event.value);
     if (booking) {
       this.restaurantId = booking.restaurantId;
     }
@@ -107,7 +107,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   menuChanged(menuItems: MenuModel[]) {
     this.cart.forEach(cartItem => {
-      const menuItem = menuItems.find(t => t.uid === cartItem.menuId);
+      const menuItem = menuItems.find(t => t.id === cartItem.menuId);
       if (menuItem) {
         cartItem.price = menuItem.price;
       }
@@ -119,14 +119,14 @@ export class UserComponent implements OnInit, OnDestroy {
   addToCart(item: MenuModel) {
     let isExisted = false;
     this.cart.forEach(currentItem => {
-      if (currentItem.menuId === item.uid) {
+      if (currentItem.menuId === item.id) {
         currentItem.amount++;
         isExisted = true;
       }
     });
     if (!isExisted) {
       const cart = {
-        menuId: item.uid,
+        menuId: item.id,
         name: item.name,
         price: item.price,
         amount: 1
@@ -153,7 +153,7 @@ export class UserComponent implements OnInit, OnDestroy {
         menuItems => {
           // Check latest price
           cart.forEach(cartItem => {
-            const dbItem = menuItems.find(t => t.uid === cartItem.menuId);
+            const dbItem = menuItems.find(t => t.id === cartItem.menuId);
             if (dbItem && cartItem.price !== dbItem.price) {
               NotificationService.showInfoMessage(
                 `There are a few updates on your menu, please check again`
@@ -180,6 +180,9 @@ export class UserComponent implements OnInit, OnDestroy {
               NotificationService.showSuccessMessage('Order successful');
               this.cart = [];
               this.appService.setLoadingStatus(false);
+
+              // Navigate to order history
+              this.router.navigate(['user', 'history']);
             })
             .catch(() => {
               NotificationService.showErrorMessage('Order failed');
@@ -197,19 +200,20 @@ export class UserComponent implements OnInit, OnDestroy {
   private setupNotification() {
     const user = this.authService.currentUser;
     if (user) {
-      this.pushNotificationService
-        .getByEmailOrUserId(user.email, user.uid)
-        .subscribe(res => {
-          console.log(res);
-          if (res && res !== []) {
-            NotificationService.showNotificationWindows(
-              (res as PushNotificationModel).type
-            );
-            this.pushNotificationService
-              .delete((res as PushNotificationModel).uid)
-              .then(result => console.log(result));
-          }
-        });
+      // this.pushNotificationService
+      //   .getByEmailOrUserId(user.email, user.id)
+      //   .subscribe(res => {
+      //     const notification = res;
+
+      //     if (res && res !== []) {
+      //       NotificationService.showNotificationWindows(
+      //         (res as PushNotificationModel).type
+      //       );
+      //       this.pushNotificationService
+      //         .delete((res as PushNotificationModel).id)
+      //         .then(result => console.log(result));
+      //     }
+      //   });
     }
   }
 }

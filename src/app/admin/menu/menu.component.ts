@@ -14,6 +14,7 @@ import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-di
 import { RestaurantSelectionComponent } from './restaurant-selection/restaurant-selection.component';
 import { finalize } from 'rxjs/operators';
 import { Utilities } from 'src/app/shared/services/utilities';
+import { RestaurantModel } from 'src/app/shared/models/restaurant.model';
 
 @Component({
   selector: 'app-menu',
@@ -94,7 +95,7 @@ export class MenuComponent implements OnInit {
     diaLogRef.afterClosed().subscribe((data: MenuModel) => {
       if (data) {
         let service;
-        if (data.uid) {
+        if (data.id) {
           service = this.menuService.update({ ...data });
         } else {
           service = this.menuService.add({
@@ -122,14 +123,14 @@ export class MenuComponent implements OnInit {
 
     const restaurantSelectionSub = diaLogRef.afterClosed()
       .pipe(finalize(() => Utilities.unsubscribe(restaurantSelectionSub)))
-      .subscribe((data: MenuModel) => {
+      .subscribe((data: RestaurantModel) => {
         if (data) {
-          this.router.navigate(['admin', 'restaurant', data.uid, 'menu']);
+          this.router.navigate(['admin', 'restaurant', data.id, 'menu']);
         }
       });
   }
 
-  private showDialogConfirmDelete(menuItem) {
+  private showDialogConfirmDelete(menuItem: MenuModel) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '250px',
       data: { title: 'Confirmation', content: 'Are you sure to delete?', noButton: 'No', yesButton: 'Yes' }
@@ -139,7 +140,7 @@ export class MenuComponent implements OnInit {
       .subscribe(res => {
         if (res) {
           this.menuService
-            .delete(menuItem.uid)
+            .delete(menuItem.id)
             .then(() => {
               NotificationService.showSuccessMessage('Delete successful');
             })

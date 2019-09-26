@@ -22,8 +22,8 @@ export class BookingService {
             const data = entity.payload.doc.data();
             data.bookingFrom = Utilities.convertTimestampToDate(data.bookingFrom);
             data.bookingTo = Utilities.convertTimestampToDate(data.bookingTo);
-            data.uid = entity.payload.doc.id;
-            return data;
+            const id = entity.payload.doc.id;
+            return { id, ...data };
           });
         })
       );
@@ -35,8 +35,8 @@ export class BookingService {
       .get<BookingModel>(bookingId).get()
       .pipe(map(entity => {
         const data = entity.data() as BookingModel;
-        data.uid = entity.id;
-        return data;
+        const id = entity.id;
+        return { id, ...data };
       }));
   }
 
@@ -49,8 +49,8 @@ export class BookingService {
         map(entities => {
           return entities
             .filter(entity => {
-              const data = entity.payload.doc.data();
-              if (bookingIds.find(t => t === data.uid)) {
+              const id = entity.payload.doc.id;
+              if (bookingIds.find(bookingId => bookingId === id)) {
                 return entity;
               }
             })
@@ -60,8 +60,8 @@ export class BookingService {
                 data.bookingFrom
               );
               data.bookingTo = Utilities.convertTimestampToDate(data.bookingTo);
-              data.uid = entity.payload.doc.id;
-              return data;
+              const id = entity.payload.doc.id;
+              return { id, ...data };
             });
         })
       );
@@ -87,8 +87,8 @@ export class BookingService {
                 data.bookingFrom
               );
               data.bookingTo = Utilities.convertTimestampToDate(data.bookingTo);
-              data.uid = entity.payload.doc.id;
-              return data;
+              const id = entity.payload.doc.id;
+              return { id, ...data };
             });
         })
       );
@@ -96,13 +96,12 @@ export class BookingService {
 
   add(entity: BookingModel) {
     this.firebaseService.setPath(ENTITY_NAME);
-    entity.uid = this.firebaseService.createId();
     return this.firebaseService.add<BookingModel>(entity);
   }
 
   update(entity: BookingModel) {
     this.firebaseService.setPath(ENTITY_NAME);
-    return this.firebaseService.update<BookingModel>(entity, entity.uid);
+    return this.firebaseService.update<BookingModel>(entity, entity.id);
   }
 
   delete(uid) {

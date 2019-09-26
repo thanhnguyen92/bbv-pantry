@@ -15,7 +15,7 @@ export class AdminComponent implements OnInit {
     private router: Router,
     private pushNotificationService: PushNotificationService,
     private authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.setupNotification();
@@ -32,19 +32,19 @@ export class AdminComponent implements OnInit {
   private setupNotification() {
     const user = this.authService.currentUser;
     if (user) {
-      this.pushNotificationService
-        .getByEmailOrUserId(user.email, user.uid)
-        .subscribe(res => {
-          console.log(res);
-          if (res && res !== []) {
-            NotificationService.showNotificationWindows(
-              (res as PushNotificationModel).type
-            );
-            this.pushNotificationService
-              .delete((res as PushNotificationModel).uid)
-              .then(result => console.log(result));
-          }
-        });
+      // this.pushNotificationService
+      //   .getByEmailOrUserId(user.email, user.id)
+      //   .subscribe(res => {
+      //     console.log(res);
+      //     if (res && res !== []) {
+      //       NotificationService.showNotificationWindows(
+      //         (res as PushNotificationModel).type
+      //       );
+      //       this.pushNotificationService
+      //         .delete((res as PushNotificationModel).id)
+      //         .then(result => console.log(result));
+      //     }
+      //   });
     }
   }
 }
