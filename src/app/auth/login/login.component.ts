@@ -23,6 +23,7 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   isLogged = false;
   adminAccess = false;
+  isRegister = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -36,6 +37,8 @@ export class LoginComponent implements OnInit {
     private userService: UserService) {
     this.loginForm = this.formBuilder.group({
       userName: [''],
+      displayName: [''],
+      isRegister: false,
       password: ['']
     });
   }
@@ -125,6 +128,7 @@ export class LoginComponent implements OnInit {
       .register(formVal.userName, formVal.password)
       .then(result => {
         const newUser = result.user;
+        newUser.displayName = formVal.displayName;
 
         // Add roles
         if (this.adminAccess) {
@@ -137,7 +141,7 @@ export class LoginComponent implements OnInit {
         }
 
         this.authService.sendVerification();
-        this.authService.setUserData(result.user);
+        this.authService.setUserData(newUser);
 
         NotificationService.showSuccessMessage(
           'Register successful. Please check your email for verification'
@@ -146,6 +150,10 @@ export class LoginComponent implements OnInit {
       .catch(error => {
         NotificationService.showErrorMessage(error.message);
       });
+  }
+
+  onRegisterAccount(event) {
+    console.log(event);
   }
 
   private showSectionSelection() {

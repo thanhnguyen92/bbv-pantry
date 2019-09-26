@@ -8,4 +8,5 @@ export class MenuModel implements BaseEntity {
   notes?: string;
   restaurantId?: string;
   restaurantName?: string;
+  isActive = true;
 }

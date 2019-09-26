@@ -10,6 +10,16 @@ const ENTITY_NAME = 'menu';
 export class MenuService {
   constructor(private firebaseService: FirebaseService) { }
 
+  getById(menuId: string) {
+    this.firebaseService.setPath(ENTITY_NAME);
+    return this.firebaseService.get<MenuModel>(menuId).get()
+      .pipe(map(entity => {
+        const data = entity.data() as MenuModel;
+        const id = entity.id;
+        return { id, ...data };
+      }));
+  }
+
   getByRestaurantId(restaurantId) {
     this.firebaseService.setPath(ENTITY_NAME);
     return this.firebaseService.gets<MenuModel>(t => t.where('restaurantId', '==', restaurantId)).snapshotChanges()

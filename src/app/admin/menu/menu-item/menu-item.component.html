@@ -9,6 +9,9 @@
     <mat-form-field>
         <input matInput placeholder="Notes" [(ngModel)]="data.notes" />
     </mat-form-field>
+    <div class="mat-item">
+        <mat-checkbox matInput [(ngModel)]="data.isActive">Active</mat-checkbox>
+    </div>
 </div>
 <div mat-dialog-actions>
     <button mat-raised-button (click)="onCancel()">Cancel</button>

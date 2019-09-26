@@ -30,6 +30,7 @@ export class MenuComponent implements OnInit {
     'name',
     'price',
     'notes',
+    'status',
     'actions'
   ];
   menus: MenuModel[] = [];
@@ -73,6 +74,31 @@ export class MenuComponent implements OnInit {
 
   goToRestaurant() {
     this.router.navigate(['admin', 'restaurant']);
+  }
+
+  onChangeState(element: MenuModel) {
+    this.appService.setLoadingStatus(true);
+    const getMenuSubscription = this.menuService
+      .getById(element.id)
+      .pipe(finalize(() => Utilities.unsubscribe(getMenuSubscription)))
+      .subscribe(menu => {
+        if (menu) {
+          menu.isActive = !element.isActive;
+          this.menuService.update(menu)
+            .then(() => {
+              NotificationService.showSuccessMessage('Update successful');
+              this.appService.setLoadingStatus(false);
+            })
+            .catch(() => {
+              NotificationService.showErrorMessage(
+                'Update failed, please try again'
+              );
+              this.appService.setLoadingStatus(false);
+            });
+        } else {
+          this.appService.setLoadingStatus(false);
+        }
+      });
   }
 
   private fetchData() {
