@@ -220,7 +220,6 @@ export class OrderComponent implements OnInit, OnDestroy {
     this.orderService.getByBookingId(bookingId).subscribe(
       results => {
         if (results) {
-          console.log(results);
           let isDecoratedUsers = false;
           let isDecoratedBookings = false;
 

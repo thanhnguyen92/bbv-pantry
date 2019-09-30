@@ -77,7 +77,6 @@ export class NotificationService {
 
   static requestPermissionNotificationWindows() {
     Notification.requestPermission().then(res => {
-      console.log('granted');
     });
   }
 }
