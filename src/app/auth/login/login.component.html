@@ -5,11 +5,15 @@
     <mat-card-content>
         <form class="example-form" [formGroup]="loginForm">
             <mat-form-field class="example-full-width">
-                <input matInput placeholder="Username" formControlName="userName" name="username" required>
+                <input matInput placeholder="Email" formControlName="userName" name="username" required>
+                <mat-hint *ngIf="isRegister">This email is used for verification. Please use the real email.</mat-hint>
             </mat-form-field>
-            <mat-checkbox formControlName="isRegister" (change)="onRegisterAccount($event)">Do not have an account? Sign
-                up for a new one!
-            </mat-checkbox>
+            <div [ngClass]="{ 'pt-3' : isRegister }">
+                <mat-checkbox formControlName="isRegister" (change)="onRegisterAccount($event)">Do not have an account?
+                    Sign
+                    up for a new one!
+                </mat-checkbox>
+            </div>
             <mat-form-field [hidden]="!isRegister" class="example-full-width">
                 <input matInput placeholder="Display Name" formControlName="displayName" name="displayName" required>
             </mat-form-field>
