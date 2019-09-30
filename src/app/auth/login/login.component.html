@@ -1,7 +1,7 @@
 <mat-card *ngIf="!isLogged" class="example-card">
-    <mat-card-header>
-        <mat-card-title>{{ isRegister ? 'Register' : 'Login' }}</mat-card-title>
-    </mat-card-header>
+    <h4 class="pb-3 m-0">
+        {{ isRegister ? 'Register' : 'Login' }}
+    </h4>
     <mat-card-content>
         <form class="example-form" [formGroup]="loginForm">
             <mat-form-field class="example-full-width">

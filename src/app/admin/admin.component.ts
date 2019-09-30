@@ -29,6 +29,14 @@ export class AdminComponent implements OnInit {
     this.router.navigate(['admin', 'menu']);
   }
 
+  onBooking() {
+    this.router.navigate(['admin', 'booking']);
+  }
+
+  onOrder() {
+    this.router.navigate(['admin', 'order']);
+  }
+
   private setupNotification() {
     const user = this.authService.currentUser;
     if (user) {
