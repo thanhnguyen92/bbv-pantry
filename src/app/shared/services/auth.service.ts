@@ -50,6 +50,10 @@ export class AuthService {
     return this.afAuth.auth.currentUser.sendEmailVerification().then();
   }
 
+  resetPassword(email) {
+    return this.afAuth.auth.sendPasswordResetEmail(email);
+  }
+
   setUserData(user) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(
       `users/${user.id}`

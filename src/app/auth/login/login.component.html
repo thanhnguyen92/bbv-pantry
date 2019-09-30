@@ -1,30 +1,50 @@
 <mat-card *ngIf="!isLogged" class="example-card">
     <h4 class="pb-3 m-0">
-        {{ isRegister ? 'Register' : 'Login' }}
+        {{ isRegister ? 'Register' : isResetPassword ? 'Reset Password' : 'Login' }}
     </h4>
-    <mat-card-content>
+    <mat-card-content class="mb-0">
+        <div *ngIf="isResetPassword" class="pb-2">
+            {{ 'Please enter your email and we will send you instructions to reset your password.' }}
+        </div>
         <form class="example-form" [formGroup]="loginForm">
             <mat-form-field class="example-full-width">
                 <input matInput placeholder="Email" formControlName="userName" name="username" required>
                 <mat-hint *ngIf="isRegister">This email is used for verification. Please use the real email.</mat-hint>
             </mat-form-field>
-            <div [ngClass]="{ 'pt-3' : isRegister }">
+            <div *ngIf="!isResetPassword" [ngClass]="{ 'pt-3' : isRegister }">
                 <mat-checkbox formControlName="isRegister" (change)="onRegisterAccount($event)">Do not have an account?
                     Sign
                     up for a new one!
                 </mat-checkbox>
             </div>
-            <mat-form-field [hidden]="!isRegister" class="example-full-width">
+            <mat-form-field *ngIf="!isResetPassword" [hidden]="!isRegister" class="example-full-width">
                 <input matInput placeholder="Display Name" formControlName="displayName" name="displayName" required>
             </mat-form-field>
-            <mat-form-field class="example-full-width">
+            <mat-form-field *ngIf="!isResetPassword" class="example-full-width">
                 <input matInput placeholder="Password" formControlName="password" type="password" name="password"
                     required>
             </mat-form-field>
         </form>
+        <!-- Forgot password -->
+        <div *ngIf="!isResetPassword">
+            <span>Forgot password?</span><a class="align-self-center" href="javascrip:void();"
+                (click)="isResetPassword = true">
+                Reset your password
+            </a>
+        </div>
+        <div *ngIf="isResetPassword">
+            {{ 'Remember your account credential?' }} <a href="javascrip:void();"
+                (click)="isResetPassword = false">{{ 'Log In!' }}</a>
+        </div>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-raised-button [disabled]="isRegister" (click)="login()" color="primary">Login</button>
-        <button mat-raised-button [disabled]="!isRegister" (click)="register()" color="accent">Register</button>
+        <div class="p-2">
+            <button mat-raised-button *ngIf="!isResetPassword" [disabled]="isRegister" (click)="login()"
+                color="primary">Login</button>
+            <button mat-raised-button *ngIf="!isResetPassword" [disabled]="!isRegister" (click)="register()"
+                color="accent">Register</button>
+            <button mat-raised-button *ngIf="isResetPassword" (click)="resetPassword()" color="accent">Reset
+                Password</button>
+        </div>
     </mat-card-actions>
 </mat-card>

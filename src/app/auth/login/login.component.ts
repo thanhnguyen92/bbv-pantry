@@ -1,6 +1,6 @@
+import { NotificationService } from './../../shared/services/notification.service';
 import { UserService } from 'src/app/shared/services/user.service';
 import { SectionSelectionComponent } from './section-selection/section-selection.component';
-import { NotificationService } from 'src/app/shared/services/notification.service';
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder } from '@angular/forms';
@@ -24,6 +24,7 @@ export class LoginComponent implements OnInit {
   isLogged = false;
   adminAccess = false;
   isRegister = false;
+  isResetPassword = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -172,6 +173,22 @@ export class LoginComponent implements OnInit {
     if (event) {
       this.isRegister = event.checked;
     }
+  }
+
+  resetPassword() {
+    const formVal = this.loginForm.value;
+    const email = formVal.userName;
+
+    this.appService.setLoadingStatus(true);
+    this.authService.resetPassword(email)
+      .then(async () => {
+        this.appService.setLoadingStatus(false);
+        NotificationService.showSuccessMessage('An email has been sent to email with further instructions on how to reset your password.');
+      })
+      .catch(err => {
+        NotificationService.showErrorMessage(err.message);
+        this.appService.setLoadingStatus(false);
+      });
   }
 
   private showSectionSelection() {
