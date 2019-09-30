@@ -38,7 +38,7 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
     private bookingService: BookingService) { }
 
   ngOnInit() {
-    if (this.authService.isLogged) {
+    if (this.authService.getIsLogged()) {
       this.fetchData(false);
     }
   }

@@ -12,6 +12,7 @@ import { MatDialog } from '@angular/material';
 import { AppService } from 'src/app/shared/services/app.service';
 import { PublishSubcribeService } from 'src/app/shared/services/publish-subcribe.service';
 import { PubSubChannel } from 'src/app/shared/constants/pub-sub-channel.constant';
+import { UserModel } from 'src/app/shared/models/user.model';
 
 @Component({
   selector: 'app-login',
@@ -85,6 +86,8 @@ export class LoginComponent implements OnInit {
             await this.userService.get(loggedUser.uid).subscribe(async user => {
               if (!user.emailVerified) {
                 user.emailVerified = true;
+                loggedUser.displayName = user.displayName;
+                this.authService.currentUser = loggedUser;
                 await this.authService.setUserData(user);
               }
             });
@@ -127,26 +130,32 @@ export class LoginComponent implements OnInit {
     this.authService
       .register(formVal.userName, formVal.password)
       .then(async result => {
-        const newUser = result.user;
-        newUser.displayName = formVal.displayName;
+        const userData: UserModel = {
+          id: result.user.uid,
+          email: result.user.email,
+          displayName: formVal.displayName,
+          photoURL: result.user.photoURL,
+          emailVerified: result.user.emailVerified
+        };
 
         // Add roles
         if (this.adminAccess) {
-          await this.securityService.assignRoles(newUser.uid, [
+          await this.securityService.assignRoles(userData.id, [
             UserRole.Admin,
             UserRole.User
           ]);
         } else {
-          await this.securityService.assignRoles(newUser.uid, [UserRole.User]);
+          await this.securityService.assignRoles(userData.id, [UserRole.User]);
         }
 
         await this.authService.sendVerification();
-        await this.authService.setUserData(newUser);
+        await this.authService.setUserData(userData);
 
         this.appService.setLoadingStatus(false);
         NotificationService.showSuccessMessage(
           'Register successful. Please check your email for verification'
         );
+        this.authService.logOut();
       })
       .catch(error => {
         this.appService.setLoadingStatus(false);

@@ -39,11 +39,7 @@ export class AuthService {
   }
 
   login(email, password) {
-    const result = this.afAuth.auth.signInWithEmailAndPassword(email, password);
-    // if (result && result !== null) {
-    //   setInterval(async () => await this.refreshToken(), 27 * 60 * 1000);
-    // }
-    return result;
+    return this.afAuth.auth.signInWithEmailAndPassword(email, password);
   }
 
   register(email, password) {
@@ -58,15 +54,7 @@ export class AuthService {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(
       `users/${user.id}`
     );
-    const userData: UserModel = {
-      id: user.id,
-      // uid: user.id,
-      email: user.email,
-      displayName: user.displayName,
-      photoURL: user.photoURL,
-      emailVerified: user.emailVerified
-    };
-    return userRef.set(userData, {
+    return userRef.set(user, {
       merge: true
     });
   }
@@ -146,5 +134,11 @@ export class AuthService {
     }
 
     return undefined;
+  }
+
+  set currentUser(value) {
+    if (value) {
+      localStorage.setItem(USER_KEY, JSON.stringify(value));
+    }
   }
 }
