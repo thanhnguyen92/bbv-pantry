@@ -1,6 +1,6 @@
 <mat-toolbar class="align-between">
   <div class="d-flex">
-    <a class="header-item pr-4" [routerLink]="">
+    <a class="header-item pr-4 align-self-center" [routerLink]="['/']">
       bbv Pantry
     </a>
     <button *ngIf="isLogged && authService.isAdmin" mat-icon-button aria-label="Settings" [matMenuTriggerFor]="spaces">
