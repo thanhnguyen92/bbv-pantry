@@ -1,11 +1,19 @@
 <mat-toolbar class="align-between">
-  <div>
-    <a class="header-item" [routerLink]="">
+  <div class="d-flex">
+    <a class="header-item pr-4" [routerLink]="">
       bbv Pantry
     </a>
-    <button *ngIf="isLogged" mat-icon-button aria-label="Settings" [matMenuTriggerFor]="spaces">
+    <button *ngIf="isLogged && authService.isAdmin" mat-icon-button aria-label="Settings" [matMenuTriggerFor]="spaces">
       <mat-icon>apps</mat-icon>
     </button>
+    <div *ngIf="isLogged && !authService.isAdmin">
+      <button mat-raised-button aria-label="Settings" color="primary" (click)="goToUser()" class="mx-2">
+        Order
+      </button>
+      <button mat-raised-button aria-label="Settings" color="primary" (click)="goToUserHistory()" class="mx-2">
+        History
+      </button>
+    </div>
     <mat-menu #spaces="matMenu">
       <button mat-menu-item *ngIf="authService.isAdmin" (click)="goToAdmin()"
         [matMenuTriggerFor]="adminSection">Admin</button>
@@ -23,7 +31,8 @@
     </mat-menu>
   </div>
   <span class="spacer"></span>
-  <p *ngIf="loggedUser" class="m-0 px-3">{{ loggedUser.displayName ? loggedUser.displayName + ' - ' : '(empty) - ' }}{{ loggedUser.email }}
+  <p *ngIf="loggedUser" class="m-0 px-3">
+    {{ loggedUser.displayName ? loggedUser.displayName + ' - ' : '(empty) - ' }}{{ loggedUser.email }}
   </p>
   <button *ngIf="isLogged" mat-raised-button color="accent" (click)="logOut()">Logout</button>
 </mat-toolbar>

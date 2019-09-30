@@ -40,7 +40,7 @@
                 <button *ngIf="!element.isPaid" mat-icon-button (click)="onCancelOrder(element)">
                     <mat-icon aria-hidden="false" title="Cancel order" aria-label="Cancel order">cancel</mat-icon>
                 </button>
-                <button *ngIf="!element.isPaymentNotified" mat-icon-button (click)="onNotifyPaid(element)">
+                <button *ngIf="!element.isPaymentNotified && !element.isPaid" mat-icon-button (click)="onNotifyPaid(element)">
                     <mat-icon aria-hidden="false" title="Notify payment for order" aria-label="Notify payment for order">payment</mat-icon>
                 </button>
             </td>

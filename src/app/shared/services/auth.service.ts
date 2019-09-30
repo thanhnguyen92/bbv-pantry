@@ -77,7 +77,7 @@ export class AuthService {
     const refreshToken = user.refreshToken;
     localStorage.setItem(USER_ACCESSTOKEN, accessToken);
     localStorage.setItem(USER_REFRESHTOKEN, refreshToken);
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    // localStorage.setItem(USER_KEY, JSON.stringify(user));
   }
 
   private clearStorage() {
@@ -127,10 +127,10 @@ export class AuthService {
     return false;
   }
 
-  get currentUser(): firebase.User {
+  get currentUser() {
     const user = localStorage.getItem(USER_KEY);
     if (user) {
-      return JSON.parse(user) as firebase.User;
+      return JSON.parse(user);
     }
 
     return undefined;
