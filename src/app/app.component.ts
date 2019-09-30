@@ -111,6 +111,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.route.navigate(['admin', 'order']);
   }
 
+  goToUserManagement() {
+    this.setupNotification();
+    this.route.navigate(['admin', 'user-management']);
+  }
+
   private setupNotification() {
     if (this.notificationSubscription) {
       this.notificationSubscription.unsubscribe();

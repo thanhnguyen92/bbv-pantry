@@ -16,5 +16,6 @@ export const AdminRoutingModule = RouterModule.forChild([
   },
   { path: 'menu', loadChildren: './menu/menu.module#MenuModule' },
   { path: 'order', loadChildren: './order/order.module#OrderModule' },
-  { path: 'booking', loadChildren: './booking/booking.module#BookingModule' }
+  { path: 'booking', loadChildren: './booking/booking.module#BookingModule' },
+  { path: 'user-management', loadChildren: './user-management/user-management.module#UserManagementModule' }
 ]);
