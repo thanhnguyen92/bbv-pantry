@@ -12,10 +12,14 @@ import {
 export class FirebaseService {
   path: string;
 
-  constructor(private db: AngularFirestore) { }
+  constructor(private db: AngularFirestore) {}
 
   public setPath(path) {
     this.path = path;
+  }
+
+  public createId() {
+    return this.db.createId();
   }
 
   public get<T>(id: string): AngularFirestoreDocument {
@@ -38,5 +42,18 @@ export class FirebaseService {
 
   public delete(id: string) {
     return this.db.doc(`${this.path}/${id}`).delete();
+  }
+  public async deleteObject() {
+    const qry: firebase.firestore.QuerySnapshot = await this.db
+      .collection(`${this.path}`)
+      .ref.get();
+    const batch = this.db.firestore.batch();
+    qry.forEach(doc => {
+      console.log('deleting....', doc.id);
+      batch.delete(doc.ref);
+    });
+  }
+  private errorCallback(message) {
+    console.log(message);
   }
 }

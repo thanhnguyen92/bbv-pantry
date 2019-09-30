@@ -15,11 +15,9 @@ export class AdminComponent implements OnInit {
     private router: Router,
     private pushNotificationService: PushNotificationService,
     private authService: AuthService
-  ) { }
+  ) {}
 
-  ngOnInit() {
-    this.setupNotification();
-  }
+  ngOnInit() {}
 
   onRestaurant() {
     this.router.navigate(['admin', 'restaurant']);
@@ -27,32 +25,5 @@ export class AdminComponent implements OnInit {
 
   onMenu() {
     this.router.navigate(['admin', 'menu']);
-  }
-
-  onBooking() {
-    this.router.navigate(['admin', 'booking']);
-  }
-
-  onOrder() {
-    this.router.navigate(['admin', 'order']);
-  }
-
-  private setupNotification() {
-    const user = this.authService.currentUser;
-    if (user) {
-      // this.pushNotificationService
-      //   .getByEmailOrUserId(user.email, user.id)
-      //   .subscribe(res => {
-      //     console.log(res);
-      //     if (res && res !== []) {
-      //       NotificationService.showNotificationWindows(
-      //         (res as PushNotificationModel).type
-      //       );
-      //       this.pushNotificationService
-      //         .delete((res as PushNotificationModel).id)
-      //         .then(result => console.log(result));
-      //     }
-      //   });
-    }
   }
 }

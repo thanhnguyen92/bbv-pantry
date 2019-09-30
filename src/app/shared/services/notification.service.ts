@@ -61,22 +61,22 @@ export class NotificationService {
     });
   }
 
-  static showNotificationWindows(type) {
+  static showNotificationWindows(message) {
     if (!('Notification' in window)) {
       alert('This browser does not support system notifications');
     } else if (Notification.permission === 'granted') {
-      const notification = new Notification('show Notification success!!');
+      const notification = new Notification(message);
     } else if (Notification.permission !== 'denied') {
       Notification.requestPermission(permission => {
         if (permission === 'granted') {
-          const notification = new Notification('show Notification success!!');
+          const notification = new Notification(message);
         }
       });
     }
   }
 
+  // static showNotificationWindows(message)
   static requestPermissionNotificationWindows() {
-    Notification.requestPermission().then(res => {
-    });
+    Notification.requestPermission().then(res => {});
   }
 }
