@@ -48,14 +48,12 @@ export class PushNotificationService {
 
   delete(uid) {
     this.fireService.setPath(ENTITY_NAME);
-    debugger;
     // const debug = this.database.ref('notification');
     return this.fireService.delete(uid);
   }
 
   deleteCol() {
     this.fireService.setPath(ENTITY_NAME);
-    debugger;
     // const debug = this.database.ref('notification');
     return this.fireService.deleteObject();
   }

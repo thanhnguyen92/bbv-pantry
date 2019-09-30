@@ -110,7 +110,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   private setupNotification() {
-    debugger;
     if (this.notificationSubscription) {
       this.notificationSubscription.unsubscribe();
     }
@@ -121,14 +120,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
         .subscribe(res => {
           console.log(res);
           if (res && res !== [] && res.length > 0) {
-            debugger;
             NotificationService.showNotificationWindows(
               (res as PushNotificationModel).type
             );
             const type = typeof res;
             if (type === 'object') {
               this.pushNotificationService
-                .delete((res[0] as PushNotificationModel).uid)
+                .delete((res[0] as PushNotificationModel).id)
                 .then(result => console.log(result));
               // res.forEach(item => {
               //   this.pushNotificationService
