@@ -235,7 +235,7 @@ export class OrderComponent implements OnInit, OnDestroy {
                     order['displayName'] =
                       user.displayName && user.displayName.length > 0
                         ? user.displayName
-                        : '(null)';
+                        : '(empty)';
                     order['email'] = user.email;
                   }
                 });

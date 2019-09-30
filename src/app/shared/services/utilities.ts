@@ -1,3 +1,4 @@
+import { UserRole } from 'src/app/shared/enums/user-role.enum';
 import { Subscription } from 'rxjs';
 import { Query, CollectionReference } from '@angular/fire/firestore';
 import * as moment from 'moment';

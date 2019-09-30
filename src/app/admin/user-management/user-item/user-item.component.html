@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>{{ data.id ? 'Edit user' : 'Add user' }}</h1>
+<div mat-dialog-content style="overflow: hidden !important;">
+    <mat-form-field>
+        <input matInput disabled placeholder="Email" [(ngModel)]="data.email" />
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Display Name" [(ngModel)]="data.displayName" />
+    </mat-form-field>
+    <div>
+        <mat-checkbox class="d-block" matInput [(ngModel)]="isAdmin">Admin</mat-checkbox>
+        <mat-checkbox class="d-block" matInput [(ngModel)]="isUser">User</mat-checkbox>
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button mat-dialog-close (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()">Save</button>
+</div>

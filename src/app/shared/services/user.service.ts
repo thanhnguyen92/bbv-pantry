@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { FirebaseService } from './firebase.service';
 import { map } from 'rxjs/operators';
+import { of } from 'rxjs';
 import { UserModel } from '../models/user.model';
-import { of, Observable } from 'rxjs';
 
 const USER_ENTITY = 'users';
 @Injectable({
@@ -10,6 +10,18 @@ const USER_ENTITY = 'users';
 })
 export class UserService {
     constructor(private firebaseService: FirebaseService) { }
+
+    gets() {
+        this.firebaseService.setPath(USER_ENTITY);
+        return this.firebaseService.gets<UserModel>().snapshotChanges()
+            .pipe(map(entities => {
+                return entities.map(entity => {
+                    const data = entity.payload.doc.data();
+                    const id = entity.payload.doc.id;
+                    return { id, ...data };
+                });
+            }));
+    }
 
     getByUserIds(userIds: string[]) {
         if (userIds && userIds.length > 0) {
@@ -40,5 +52,10 @@ export class UserService {
                 const id = entity.payload.id;
                 return { id, ...data };
             }));
+    }
+
+    update(entity: UserModel) {
+        this.firebaseService.setPath(USER_ENTITY);
+        return this.firebaseService.update<UserModel>(entity, entity.id);
     }
 }

@@ -67,7 +67,7 @@ export class UserComponent implements OnInit, OnDestroy {
                         const restaurant = restaurants.find(t => t.id === booking.restaurantId);
                         booking['restaurantName'] = restaurant
                           ? restaurant.name
-                          : '(null)';
+                          : '(empty)';
                       });
                       this.restaurantId = this.bookings[0].restaurantId;
                     }

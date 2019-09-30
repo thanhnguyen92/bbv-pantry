@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { AuthService } from 'src/app/shared/services/auth.service';
-import { Security } from 'src/app/shared/models/security.model';
+import { SecurityModel } from 'src/app/shared/models/security.model';
 import { SecurityService } from '../services/security.service';
 import { UserRole } from 'src/app/shared/enums/user-role.enum';
 import { MatDialog } from '@angular/material';
@@ -93,10 +93,10 @@ export class LoginComponent implements OnInit {
             });
           }
 
-          await this.securityService.getRoles(loggedUser.uid).subscribe(results => {
+          await this.securityService.getRolesByUserId(loggedUser.uid).subscribe(results => {
             this.appService.setLoadingStatus(false);
             if (results) {
-              const security = results[0] as Security;
+              const security = results[0] as SecurityModel;
 
               this.authService.setIsLogged(true);
               this.authService.setUserRoles(security.roles);
