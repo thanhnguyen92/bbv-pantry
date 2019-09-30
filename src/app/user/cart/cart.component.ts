@@ -53,6 +53,7 @@ export class UserCartComponent {
   }
 
   proceedOrder() {
+    this.dialog.closeAll();
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '250px',
       data: { title: 'Confirmation', content: 'Are you sure to process this order?', noButton: 'No', yesButton: 'Yes' }

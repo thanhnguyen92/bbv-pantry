@@ -10,7 +10,7 @@
             <mat-checkbox formControlName="isRegister" (change)="onRegisterAccount($event)">Do you already
                 have an account?
             </mat-checkbox>
-            <mat-form-field [hidden]="isRegister" class="example-full-width">
+            <mat-form-field [hidden]="!isRegister" class="example-full-width">
                 <input matInput placeholder="Display Name" formControlName="displayName" name="displayName" required>
             </mat-form-field>
             <mat-form-field class="example-full-width">
@@ -20,7 +20,7 @@
         </form>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-raised-button (click)="login()" color="primary">Login</button>
-        <button mat-raised-button (click)="register()" color="accent">Register</button>
+        <button mat-raised-button [disabled]="isRegister" (click)="login()" color="primary">Login</button>
+        <button mat-raised-button [disabled]="!isRegister" (click)="register()" color="accent">Register</button>
     </mat-card-actions>
 </mat-card>

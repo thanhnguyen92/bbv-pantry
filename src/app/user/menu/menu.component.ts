@@ -51,7 +51,7 @@ export class UserMenuComponent implements OnInit, OnDestroy, OnChanges {
           NotificationService.showInfoMessage(`There are a few updates on your menu, please check again`);
           this.menuChanged.emit(menuItems);
         }
-        this.menu = [...menuItems];
+        this.menu = [...menuItems.filter(t => t.isActive)];
         this.appService.setLoadingStatus(false);
       }, () => this.appService.setLoadingStatus(false));
     }
