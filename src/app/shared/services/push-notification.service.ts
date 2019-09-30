@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { FirebaseService } from './firebase.service';
 import { map } from 'rxjs/operators';
 import { PushNotificationModel } from '../models/push-notification.model';
-import { filter } from 'minimatch';
 
 const ENTITY_NAME = 'notification';
 @Injectable({
@@ -12,7 +11,7 @@ export class PushNotificationService {
   /**
    *
    */
-  constructor(private fireService: FirebaseService) { }
+  constructor(private fireService: FirebaseService) {}
 
   getByEmailOrUserId(email, userId) {
     this.fireService.setPath(ENTITY_NAME);
@@ -23,6 +22,7 @@ export class PushNotificationService {
         map(entities => {
           return entities
             .filter(entity => {
+              console.log(entity);
               const data = entity.payload.doc.data() as PushNotificationModel;
               if (
                 (email && data.email === email) ||
@@ -32,6 +32,7 @@ export class PushNotificationService {
               }
             })
             .map(entity => {
+              console.log(entity);
               const data = entity.payload.doc.data();
               const id = entity.payload.doc.id;
               return { id, ...data };
@@ -42,11 +43,20 @@ export class PushNotificationService {
 
   push(pushNotificationModel: PushNotificationModel) {
     this.fireService.setPath(ENTITY_NAME);
-    // return this.fireService.add<PushNotificationModel>(pushNotificationModel);
+    return this.fireService.add<PushNotificationModel>(pushNotificationModel);
   }
 
   delete(uid) {
     this.fireService.setPath(ENTITY_NAME);
+    debugger;
+    // const debug = this.database.ref('notification');
     return this.fireService.delete(uid);
+  }
+
+  deleteCol() {
+    this.fireService.setPath(ENTITY_NAME);
+    debugger;
+    // const debug = this.database.ref('notification');
+    return this.fireService.deleteObject();
   }
 }

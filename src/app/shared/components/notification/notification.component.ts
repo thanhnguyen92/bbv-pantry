@@ -9,6 +9,7 @@ import { NotificationEnum } from '../../enums/notification.enum';
 import { NotificationService } from '../../services/notification.service';
 import { Utilities } from '../../services/utilities';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { PushNotificationService } from '../../services/push-notification.service';
 
 @Component({
   selector: 'app-notification',
