@@ -7,7 +7,6 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { Security } from 'src/app/shared/models/security.model';
 import { SecurityService } from '../services/security.service';
-import { map, finalize } from 'rxjs/operators';
 import { UserRole } from 'src/app/shared/enums/user-role.enum';
 import { MatDialog } from '@angular/material';
 import { AppService } from 'src/app/shared/services/app.service';
@@ -71,7 +70,7 @@ export class LoginComponent implements OnInit {
     const formVal = this.loginForm.value;
     this.authService
       .login(formVal.userName, formVal.password)
-      .then(result => {
+      .then(async result => {
         if (result) {
           const loggedUser = result.user;
           if (!loggedUser.emailVerified) {
@@ -83,15 +82,15 @@ export class LoginComponent implements OnInit {
             return;
           } else {
             // Update state in database
-            this.userService.get(loggedUser.uid).subscribe(user => {
+            await this.userService.get(loggedUser.uid).subscribe(async user => {
               if (!user.emailVerified) {
                 user.emailVerified = true;
-                this.authService.setUserData(user);
+                await this.authService.setUserData(user);
               }
             });
           }
 
-          this.securityService.getRoles(loggedUser.uid).subscribe(results => {
+          await this.securityService.getRoles(loggedUser.uid).subscribe(results => {
             this.appService.setLoadingStatus(false);
             if (results) {
               const security = results[0] as Security;
@@ -124,39 +123,45 @@ export class LoginComponent implements OnInit {
 
   register() {
     const formVal = this.loginForm.value;
+    this.appService.setLoadingStatus(true);
     this.authService
       .register(formVal.userName, formVal.password)
-      .then(result => {
+      .then(async result => {
         const newUser = result.user;
         newUser.displayName = formVal.displayName;
 
         // Add roles
         if (this.adminAccess) {
-          this.securityService.assignRoles(newUser.uid, [
+          await this.securityService.assignRoles(newUser.uid, [
             UserRole.Admin,
             UserRole.User
           ]);
         } else {
-          this.securityService.assignRoles(newUser.uid, [UserRole.User]);
+          await this.securityService.assignRoles(newUser.uid, [UserRole.User]);
         }
 
-        this.authService.sendVerification();
-        this.authService.setUserData(newUser);
+        await this.authService.sendVerification();
+        await this.authService.setUserData(newUser);
 
+        this.appService.setLoadingStatus(false);
         NotificationService.showSuccessMessage(
           'Register successful. Please check your email for verification'
         );
       })
       .catch(error => {
+        this.appService.setLoadingStatus(false);
         NotificationService.showErrorMessage(error.message);
       });
   }
 
   onRegisterAccount(event) {
-    console.log(event);
+    if (event) {
+      this.isRegister = event.checked;
+    }
   }
 
   private showSectionSelection() {
+    this.dialog.closeAll();
     const dialogRef = this.dialog.open(SectionSelectionComponent, {
       width: '250px',
       data: {},

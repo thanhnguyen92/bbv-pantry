@@ -64,10 +64,6 @@ export class OrderComponent implements OnInit, OnDestroy {
       res => {
         if (res) {
           this.restaurants = res;
-          // this.restaurants.unshift({
-          //   uid: ALL_RESTAURANT,
-          //   name: 'All'
-          // } as RestaurantModel);
           this.restaurantId = res.length > 0 ? res[0].id : undefined;
           this.bookingService.getByRestaurantId(this.restaurantId).subscribe(
             bookings => {
@@ -95,7 +91,6 @@ export class OrderComponent implements OnInit, OnDestroy {
   }
 
   onCopyOrderItems() {
-    console.log(this.orders);
     if (this.orders && this.orders.length > 0) {
       const orderedItems: OrderItem[] = [];
 
@@ -159,6 +154,8 @@ export class OrderComponent implements OnInit, OnDestroy {
     if (dialogRef && element.isPaid) {
       return;
     }
+
+    this.dialog.closeAll();
     dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '250px',
       data: {
@@ -170,8 +167,7 @@ export class OrderComponent implements OnInit, OnDestroy {
       }
     });
 
-    const payConfirmationSub = dialogRef
-      .afterClosed()
+    const payConfirmationSub = dialogRef.afterClosed()
       .pipe(finalize(() => Utilities.unsubscribe(payConfirmationSub)))
       .subscribe(res => {
         if (res) {
@@ -182,6 +178,7 @@ export class OrderComponent implements OnInit, OnDestroy {
             .subscribe(order => {
               if (order) {
                 order.isPaid = true;
+                order.isPaymentNotified = false;
                 this.orderService
                   .update(order)
                   .then(() => {
@@ -223,6 +220,7 @@ export class OrderComponent implements OnInit, OnDestroy {
     this.orderService.getByBookingId(bookingId).subscribe(
       results => {
         if (results) {
+          console.log(results);
           let isDecoratedUsers = false;
           let isDecoratedBookings = false;
 

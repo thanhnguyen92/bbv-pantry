@@ -21,12 +21,12 @@ export class SecurityService {
         }));
     }
 
-    assignRoles(userId, roles: UserRole[]) {
+    async assignRoles(userId, roles: UserRole[]) {
         this.firebaseService.setPath(ENTITY_NAME);
         const entity = {
             userId,
             roles
         } as Security;
-        this.firebaseService.add<Security>(entity);
+        await this.firebaseService.add<Security>(entity);
     }
 }

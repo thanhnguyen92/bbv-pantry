@@ -84,6 +84,7 @@ export class RestaurantComponent implements OnInit, OnDestroy {
     if (dialogRef) {
       return;
     }
+    this.dialog.closeAll();
     dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '250px',
       data: { title: 'Confirmation', content: 'Are you sure to delete?', noButton: 'No', yesButton: 'Yes' }
@@ -105,6 +106,7 @@ export class RestaurantComponent implements OnInit, OnDestroy {
   }
 
   private showDialog(restaurant: RestaurantModel = new RestaurantModel()) {
+    this.dialog.closeAll();
     const dialogRef = this.dialog.open(RestaurantItemComponent, {
       width: '250px',
       data: { ...restaurant },

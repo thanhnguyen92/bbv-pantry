@@ -30,7 +30,7 @@ export class BookingItemComponent implements OnInit {
     private restaurantService: RestaurantService,
     @Inject(MAT_DIALOG_DATA) public data: BookingModel) {
     this.form = new FormGroup({
-      uid: new FormControl(''),
+      id: new FormControl(''),
       bookingFrom: new FormControl(new Date(), [Validators.required]),
       bookingTo: new FormControl(new Date(), [Validators.required]),
       isClosed: new FormControl(false),

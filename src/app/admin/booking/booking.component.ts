@@ -119,6 +119,7 @@ export class BookingComponent implements OnInit, OnDestroy {
   }
 
   private showPopupBookingItem(bookingItem?: BookingModel) {
+    this.dialog.closeAll();
     const diaLogRef = this.dialog.open(BookingItemComponent, {
       width: '250px',
       data: { ...bookingItem },
@@ -155,6 +156,7 @@ export class BookingComponent implements OnInit, OnDestroy {
     if (dialogRef) {
       return;
     }
+    this.dialog.closeAll();
     dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '250px',
       data: {

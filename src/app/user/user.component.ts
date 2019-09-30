@@ -1,6 +1,4 @@
 import { Router } from '@angular/router';
-import { BookingModel } from 'src/app/shared/models/booking.model';
-
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 
@@ -18,8 +16,7 @@ import { MenuModel } from '../shared/models/menu.model';
 import { OrderItem } from '../shared/models/order-item.model';
 import { OrderModel } from '../shared/models/order.model';
 import { RestaurantModel } from '../shared/models/restaurant.model';
-import { PushNotificationModel } from '../shared/models/push-notification.model';
-import { PushNotificationService } from '../shared/services/push-notification.service';
+import { BookingModel } from 'src/app/shared/models/booking.model';
 
 @Component({
   selector: 'app-user',
@@ -106,14 +103,18 @@ export class UserComponent implements OnInit, OnDestroy {
   }
 
   menuChanged(menuItems: MenuModel[]) {
+    const itemHidden: string[] = [];
     this.cart.forEach(cartItem => {
       const menuItem = menuItems.find(t => t.id === cartItem.menuId);
       if (menuItem) {
         cartItem.price = menuItem.price;
+        if (!menuItem.isActive) {
+          itemHidden.push(menuItem.id);
+        }
       }
     });
 
-    this.cart = [...this.cart];
+    this.cart = [...this.cart.filter(t => itemHidden.indexOf(t.menuId) < 0)];
   }
 
   addToCart(item: MenuModel) {
@@ -171,7 +172,8 @@ export class UserComponent implements OnInit, OnDestroy {
             userId: this.authService.currentUser.uid,
             isPaid: false,
             restaurantId: this.restaurantId,
-            bookingId: this.bookingId
+            bookingId: this.bookingId,
+            isPaymentNotified: false,
           } as OrderModel;
 
           this.orderService

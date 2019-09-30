@@ -31,12 +31,13 @@ export class FirebaseService {
   }
 
   public add<T>(entity: T) {
-    const entities = this.db.collection<T>(this.path);
-    return entities.add(entity);
+    const id = this.db.createId();
+    entity['id'] = id;
+    return this.db.doc(`${this.path}/${id}`).set(entity);
   }
 
-  public update<T>(entity: T, uid: string) {
-    return this.db.doc(`${this.path}/${uid}`).update(entity);
+  public update<T>(entity: T, id: string) {
+    return this.db.doc(`${this.path}/${id}`).update(entity);
   }
 
   public delete(id: string) {

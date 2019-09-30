@@ -112,6 +112,7 @@ export class MenuComponent implements OnInit {
   }
 
   private showPopupMenuItem(menuItem: MenuModel = new MenuModel()) {
+    this.dialog.closeAll();
     const diaLogRef = this.dialog.open(MenuItemComponent, {
       width: '250px',
       data: { ...menuItem },
@@ -141,6 +142,7 @@ export class MenuComponent implements OnInit {
   }
 
   private showRestaurantSelection() {
+    this.dialog.closeAll();
     const diaLogRef = this.dialog.open(RestaurantSelectionComponent, {
       width: '250px',
       data: {},
@@ -157,6 +159,7 @@ export class MenuComponent implements OnInit {
   }
 
   private showDialogConfirmDelete(menuItem: MenuModel) {
+    this.dialog.closeAll();
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '250px',
       data: { title: 'Confirmation', content: 'Are you sure to delete?', noButton: 'No', yesButton: 'Yes' }
