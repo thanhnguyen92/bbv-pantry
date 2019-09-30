@@ -118,10 +118,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
       this.notificationSubscription = this.pushNotificationService
         .getByEmailOrUserId(user.email, user.uid)
         .subscribe(res => {
-          console.log(res);
           if (res && res !== [] && res.length > 0) {
             NotificationService.showNotificationWindows(
-              (res as PushNotificationModel).type
+              (res[0] as PushNotificationModel).message
             );
             const type = typeof res;
             if (type === 'object') {
