@@ -79,9 +79,6 @@ export class UserComponent implements OnInit, OnDestroy {
             }
           }
 
-          NotificationService.showInfoMessage(
-            `Don't have any available menus at the moment`
-          );
           this.appService.setLoadingStatus(false);
         },
         () => this.appService.setLoadingStatus(false)
@@ -169,7 +166,7 @@ export class UserComponent implements OnInit, OnDestroy {
             orderItems: cart,
             orderDate: Utilities.convertToUTC(new Date()),
             totalPrice: this.orderService.calculatePrice(cart),
-            userId: this.authService.currentUser.uid,
+            userId: this.authService.currentUser.id,
             isPaid: false,
             restaurantId: this.restaurantId,
             bookingId: this.bookingId,

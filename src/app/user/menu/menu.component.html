@@ -1,4 +1,5 @@
 <div class="d-inherit">
+    <div *ngIf="menu.length === 0" class="row font-italic">Don't have any available menus at the moment</div>
     <mat-card class="card m-3" *ngFor="let menuItem of menu">
         <mat-card-header class="card__header">
             <mat-card-title class="card__header__title">{{menuItem.name}}</mat-card-title>

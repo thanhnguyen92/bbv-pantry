@@ -1,14 +1,14 @@
 <mat-card *ngIf="!isLogged" class="example-card">
     <mat-card-header>
-        <mat-card-title>Login</mat-card-title>
+        <mat-card-title>{{ isRegister ? 'Register' : 'Login' }}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
         <form class="example-form" [formGroup]="loginForm">
             <mat-form-field class="example-full-width">
                 <input matInput placeholder="Username" formControlName="userName" name="username" required>
             </mat-form-field>
-            <mat-checkbox formControlName="isRegister" (change)="onRegisterAccount($event)">Do you already
-                have an account?
+            <mat-checkbox formControlName="isRegister" (change)="onRegisterAccount($event)">Do not have an account? Sign
+                up for a new one!
             </mat-checkbox>
             <mat-form-field [hidden]="!isRegister" class="example-full-width">
                 <input matInput placeholder="Display Name" formControlName="displayName" name="displayName" required>

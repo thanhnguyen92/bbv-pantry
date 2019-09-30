@@ -86,10 +86,10 @@ export class LoginComponent implements OnInit {
             await this.userService.get(loggedUser.uid).subscribe(async user => {
               if (!user.emailVerified) {
                 user.emailVerified = true;
-                loggedUser.displayName = user.displayName;
-                this.authService.currentUser = loggedUser;
                 await this.authService.setUserData(user);
               }
+
+              this.authService.currentUser = user;
             });
           }
 
@@ -125,6 +125,12 @@ export class LoginComponent implements OnInit {
   }
 
   register() {
+    if (!this.loginForm.valid) {
+      NotificationService.showWarningMessage(
+        'Please fill in some required fields'
+      );
+      return;
+    }
     const formVal = this.loginForm.value;
     this.appService.setLoadingStatus(true);
     this.authService
@@ -155,7 +161,6 @@ export class LoginComponent implements OnInit {
         NotificationService.showSuccessMessage(
           'Register successful. Please check your email for verification'
         );
-        this.authService.logOut();
       })
       .catch(error => {
         this.appService.setLoadingStatus(false);

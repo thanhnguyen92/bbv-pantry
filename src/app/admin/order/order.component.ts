@@ -97,11 +97,12 @@ export class OrderComponent implements OnInit, OnDestroy {
       this.orders.forEach(order => {
         if (order && order.orderItems && order.orderItems.length > 0) {
           order.orderItems.forEach(item => {
-            const orderedItem = orderedItems.find(t => t.menuId === item.menuId);
+            const dbItem = { ...item };
+            const orderedItem = orderedItems.find(t => t.menuId === dbItem.menuId);
             if (orderedItem) {
-              orderedItem.amount += item.amount;
+              orderedItem.amount += dbItem.amount;
             } else {
-              orderedItems.push(item);
+              orderedItems.push(dbItem);
             }
           });
         }

@@ -53,7 +53,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     this.pubSubService.subscribe(PubSubChannel.IS_USER_LOGGED, content => {
       this.isLogged = content;
-      this.loggedUser = this.authService.currentUser;
+      setTimeout(() => {
+        this.loggedUser = this.authService.currentUser;
+      }, 100);
     });
   }
 
