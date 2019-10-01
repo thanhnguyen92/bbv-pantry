@@ -121,6 +121,9 @@ export class MenuComponent implements OnInit {
 
     diaLogRef.afterClosed().subscribe((data: MenuModel) => {
       if (data) {
+        if (!data.price) {
+          data.price = 0;
+        }
         let service;
         if (data.id) {
           service = this.menuService.update({ ...data });

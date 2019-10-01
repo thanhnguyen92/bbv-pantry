@@ -2,6 +2,8 @@
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
 @import './app/styles/bootstrap/bootstrap.min.css';
 @import './app/styles/components/space';
+@import 'theme.scss';
+@include angular-material-theme($my-theme);
 
 /**
 *  Colors system
@@ -97,4 +99,8 @@ th.mat-sort-header-sorted {
 
 .mat-raised-button.mat-accent {
   background-color: $red;
+}
+
+.mat-checkbox-label {
+  white-space: normal !important;
 }

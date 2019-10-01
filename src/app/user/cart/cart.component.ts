@@ -16,7 +16,8 @@ export class UserCartComponent {
 
   total = 0;
 
-  constructor(private dialog: MatDialog,
+  constructor(
+    private dialog: MatDialog,
     public orderService: OrderService) { }
 
   addAmount(item: OrderItem) {

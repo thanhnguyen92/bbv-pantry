@@ -5,8 +5,8 @@
     <mat-select (selectionChange)="onBookingChanged($event)" [(value)]="bookingId">
         <mat-option *ngFor="let booking of bookings" [value]="booking.id"
             title="{{ booking['restaurantName'] }} ({{ booking.bookingFrom | date: 'dd.MM.y' }} - {{ booking.bookingTo | date: 'dd.MM.y' }})">
-            {{ booking['restaurantName'] }} ({{ booking.bookingFrom | date: 'dd.MM.y' }} -
-            {{ booking.bookingTo | date: 'dd.MM.y' }})
+            {{ booking['restaurantName'] }} (<b>{{ booking.bookingFrom | date: 'dd.MM.y HH:mm' }}</b> to
+            <b>{{ booking.bookingTo | date: 'dd.MM.y HH:mm' }}</b>)
         </mat-option>
     </mat-select>
 </div>

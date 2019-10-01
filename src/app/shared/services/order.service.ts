@@ -130,6 +130,9 @@ export class OrderService {
 
     let total = 0;
     cart.forEach(item => {
+      if (!item.price) {
+        item.price = 0;
+      }
       total += item.amount * item.price;
     });
     return total;

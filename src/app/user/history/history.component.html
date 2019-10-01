@@ -16,7 +16,7 @@
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Order Items</th>
             <td mat-cell *matCellDef="let element">
                 <div *ngFor="let orderItem of element.orderItems">
-                    {{ orderItem.name }} ({{ orderItem.amount }}) - {{ orderItem.price }}
+                    {{ orderItem.name }} ({{ orderItem.amount }}) - {{ orderItem.price | currency:'VND' }}
                 </div>
             </td>
         </ng-container>
