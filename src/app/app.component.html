@@ -1,7 +1,8 @@
 <mat-toolbar class="align-between">
   <div class="d-flex">
-    <a class="header-item pr-4 align-self-center" [routerLink]="['/']">
-      bbv Pantry
+    <a class="header-item pr-3 align-self-center text-decoration-none hyperlink" style="color: #e53935;" [routerLink]="['/']">
+      <img src="{{ assetsUrl + 'images/logo.svg' }}" class="logo pr-2" alt="{{ 'bbv Pantry' }}" />
+      Pantry
     </a>
     <button *ngIf="isLogged && authService.isAdmin" mat-icon-button aria-label="Settings" [matMenuTriggerFor]="spaces">
       <mat-icon>apps</mat-icon>

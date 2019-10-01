@@ -3,6 +3,14 @@
 @import './app/styles/bootstrap/bootstrap.min.css';
 @import './app/styles/components/space';
 
+/**
+*  Colors system
+*/
+$primary: #109cf1 !default;
+$secondary: #6c757d !default;
+$danger: #f7685b !default;
+$card-text: #192a3e !default;
+
 .success-message {
   background: palevioletred;
   color: whitesmoke;
@@ -54,4 +62,8 @@ th.mat-sort-header-sorted {
 
 .default {
   color: black;
+}
+
+.hyperlink {
+  color: $primary;
 }
