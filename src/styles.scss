@@ -10,6 +10,28 @@ $primary: #109cf1 !default;
 $secondary: #6c757d !default;
 $danger: #f7685b !default;
 $card-text: #192a3e !default;
+$blue: #109cf1 !default;
+$indigo: #6610f2 !default;
+$purple: #6f42c1 !default;
+$pink: #e83e8c !default;
+$red: #e53935 !default;
+$orange: #fd7e14 !default;
+$yellow: #ffb946 !default;
+$green: #2ed47a !default;
+$teal: #20c997 !default;
+$cyan: #17a2b8 !default;
+
+$white: #ffffff !default;
+$gray-100: #f5f6f8 !default;
+$gray-200: #ebeff2 !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #c2cfe0 !default;
+$gray-500: #adb5bd !default;
+$gray-600: #90a0b7 !default;
+$gray-700: #495057 !default;
+$gray-800: #334d6e !default;
+$gray-900: #212529 !default;
+$black: #000000 !default;
 
 .success-message {
   background: palevioletred;
@@ -66,4 +88,13 @@ th.mat-sort-header-sorted {
 
 .hyperlink {
   color: $primary;
+}
+
+.mat-raised-button.mat-primary,
+.mat-checkbox-checked.mat-accent .mat-checkbox-background {
+  background-color: $primary;
+}
+
+.mat-raised-button.mat-accent {
+  background-color: $red;
 }

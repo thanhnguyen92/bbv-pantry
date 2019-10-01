@@ -162,6 +162,10 @@ export class LoginComponent implements OnInit {
         NotificationService.showSuccessMessage(
           'Register successful. Please check your email for verification'
         );
+
+        // Back to Login form
+        this.isRegister = false;
+        this.loginForm.controls.isRegister.setValue(false);
       })
       .catch(error => {
         this.appService.setLoadingStatus(false);
@@ -184,6 +188,11 @@ export class LoginComponent implements OnInit {
       .then(async () => {
         this.appService.setLoadingStatus(false);
         NotificationService.showSuccessMessage('An email has been sent to email with further instructions on how to reset your password.');
+
+        // Back to Login form
+        this.isResetPassword = false;
+        this.isRegister = false;
+        this.loginForm.controls.isRegister.setValue(false);
       })
       .catch(err => {
         NotificationService.showErrorMessage(err.message);
