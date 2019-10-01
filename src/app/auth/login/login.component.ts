@@ -35,7 +35,8 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private appService: AppService,
-    private userService: UserService) {
+    private userService: UserService
+  ) {
     this.loginForm = this.formBuilder.group({
       userName: [''],
       displayName: [''],
@@ -94,26 +95,28 @@ export class LoginComponent implements OnInit {
             });
           }
 
-          await this.securityService.getRolesByUserId(loggedUser.uid).subscribe(results => {
-            this.appService.setLoadingStatus(false);
-            if (results) {
-              const security = results[0] as SecurityModel;
+          await this.securityService
+            .getRolesByUserId(loggedUser.uid)
+            .subscribe(results => {
+              this.appService.setLoadingStatus(false);
+              if (results) {
+                const security = results[0] as SecurityModel;
 
-              this.authService.setIsLogged(true);
-              this.authService.setUserRoles(security.roles);
-              this.isLogged = true;
-              if (this.authService.isAdmin) {
-                // Show selection
-                this.showSectionSelection();
+                this.authService.setIsLogged(true);
+                this.authService.setUserRoles(security.roles);
+                this.isLogged = true;
+                if (this.authService.isAdmin) {
+                  // Show selection
+                  this.showSectionSelection();
+                } else {
+                  // Navigate to User
+                  this.router.navigate(['user']);
+                }
               } else {
-                // Navigate to User
-                this.router.navigate(['user']);
+                NotificationService.showErrorMessage('Access denied');
+                this.authService.logOut();
               }
-            } else {
-              NotificationService.showErrorMessage('Access denied');
-              this.authService.logOut();
-            }
-          });
+            });
         }
       })
       .catch(() => {
@@ -180,17 +183,24 @@ export class LoginComponent implements OnInit {
     const email = formVal.userName;
 
     this.appService.setLoadingStatus(true);
-    this.authService.resetPassword(email)
+    this.authService
+      .resetPassword(email)
       .then(async () => {
         this.appService.setLoadingStatus(false);
-        NotificationService.showSuccessMessage('An email has been sent to email with further instructions on how to reset your password.');
+        NotificationService.showSuccessMessage(
+          'An email has been sent to email with further instructions on how to reset your password.'
+        );
       })
       .catch(err => {
         NotificationService.showErrorMessage(err.message);
         this.appService.setLoadingStatus(false);
       });
   }
-
+  submitLogin(event) {
+    if (event.keyCode === 13) {
+      this.login();
+    }
+  }
   private showSectionSelection() {
     this.dialog.closeAll();
     const dialogRef = this.dialog.open(SectionSelectionComponent, {

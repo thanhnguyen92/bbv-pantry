@@ -6,7 +6,7 @@
         <div *ngIf="isResetPassword" class="pb-2">
             {{ 'Please enter your email and we will send you instructions to reset your password.' }}
         </div>
-        <form class="example-form" [formGroup]="loginForm">
+        <form class="example-form" [formGroup]="loginForm" (keydown)="submitLogin($event)">
             <mat-form-field class="example-full-width">
                 <input matInput placeholder="Email" formControlName="userName" name="username" required>
                 <mat-hint *ngIf="isRegister">This email is used for verification. Please use the real email.</mat-hint>
