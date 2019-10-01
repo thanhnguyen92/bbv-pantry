@@ -1,52 +1,110 @@
-<mat-button-toggle-group name="filter" aria-label="Filters" (change)="filterChanged($event)" value="unpaid">
-    <mat-button-toggle value="unpaid">Ongoing</mat-button-toggle>
-    <mat-button-toggle value="paid">Completed</mat-button-toggle>
-</mat-button-toggle-group>
+<div class="pt-10">
+    <mat-card>
+        <mat-button-toggle-group name="filter" aria-label="Filters" (change)="filterChanged($event)" value="unpaid">
+            <mat-button-toggle value="unpaid">Ongoing</mat-button-toggle>
+            <mat-button-toggle value="paid">Completed</mat-button-toggle>
+        </mat-button-toggle-group>
+    </mat-card>
+</div>
 
-<div class="pt-3">
-    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
-        <!-- Restaurant Column -->
-        <ng-container matColumnDef="restaurantName">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Restaurant</th>
-            <td mat-cell *matCellDef="let element">{{ element.restaurantName }}</td>
-        </ng-container>
+<div class="pt-10">
+    <mat-card>
+        <mat-card-title>Your order</mat-card-title>
+        <mat-card-content>
+            <div class="pt-3">
+                <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+                    <!-- Restaurant Column -->
+                    <ng-container matColumnDef="restaurantName">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Restaurant</th>
+                        <td mat-cell *matCellDef="let element">{{ element.restaurantName }}</td>
+                    </ng-container>
 
-        <!-- Order Items Column -->
-        <ng-container matColumnDef="orderItems">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Order Items</th>
-            <td mat-cell *matCellDef="let element">
-                <div *ngFor="let orderItem of element.orderItems">
-                    {{ orderItem.name }} ({{ orderItem.amount }}) - {{ orderItem.price }}
-                </div>
-            </td>
-        </ng-container>
+                    <!-- Order Items Column -->
+                    <ng-container matColumnDef="orderItems">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Order Items</th>
+                        <td mat-cell *matCellDef="let element">
+                            <div *ngFor="let orderItem of element.orderItems">
+                                {{ orderItem.name }} ({{ orderItem.amount }}) - {{ orderItem.price }}
+                            </div>
+                        </td>
+                    </ng-container>
 
-        <!-- Order Date Column -->
-        <ng-container matColumnDef="orderDate">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Order Date</th>
-            <td mat-cell *matCellDef="let element">{{ element.orderDate | date: 'dd.MM.y - HH:mm:ss'}}</td>
-        </ng-container>
+                    <!-- Order Date Column -->
+                    <ng-container matColumnDef="orderDate">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Order Date</th>
+                        <td mat-cell *matCellDef="let element">{{ element.orderDate | date: 'dd.MM.y - HH:mm:ss'}}</td>
+                    </ng-container>
 
-        <!-- Total Price Column -->
-        <ng-container matColumnDef="totalPrice">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Total Price</th>
-            <td mat-cell *matCellDef="let element">{{ element.totalPrice | currency:'VND' }}</td>
-        </ng-container>
+                    <!-- Total Price Column -->
+                    <ng-container matColumnDef="totalPrice">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Total Price</th>
+                        <td mat-cell *matCellDef="let element">{{ element.totalPrice | currency:'VND' }}</td>
+                    </ng-container>
+                    <!-- Notes Column -->
+                    <ng-container matColumnDef="notes">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Notes</th>
+                        <td mat-cell *matCellDef="let element" matTooltip="{{element.notes}}"
+                            matTooltipPosition='below'>
+                            <div class="wrap-text">{{ element.notes}}</div>
+                        </td>
+                    </ng-container>
 
-        <!-- Actions Column -->
-        <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef></th>
-            <td mat-cell *matCellDef="let element">
-                <button *ngIf="!element.isPaid" mat-icon-button (click)="onCancelOrder(element)">
-                    <mat-icon aria-hidden="false" title="Cancel order" aria-label="Cancel order">cancel</mat-icon>
-                </button>
-                <button *ngIf="!element.isPaymentNotified && !element.isPaid" mat-icon-button (click)="onNotifyPaid(element)">
-                    <mat-icon aria-hidden="false" title="Notify payment for order" aria-label="Notify payment for order">payment</mat-icon>
-                </button>
-            </td>
-        </ng-container>
+                    <!-- Actions Column -->
+                    <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let element">
+                            <button *ngIf="!element.isPaid" mat-icon-button (click)="onCancelOrder(element)">
+                                <mat-icon aria-hidden="false" title="Cancel order" aria-label="Cancel order">cancel
+                                </mat-icon>
+                            </button>
+                            <button *ngIf="!element.isPaymentNotified && !element.isPaid" mat-icon-button
+                                (click)="onNotifyPaid(element)">
+                                <mat-icon aria-hidden="false" title="Notify payment for order"
+                                    aria-label="Notify payment for order">payment</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                </table>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+
+</div>
+
+<div class="pt-10">
+    <mat-card>
+        <mat-card-title>Order from other people</mat-card-title>
+        <mat-card-content>
+            <table mat-table [dataSource]="dataOtherSource" matSort class="mat-elevation-z8">
+                <!-- Restaurant Column -->
+                <ng-container matColumnDef="restaurantName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Restaurant</th>
+                    <td mat-cell *matCellDef="let element">{{ element.restaurantName }}</td>
+                </ng-container>
+
+                <!-- Order Items Column -->
+                <ng-container matColumnDef="orderItems">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Order Items</th>
+                    <td mat-cell *matCellDef="let element">
+                        <div *ngFor="let orderItem of element.orderItems">
+                            {{ orderItem.name }} ({{ orderItem.amount }}) - {{ orderItem.price }}
+                        </div>
+                    </td>
+                </ng-container>
+
+                <!-- Order Date Column -->
+                <ng-container matColumnDef="orderDate">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Order Date</th>
+                    <td mat-cell *matCellDef="let element">{{ element.orderDate | date: 'dd.MM.y - HH:mm:ss'}}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedOtherPeopleColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedOtherPeopleColumns"></tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
 </div>

@@ -10,7 +10,7 @@ const ENTITY_NAME = 'order';
   providedIn: 'root'
 })
 export class OrderService {
-  constructor(private firebaseService: FirebaseService) { }
+  constructor(private firebaseService: FirebaseService) {}
 
   gets() {
     this.firebaseService.setPath(ENTITY_NAME);
@@ -31,12 +31,16 @@ export class OrderService {
 
   getById(orderId: string) {
     this.firebaseService.setPath(ENTITY_NAME);
-    return this.firebaseService.get<OrderModel>(orderId).get()
-      .pipe(map(entity => {
-        const data = entity.data() as OrderModel;
-        const id = entity.id;
-        return { id, ...data };
-      }));
+    return this.firebaseService
+      .get<OrderModel>(orderId)
+      .get()
+      .pipe(
+        map(entity => {
+          const data = entity.data() as OrderModel;
+          const id = entity.id;
+          return { id, ...data };
+        })
+      );
   }
 
   getByRestaurantId(restaurantId: string) {
@@ -109,16 +113,18 @@ export class OrderService {
       .snapshotChanges()
       .pipe(
         map(entities => {
-          return entities.filter(entity => {
-            const data = entity.payload.doc.data() as OrderModel;
-            if (data.userId === userId) {
-              return entity;
-            }
-          }).map(entity => {
-            const data = entity.payload.doc.data() as OrderModel;
-            const id = entity.payload.doc.id;
-            return { id, ...data };
-          });
+          return entities
+            .filter(entity => {
+              const data = entity.payload.doc.data() as OrderModel;
+              if (data.userId === userId || !userId || userId === '') {
+                return entity;
+              }
+            })
+            .map(entity => {
+              const data = entity.payload.doc.data() as OrderModel;
+              const id = entity.payload.doc.id;
+              return { id, ...data };
+            });
         })
       );
   }

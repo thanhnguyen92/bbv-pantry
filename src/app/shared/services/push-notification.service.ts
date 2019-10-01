@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { FirebaseService } from './firebase.service';
 import { map } from 'rxjs/operators';
 import { PushNotificationModel } from '../models/push-notification.model';
+import moment = require('moment');
 
 const ENTITY_NAME = 'notification';
 @Injectable({
@@ -24,6 +25,13 @@ export class PushNotificationService {
             .filter(entity => {
               console.log(entity);
               const data = entity.payload.doc.data() as PushNotificationModel;
+
+              const dateSubstract = moment(data.dateTime).subtract(
+                5,
+                'minutes'
+              );
+              const isValid = moment().diff(dateSubstract, 'minute');
+              debugger;
               if (
                 (email && data.email === email) ||
                 (userId && data.userId === userId)
@@ -43,6 +51,7 @@ export class PushNotificationService {
 
   push(pushNotificationModel: PushNotificationModel) {
     this.fireService.setPath(ENTITY_NAME);
+    pushNotificationModel.dateTime = new Date().getUTCDate();
     return this.fireService.add<PushNotificationModel>(pushNotificationModel);
   }
 

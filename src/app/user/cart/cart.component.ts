@@ -3,6 +3,7 @@ import { OrderItem } from 'src/app/shared/models/order-item.model';
 import { MatDialog } from '@angular/material';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { OrderService } from 'src/app/shared/services/order.service';
+import { OrderModel } from 'src/app/shared/models/order.model';
 
 @Component({
   selector: 'app-user-cart',
@@ -15,9 +16,8 @@ export class UserCartComponent {
   @Output() submitCart: EventEmitter<any> = new EventEmitter<any>();
 
   total = 0;
-
-  constructor(private dialog: MatDialog,
-    public orderService: OrderService) { }
+  notes: any = '';
+  constructor(private dialog: MatDialog, public orderService: OrderService) {}
 
   addAmount(item: OrderItem) {
     this.cart.forEach(currentItem => {
@@ -37,30 +37,39 @@ export class UserCartComponent {
       }
     });
 
-    this.cart = [... this.cart.filter(t => t.amount > 0)];
+    this.cart = [...this.cart.filter(t => t.amount > 0)];
     this.changeCart.emit(this.cart);
   }
 
   deleteItem(item: OrderItem) {
-    this.cart = [... this.cart.filter(t => t.menuId !== item.menuId)];
+    this.cart = [...this.cart.filter(t => t.menuId !== item.menuId)];
     this.changeCart.emit(this.cart);
   }
 
   clearOrder() {
     this.cart = [];
-    this.cart = [... this.cart];
+    this.cart = [...this.cart];
     this.changeCart.emit(this.cart);
   }
-
+  updateNotes(item, notes) {}
   proceedOrder() {
     this.dialog.closeAll();
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '250px',
-      data: { title: 'Confirmation', content: 'Are you sure to process this order?', noButton: 'No', yesButton: 'Yes' }
+      data: {
+        title: 'Confirmation',
+        content: 'Are you sure to process this order?',
+        noButton: 'No',
+        yesButton: 'Yes'
+      }
     });
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
-        this.submitCart.emit(this.cart);
+        const order = {
+          orderItems: this.cart,
+          notes: this.notes
+        } as OrderModel;
+        this.submitCart.emit(order);
       }
     });
   }

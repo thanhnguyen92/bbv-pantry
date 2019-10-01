@@ -12,4 +12,5 @@ export class OrderModel implements BaseEntity {
   bookingId?: string;
   isPaid = false;
   isPaymentNotified = false;
+  notes: string;
 }

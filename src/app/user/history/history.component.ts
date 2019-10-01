@@ -24,10 +24,19 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
     'orderDate',
     'orderItems',
     'totalPrice',
+    'notes',
     'actions'
   ];
+
+  displayedOtherPeopleColumns: string[] = [
+    'restaurantName',
+    'orderDate',
+    'orderItems'
+  ];
   orders: OrderModel[] = [];
+  otherOrders: OrderModel[] = [];
   dataSource = new MatTableDataSource(this.orders);
+  dataOtherSource = new MatTableDataSource(this.otherOrders);
   private getOrdersSubscription: Subscription;
 
   constructor(
@@ -35,7 +44,8 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
     private appService: AppService,
     private orderService: OrderService,
     private restaurantService: RestaurantService,
-    private bookingService: BookingService) { }
+    private bookingService: BookingService
+  ) {}
 
   ngOnInit() {
     if (this.authService.getIsLogged()) {
@@ -50,25 +60,39 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
   onCancelOrder(element: OrderModel) {
     if (element && !element.isPaid) {
       this.appService.setLoadingStatus(true);
-      const getBookingSubscription = this.bookingService.getById(element.bookingId)
+      const getBookingSubscription = this.bookingService
+        .getById(element.bookingId)
         .pipe(finalize(() => Utilities.unsubscribe(getBookingSubscription)))
-        .subscribe(booking => {
-          if (booking && !booking.isClosed) {
-            this.orderService.delete(element.id)
-              .then(() => {
-                NotificationService.showSuccessMessage('Cancel order successful');
-                this.appService.setLoadingStatus(false);
-              }).catch(() => {
-                NotificationService.showErrorMessage('Cancel failed, please try again');
-                this.appService.setLoadingStatus(false);
-              });
-          } else {
-            NotificationService.showWarningMessage('Unfortunately, you cannot cancel this order');
-            this.appService.setLoadingStatus(false);
-          }
-        }, () => this.appService.setLoadingStatus(false));
+        .subscribe(
+          booking => {
+            if (booking && !booking.isClosed) {
+              this.orderService
+                .delete(element.id)
+                .then(() => {
+                  NotificationService.showSuccessMessage(
+                    'Cancel order successful'
+                  );
+                  this.appService.setLoadingStatus(false);
+                })
+                .catch(() => {
+                  NotificationService.showErrorMessage(
+                    'Cancel failed, please try again'
+                  );
+                  this.appService.setLoadingStatus(false);
+                });
+            } else {
+              NotificationService.showWarningMessage(
+                'Unfortunately, you cannot cancel this order'
+              );
+              this.appService.setLoadingStatus(false);
+            }
+          },
+          () => this.appService.setLoadingStatus(false)
+        );
     } else {
-      NotificationService.showWarningMessage('Unfortunately, you cannot cancel this order');
+      NotificationService.showWarningMessage(
+        'Unfortunately, you cannot cancel this order'
+      );
     }
   }
 
@@ -112,28 +136,48 @@ export class UserHistoryComponent implements OnInit, OnDestroy {
     this.appService.setLoadingStatus(true);
     this.dataSource.sort = this.sort;
     Utilities.unsubscribe(this.getOrdersSubscription);
-    this.getOrdersSubscription = this.orderService.getsByPaymentState(isPaid, this.authService.currentUser.id)
-      .subscribe(results => {
-        if (results) {
-          if (results.length > 0) {
-            this.restaurantService.gets().subscribe(restaurants => {
-              results.forEach(item => {
-                if (restaurants) {
-                  const restaurant = restaurants.find(t => t.id === item.restaurantId);
-                  item['restaurantName'] = restaurant.name;
-                }
-                item.orderDate = Utilities.convertTimestampToDate(item.orderDate);
+    this.getOrdersSubscription = this.orderService
+      .getsByPaymentState(isPaid, '')
+      .subscribe(
+        results => {
+          if (results) {
+            if (results.length > 0) {
+              console.log(results);
+              this.restaurantService.gets().subscribe(restaurants => {
+                results.forEach(item => {
+                  if (restaurants) {
+                    const restaurant = restaurants.find(
+                      t => t.id === item.restaurantId
+                    );
+                    item['restaurantName'] = restaurant.name;
+                  }
+                  item.orderDate = Utilities.convertTimestampToDate(
+                    item.orderDate
+                  );
+                });
+                this.dataOtherSource.data = this.dataSource.data = results.filter(
+                  item => {
+                    if (item.userId !== this.authService.currentUser.id) {
+                      return item;
+                    }
+                  }
+                );
+                this.dataSource.data = results.filter(item => {
+                  if (item.userId === this.authService.currentUser.id) {
+                    return item;
+                  }
+                });
               });
+            } else {
               this.dataSource.data = results;
-            });
+            }
           } else {
             this.dataSource.data = results;
           }
-        } else {
-          this.dataSource.data = results;
-        }
 
-        this.appService.setLoadingStatus(false);
-      }, () => this.appService.setLoadingStatus(false));
+          this.appService.setLoadingStatus(false);
+        },
+        () => this.appService.setLoadingStatus(false)
+      );
   }
 }

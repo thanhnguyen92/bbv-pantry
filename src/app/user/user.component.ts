@@ -64,7 +64,9 @@ export class UserComponent implements OnInit, OnDestroy {
                     if (restaurants) {
                       // this.restaurants = res;
                       this.bookings.forEach(booking => {
-                        const restaurant = restaurants.find(t => t.id === booking.restaurantId);
+                        const restaurant = restaurants.find(
+                          t => t.id === booking.restaurantId
+                        );
                         booking['restaurantName'] = restaurant
                           ? restaurant.name
                           : '(empty)';
@@ -138,8 +140,8 @@ export class UserComponent implements OnInit, OnDestroy {
     this.cart = [...cart];
   }
 
-  submitCart(cart: OrderItem[]) {
-    if (!cart) {
+  submitCart(order: OrderModel) {
+    if (!order.orderItems) {
       NotificationService.showInfoMessage(`You cannot process an empty order`);
     }
 
@@ -150,7 +152,7 @@ export class UserComponent implements OnInit, OnDestroy {
       .subscribe(
         menuItems => {
           // Check latest price
-          cart.forEach(cartItem => {
+          order.orderItems.forEach(cartItem => {
             const dbItem = menuItems.find(t => t.id === cartItem.menuId);
             if (dbItem && cartItem.price !== dbItem.price) {
               NotificationService.showInfoMessage(
@@ -162,19 +164,20 @@ export class UserComponent implements OnInit, OnDestroy {
           });
 
           // Process order
-          const order = {
-            orderItems: cart,
+          const orderEntity = {
+            orderItems: order.orderItems,
             orderDate: Utilities.convertToUTC(new Date()),
-            totalPrice: this.orderService.calculatePrice(cart),
+            totalPrice: this.orderService.calculatePrice(order.orderItems),
             userId: this.authService.currentUser.id,
             isPaid: false,
             restaurantId: this.restaurantId,
             bookingId: this.bookingId,
             isPaymentNotified: false,
+            notes: order.notes
           } as OrderModel;
 
           this.orderService
-            .add(order)
+            .add(orderEntity)
             .then(() => {
               NotificationService.showSuccessMessage('Order successful');
               this.cart = [];
@@ -203,7 +206,6 @@ export class UserComponent implements OnInit, OnDestroy {
       //   .getByEmailOrUserId(user.email, user.id)
       //   .subscribe(res => {
       //     const notification = res;
-
       //     if (res && res !== []) {
       //       NotificationService.showNotificationWindows(
       //         (res as PushNotificationModel).type

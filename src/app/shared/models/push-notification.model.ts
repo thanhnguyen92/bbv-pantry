@@ -6,4 +6,5 @@ export class PushNotificationModel implements BaseEntity {
   userId?: string;
   type?: number;
   message?: string;
+  dateTime?: date;
 }
