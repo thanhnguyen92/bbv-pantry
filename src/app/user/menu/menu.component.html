@@ -1,15 +1,18 @@
 <div class="d-inherit">
     <div *ngIf="menu.length === 0" class="row font-italic">Don't have any available menus at the moment</div>
-    <mat-card class="card m-3" *ngFor="let menuItem of menu">
+    <mat-card class="card m-3 justify-content-between" *ngFor="let menuItem of menu">
         <mat-card-header class="card__header">
-            <mat-card-title class="card__header__title">{{menuItem.name}}</mat-card-title>
+            <mat-card-title class="card__header__title text-truncate" matBadge="4" matBadgeOverlap="false">{{menuItem.name}}</mat-card-title>
             <mat-card-subtitle>{{menuItem.price | currency:'VND'}}</mat-card-subtitle>
-            <mat-card-subtitle class="font-italic">{{menuItem.notes}}</mat-card-subtitle>
+            <!-- <mat-card-subtitle class="font-italic"></mat-card-subtitle> -->
         </mat-card-header>
-        <mat-card-footer class="card__footer">
-            <mat-card-actions class="d-flex justify-content-center">
-                <button mat-raised-button color="accent" (click)="addCartItem(menuItem)">Add to Cart</button>
-            </mat-card-actions>
+        <mat-card-content class="card__content">
+            <div>{{menuItem.notes}}</div>
+        </mat-card-content>
+        <mat-card-footer class="card__footer m-0 p-0">
+            <button mat-raised-button color="accent" (click)="addCartItem(menuItem)">Add to Cart</button>
         </mat-card-footer>
     </mat-card>
 </div>
+
+<!-- matTooltip="{{menuItem.name}}" [matTooltipPosition]="'above'"-->

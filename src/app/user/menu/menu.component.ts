@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { MenuModel } from 'src/app/shared/models/menu.model';
 import { AppService } from 'src/app/shared/services/app.service';
 import { MenuService } from 'src/app/shared/services/menu.service';
@@ -9,7 +9,8 @@ import { Utilities } from 'src/app/shared/services/utilities';
 @Component({
   selector: 'app-user-menu',
   templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.scss']
+  styleUrls: ['./menu.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class UserMenuComponent implements OnInit, OnDestroy, OnChanges {
   @Input() restaurantId;
