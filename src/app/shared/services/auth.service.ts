@@ -131,10 +131,10 @@ export class AuthService {
     return false;
   }
 
-  get currentUser() {
+  get currentUser(): UserModel {
     const user = localStorage.getItem(USER_KEY);
     if (user) {
-      return JSON.parse(user);
+      return JSON.parse(user) as UserModel;
     }
 
     return undefined;

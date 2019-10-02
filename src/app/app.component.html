@@ -1,6 +1,7 @@
 <mat-toolbar class="align-between">
   <div class="d-flex">
-    <a class="header-item pr-3 align-self-center text-decoration-none hyperlink" style="color: #e53935;" [routerLink]="['/']">
+    <a class="header-item pr-3 align-self-center text-decoration-none hyperlink" style="color: #e53935;"
+      [routerLink]="['/']">
       <img src="{{ assetsUrl + 'images/logo.svg' }}" class="logo pr-2" alt="{{ 'bbv Pantry' }}" />
       Pantry
     </a>
@@ -33,10 +34,14 @@
     </mat-menu>
   </div>
   <span class="spacer"></span>
-  <p *ngIf="loggedUser" class="m-0 px-3">
+  <p *ngIf="loggedUser" class="m-0 px-3" [matMenuTriggerFor]="belowMenu">
     {{ loggedUser.displayName ? loggedUser.displayName + ' - ' : '(empty) - ' }}{{ loggedUser.email }}
   </p>
-  <button *ngIf="isLogged" mat-raised-button color="accent" (click)="logOut()">Logout</button>
+  <mat-menu #belowMenu="matMenu" yPosition="below">
+    <button mat-menu-item (click)="profile()">Profile</button>
+    <button mat-menu-item *ngIf="isLogged" color="accent" (click)="logOut()">Logout</button>
+  </mat-menu>
+
 </mat-toolbar>
 
 <div class="container-fluid">

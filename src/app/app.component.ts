@@ -118,7 +118,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.setupNotification();
     this.route.navigate(['admin', 'user-management']);
   }
-
+  profile() {
+    this.route.navigate(['user', 'profile']);
+  }
   private setupNotification() {
     if (this.notificationSubscription) {
       this.notificationSubscription.unsubscribe();

@@ -1,0 +1,13 @@
+<div class="col-6 offset-3">
+    <form [formGroup]='formGroup'>
+        <mat-form-field>
+            <input matInput placeholder="Enter your email" formControlName="email" required>
+            <!-- <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error> -->
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="Enter your name" formControlName="displayName" required>
+            <!-- <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error> -->
+        </mat-form-field>
+    </form>
+    <button mat-raised-button color="primary" (click)='updateProfile()'>Update</button>
+</div>
