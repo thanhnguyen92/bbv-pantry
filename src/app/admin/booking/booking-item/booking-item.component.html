@@ -10,13 +10,18 @@
             </mat-select>
         </div>
         <div class="mat-item">
-            <mat-label>Booking From</mat-label>
-            <input matInput [matDatepicker]="fromPicker" placeholder="Choose a date" formControlName="bookingFrom">
-            <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
-            <mat-datepicker #fromPicker></mat-datepicker>
-            <mat-error *ngIf="checkControlInvalid('bookingFrom')">{{ getErrorMsg('bookingFrom') }}</mat-error>
-            <input [ngxTimepicker]="fromTimePicker" [format]="24" [(value)]="bookingFromTime">
-            <ngx-material-timepicker #fromTimePicker (timeSet)="onFromTimeSet($event)"></ngx-material-timepicker>
+            <mat-form-field>
+                <mat-label>Booking From</mat-label>
+                <input matInput [matDatepicker]="fromPicker" (focus)='onfocusFromDate()' placeholder="Choose a date"
+                    formControlName="bookingFrom">
+                <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+                <mat-datepicker #fromPicker></mat-datepicker>
+                <mat-error *ngIf="checkControlInvalid('bookingFrom')">{{ getErrorMsg('bookingFrom') }}</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput [ngxTimepicker]="fromTimePicker" [format]="24" [(value)]="bookingFromTime">
+                <ngx-material-timepicker #fromTimePicker (timeSet)="onFromTimeSet($event)"></ngx-material-timepicker>
+            </mat-form-field>
         </div>
         <div class="mat-item">
             <mat-label>Booking To</mat-label>
@@ -25,7 +30,7 @@
             <mat-datepicker #toPicker></mat-datepicker>
             <mat-error *ngIf="checkControlInvalid('bookingTo')">{{ getErrorMsg('bookingTo') }}</mat-error>
             <input [ngxTimepicker]="toTimePicker" [format]="24" [(value)]="bookingToTime">
-            <ngx-material-timepicker #toTimePicker  (timeSet)="onToTimeSet($event)"></ngx-material-timepicker>
+            <ngx-material-timepicker #toTimePicker (timeSet)="onToTimeSet($event)"></ngx-material-timepicker>
         </div>
         <div class="mat-item">
             <mat-checkbox matInput formControlName="isClosed">Is Closed</mat-checkbox>

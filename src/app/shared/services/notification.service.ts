@@ -66,7 +66,7 @@ export class NotificationService {
       alert('This browser does not support system notifications');
     } else if (Notification.permission === 'granted') {
       const notification = new Notification(message);
-    } else if (Notification.permission !== 'denied') {
+    } else if (Notification.permission === 'denied') {
       Notification.requestPermission(permission => {
         if (permission === 'granted') {
           const notification = new Notification(message);

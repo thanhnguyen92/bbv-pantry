@@ -54,7 +54,8 @@
                         <th mat-header-cell *matHeaderCellDef></th>
                         <td mat-cell *matCellDef="let element">
                             <button *ngIf="!element.isPaid" mat-icon-button (click)="onCancelOrder(element)">
-                                <mat-icon aria-hidden="false" title="Cancel order" aria-label="Cancel order">cancel
+                                <mat-icon aria-hidden="false" class="color-red" title="Cancel order"
+                                    aria-label="Cancel order">cancel
                                 </mat-icon>
                             </button>
                             <button *ngIf="!element.isPaymentNotified && !element.isPaid" mat-icon-button

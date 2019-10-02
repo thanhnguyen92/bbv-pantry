@@ -1,4 +1,10 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Inject,
+  ViewChild,
+  ElementRef
+} from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
 /** Models */
@@ -23,12 +29,13 @@ export class BookingItemComponent implements OnInit {
   restaurantId: string;
   bookingFromTime: string;
   bookingToTime: string;
-
+  @ViewChild('fromPicker', { static: false }) fromPicker: ElementRef;
   constructor(
     public dialogRef: MatDialogRef<any>,
     private appService: AppService,
     private restaurantService: RestaurantService,
-    @Inject(MAT_DIALOG_DATA) public data: BookingModel) {
+    @Inject(MAT_DIALOG_DATA) public data: BookingModel
+  ) {
     this.form = new FormGroup({
       id: new FormControl(''),
       bookingFrom: new FormControl(new Date(), [Validators.required]),
@@ -64,14 +71,28 @@ export class BookingItemComponent implements OnInit {
   onSubmit() {
     if (this.form.valid) {
       this.data = this.form.value as BookingModel;
-      this.data.bookingFrom.setHours(this.bookingFromTime.split(':')[0], this.bookingFromTime.split(':')[1], 0, 0);
-      this.data.bookingTo.setHours(this.bookingToTime.split(':')[0], this.bookingToTime.split(':')[1], 0, 0);
+      this.data.bookingFrom.setHours(
+        this.bookingFromTime.split(':')[0],
+        this.bookingFromTime.split(':')[1],
+        0,
+        0
+      );
+      this.data.bookingTo.setHours(
+        this.bookingToTime.split(':')[0],
+        this.bookingToTime.split(':')[1],
+        0,
+        0
+      );
       this.data.bookingFrom = Utilities.convertToUTC(this.data.bookingFrom);
       this.data.bookingTo = Utilities.convertToUTC(this.data.bookingTo);
-      if (Utilities.compareDates(this.data.bookingFrom, this.data.bookingTo) < 0) {
+      if (
+        Utilities.compareDates(this.data.bookingFrom, this.data.bookingTo) < 0
+      ) {
         this.dialogRef.close(this.data);
       } else {
-        NotificationService.showWarningMessage('From date must be smaller than To date');
+        NotificationService.showWarningMessage(
+          'From date must be smaller than To date'
+        );
       }
     }
   }
@@ -105,7 +126,9 @@ export class BookingItemComponent implements OnInit {
       return 'You must enter a value';
     }
   }
-
+  onfocusFromDate() {
+    this.fromPicker.nativeElement.click();
+  }
   private validateForm() {
     if (!this.data) {
       return false;
