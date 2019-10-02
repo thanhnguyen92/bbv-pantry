@@ -24,13 +24,18 @@
             </mat-form-field>
         </div>
         <div class="mat-item">
-            <mat-label>Booking To</mat-label>
-            <input matInput [matDatepicker]="toPicker" placeholder="Choose a date" formControlName="bookingTo">
-            <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
-            <mat-datepicker #toPicker></mat-datepicker>
-            <mat-error *ngIf="checkControlInvalid('bookingTo')">{{ getErrorMsg('bookingTo') }}</mat-error>
-            <input [ngxTimepicker]="toTimePicker" [format]="24" [(value)]="bookingToTime">
-            <ngx-material-timepicker #toTimePicker (timeSet)="onToTimeSet($event)"></ngx-material-timepicker>
+            <mat-form-field>
+                <mat-label>Booking To</mat-label>
+                <input matInput [matDatepicker]="toPicker" placeholder="Choose a date" formControlName="bookingTo">
+                <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+                <mat-datepicker #toPicker></mat-datepicker>
+                <mat-error *ngIf="checkControlInvalid('bookingTo')">{{ getErrorMsg('bookingTo') }}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <input matInput [ngxTimepicker]="toTimePicker" [format]="24" [(value)]="bookingToTime">
+                <ngx-material-timepicker #toTimePicker (timeSet)="onToTimeSet($event)"></ngx-material-timepicker>
+            </mat-form-field>
         </div>
         <div class="mat-item">
             <mat-checkbox matInput formControlName="isClosed">Is Closed</mat-checkbox>
