@@ -1,0 +1,22 @@
+// theme.scss
+// #cc2027
+@import '~@angular/material/theming';
+
+$custom-typography: mat-typography-config($font-family: '"Montserrat", sans-serif;');
+@include mat-core($custom-typography);
+
+$my-primary: (500 : #4ea4ff, contrast: (500 : #ffffff));
+
+$my-accent: (500 : #4ea4ff, contrast: (500 : #ffffff));
+
+$my-theme-primary: mat-palette($my-primary);
+$my-theme-accent: mat-palette($my-accent);
+
+$my-theme-warn: mat-palette($mat-red);
+$my-theme: mat-light-theme($my-theme-primary, $my-theme-accent, $my-theme-warn);
+
+$prime-color: #cc2027;
+$disable-color: #cccccc;
+$active-color: #4ea4ff;
+$bg-color: #f3f3f4;
+$basic-font: 16px;

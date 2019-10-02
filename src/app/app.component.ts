@@ -15,6 +15,7 @@ import { Router } from '@angular/router';
 import { NotificationService } from './shared/services/notification.service';
 import { PushNotificationModel } from './shared/models/push-notification.model';
 import { PushNotificationService } from './shared/services/push-notification.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -26,10 +27,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   isLogged = false;
   isLoading = false;
   loggedUser;
+  assetsUrl = environment.assetsUrl;
 
   private isLoggedSub: Subscription;
   private isLoadingSub: Subscription;
   private notificationSubscription: Subscription;
+
   constructor(
     public authService: AuthService,
     private route: Router,
