@@ -35,7 +35,8 @@
   </div>
   <span class="spacer"></span>
   <p *ngIf="loggedUser" class="m-0 px-3" [matMenuTriggerFor]="belowMenu">
-    {{ loggedUser.displayName ? loggedUser.displayName + ' - ' : '(empty) - ' }}{{ loggedUser.email }}
+    <button mat-mini-fab
+      matTooltip="{{ loggedUser.displayName ? loggedUser.displayName + ' - ' : '(empty) - ' }}{{ loggedUser.email }}">{{profileName}}</button>
   </p>
   <mat-menu #belowMenu="matMenu" yPosition="below">
     <button mat-menu-item (click)="profile()">Profile</button>

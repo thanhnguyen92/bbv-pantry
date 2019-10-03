@@ -121,6 +121,17 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   profile() {
     this.route.navigate(['user', 'profile']);
   }
+  get profileName() {
+    let result = '';
+    const displayName = this.loggedUser.displayName || '';
+    const firstChar = displayName.slice(0, 1);
+    result += firstChar;
+    const arrayName = this.loggedUser.displayName.split(' ');
+    if (arrayName.length >= 2) {
+      result += arrayName[1].slice(0, 1);
+    }
+    return result;
+  }
   private setupNotification() {
     if (this.notificationSubscription) {
       this.notificationSubscription.unsubscribe();
