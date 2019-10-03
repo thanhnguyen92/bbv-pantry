@@ -16,6 +16,29 @@ import { NotificationService } from './shared/services/notification.service';
 import { PushNotificationModel } from './shared/models/push-notification.model';
 import { PushNotificationService } from './shared/services/push-notification.service';
 import { environment } from 'src/environments/environment';
+import { FlatTreeControl } from '@angular/cdk/tree';
+import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
+
+const MENU_DATA: MenuNode[] = [
+  {
+    name: 'Admin',
+    action: 'goToAdmin()',
+    children: [{ name: 'Apple' }, { name: 'Banana' }, { name: 'Fruit loops' }]
+  },
+  {
+    name: 'Vegetables',
+    children: [
+      {
+        name: 'Green',
+        children: [{ name: 'Broccoli' }, { name: 'Brussel sprouts' }]
+      },
+      {
+        name: 'Orange',
+        children: [{ name: 'Pumpkins' }, { name: 'Carrots' }]
+      }
+    ]
+  }
+];
 
 @Component({
   selector: 'app-root',
@@ -29,6 +52,30 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   loggedUser;
   assetsUrl = environment.assetsUrl;
 
+  treeControl = new FlatTreeControl<MenuFlatNode>(
+    node => node.level,
+    node => node.expandable
+  );
+  // tslint:disable-next-line:variable-name
+  private _transformer = (node: MenuNode, level: number) => {
+    return {
+      expandable: !!node.children && node.children.length > 0,
+      name: node.name,
+      acction: node.action,
+      level
+    };
+  };
+  // tslint:disable-next-line:member-ordering
+  treeFlattener = new MatTreeFlattener(
+    this._transformer,
+    node => node.level,
+    node => node.expandable,
+    node => node.children
+  );
+
+  dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+  /** Flat node with expandable and level information */
+  hasChild = (_: number, node: MenuFlatNode) => node.expandable;
   private isLoggedSub: Subscription;
   private isLoadingSub: Subscription;
   private notificationSubscription: Subscription;
@@ -49,6 +96,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
     );
 
     this.loggedUser = this.authService.currentUser;
+
+    this.dataSource.data = MENU_DATA;
   }
 
   ngOnInit(): void {
@@ -160,4 +209,16 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
         });
     }
   }
+}
+
+interface MenuNode {
+  name: string;
+  action?: string;
+  children?: MenuNode[];
+}
+
+interface MenuFlatNode {
+  expandable: boolean;
+  name: string;
+  level: number;
 }

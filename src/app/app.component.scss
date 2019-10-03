@@ -35,3 +35,10 @@ $spinner-size: 60px !default;
 .logo {
   width: 65px;
 }
+.container-full {
+  height: calc(100vh - 60px);
+}
+
+mat-list-item.menu-item:hover {
+  border-bottom: 1px solid pink;
+}

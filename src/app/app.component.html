@@ -5,8 +5,10 @@
       <img src="{{ assetsUrl + 'images/logo.svg' }}" class="logo pr-2" alt="{{ 'bbv Pantry' }}" />
       Pantry
     </a>
-    <button *ngIf="isLogged && authService.isAdmin" mat-icon-button aria-label="Settings" [matMenuTriggerFor]="spaces">
-      <mat-icon>apps</mat-icon>
+    <button *ngIf="isLogged && authService.isAdmin" mat-icon-button aria-label="Settings" (click)="menu.toggle()">
+      <!-- <button *ngIf="isLogged && authService.isAdmin" mat-icon-button aria-label="Settings" [matMenuTriggerFor]="spaces"> -->
+
+      <mat-icon>menu</mat-icon>
     </button>
     <div *ngIf="isLogged && !authService.isAdmin">
       <button mat-raised-button aria-label="Settings" color="primary" (click)="goToUser()" class="mx-2">
@@ -44,13 +46,75 @@
   </mat-menu>
 
 </mat-toolbar>
+<mat-sidenav-container class="example-container" [hasBackdrop]="true">
+  <mat-sidenav #menu [mode]="over" class='slide-bar-menu'>
+    <!-- <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+     
+      <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+        
+        <button mat-icon-button disabled></button>
+        <button mat-menu-item>{{node.name}}</button>
+        <mat-divider [inset]="true"></mat-divider>
+      </mat-tree-node>
+      
+      <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+        <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
+          <mat-icon class="mat-icon-rtl-mirror">
+            {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+          </mat-icon>
+        </button>
+        {{node.name}}
+      </mat-tree-node>
+    </mat-tree> -->
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Admin
+          </mat-panel-title>
+          <!-- <mat-panel-description>
+            Type your name and age
+          </mat-panel-description> -->
+        </mat-expansion-panel-header>
+        <mat-list>
+          <mat-list-item class="menu-item" *ngIf="authService.isAdmin" (click)="goToRestaurant()">Restaurant
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item class="menu-item" *ngIf="authService.isAdmin" (click)="goToMenu()">Menu</mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item class="menu-item" *ngIf="authService.isAdmin" (click)="goToBooking()">Booking</mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item class="menu-item" *ngIf="authService.isAdmin" (click)="goToOrder()">Order</mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item class="menu-item" *ngIf="authService.isAdmin" (click)="goToUserManagement()">User Management
+          </mat-list-item>
+        </mat-list>
+      </mat-expansion-panel>
+      <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            User
+          </mat-panel-title>
+          <!-- <mat-panel-description>
+            Currently I am {{panelOpenState ? 'open' : 'closed'}}
+          </mat-panel-description> -->
+        </mat-expansion-panel-header>
+        <mat-list>
+          <mat-list-item class="menu-item" (click)="goToUser()">Order</mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item class="menu-item" (click)="goToUserHistory()">History</mat-list-item>
+        </mat-list>
 
-<div class="container-fluid">
-  <router-outlet></router-outlet>
-</div>
-
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-sidenav>
+  <mat-sidenav-content class="container-full">
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
 <app-notification></app-notification>
-
 <div *ngIf="isLoading" class="background">
   <mat-spinner class="spinner" strokeWidth="5" [diameter]="60"></mat-spinner>
 </div>

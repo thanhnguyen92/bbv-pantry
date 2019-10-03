@@ -8,9 +8,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireMessagingModule } from '@angular/fire/messaging';
 import { AppComponent } from './app.component';
 import { environment } from 'src/environments/environment';
-import {
-  MatToolbarModule
-} from '@angular/material';
+import { MatToolbarModule, MatTreeModule } from '@angular/material';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { ConfirmDialogComponent } from './shared/confirm-dialog/confirm-dialog.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -29,7 +27,7 @@ import { AppService } from './shared/services/app.service';
     AngularFirestoreModule,
     AngularFireAuthModule,
     MaterialModule,
-    AngularFireMessagingModule
+    AngularFireMessagingModule,
   ],
   entryComponents: [ConfirmDialogComponent],
   providers: [
@@ -43,4 +41,4 @@ import { AppService } from './shared/services/app.service';
   exports: [NotificationComponent],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}
