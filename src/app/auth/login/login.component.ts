@@ -206,8 +206,13 @@ export class LoginComponent implements OnInit {
       });
   }
   submitLogin(event) {
-    if (event.keyCode === 13) {
+    if (event.keyCode === 13 && !this.loginForm.controls.isRegister.value) {
       this.login();
+    } else if (
+      event.keyCode === 13 &&
+      this.loginForm.controls.isRegister.value
+    ) {
+      this.register();
     }
   }
   private showSectionSelection() {
