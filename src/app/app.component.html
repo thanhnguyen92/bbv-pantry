@@ -5,19 +5,19 @@
       <img src="{{ assetsUrl + 'images/logo.svg' }}" class="logo pr-2" alt="{{ 'bbv Pantry' }}" />
       Pantry
     </a>
-    <button *ngIf="isLogged && authService.isAdmin" mat-icon-button aria-label="Settings" (click)="menu.toggle()">
+    <button mat-icon-button aria-label="Settings" (click)="menu.toggle()">
       <!-- <button *ngIf="isLogged && authService.isAdmin" mat-icon-button aria-label="Settings" [matMenuTriggerFor]="spaces"> -->
 
       <mat-icon>menu</mat-icon>
     </button>
-    <div *ngIf="isLogged && !authService.isAdmin">
+    <!-- <div *ngIf="isLogged && !authService.isAdmin">
       <button mat-raised-button aria-label="Settings" color="primary" (click)="goToUser()" class="mx-2">
         Order
       </button>
       <button mat-raised-button aria-label="Settings" color="primary" (click)="goToUserHistory()" class="mx-2">
         History
       </button>
-    </div>
+    </div> -->
     <mat-menu #spaces="matMenu">
       <button mat-menu-item *ngIf="authService.isAdmin" (click)="goToAdmin()"
         [matMenuTriggerFor]="adminSection">Admin</button>
@@ -67,7 +67,7 @@
       </mat-tree-node>
     </mat-tree> -->
     <mat-accordion>
-      <mat-expansion-panel>
+      <mat-expansion-panel *ngIf="authService.isAdmin">
         <mat-expansion-panel-header>
           <mat-panel-title>
             Admin
