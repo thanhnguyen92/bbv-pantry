@@ -16,8 +16,7 @@ export class UserCartComponent {
   @Output() submitCart: EventEmitter<any> = new EventEmitter<any>();
 
   total = 0;
-  notes: any = '';
-  constructor(private dialog: MatDialog, public orderService: OrderService) {}
+  constructor(private dialog: MatDialog, public orderService: OrderService) { }
 
   addAmount(item: OrderItem) {
     this.cart.forEach(currentItem => {
@@ -51,7 +50,7 @@ export class UserCartComponent {
     this.cart = [...this.cart];
     this.changeCart.emit(this.cart);
   }
-  updateNotes(item, notes) {}
+
   proceedOrder() {
     this.dialog.closeAll();
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -63,11 +62,11 @@ export class UserCartComponent {
         yesButton: 'Yes'
       }
     });
+
     dialogRef.afterClosed().subscribe(res => {
       if (res) {
         const order = {
-          orderItems: this.cart,
-          notes: this.notes
+          orderItems: this.cart
         } as OrderModel;
         this.submitCart.emit(order);
       }
