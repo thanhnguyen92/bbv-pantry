@@ -172,8 +172,7 @@ export class UserComponent implements OnInit, OnDestroy {
             isPaid: false,
             restaurantId: this.restaurantId,
             bookingId: this.bookingId,
-            isPaymentNotified: false,
-            notes: order.notes
+            isPaymentNotified: false
           } as OrderModel;
 
           this.orderService
