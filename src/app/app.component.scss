@@ -36,7 +36,7 @@ $spinner-size: 60px !default;
   width: 65px;
 }
 .container-fluid {
-  height: calc(100vh - 60px);
+  // height: calc(100vh - 60px);
   overflow-y: hidden;
 }
 
@@ -45,4 +45,14 @@ mat-list-item.menu-item:hover {
 }
 .slide-bar-menu {
   min-width: 16%;
+  padding-top: 30px;
+}
+.example-container {
+  height: calc(100vh - 0px);
+  padding-top: 60px;
+}
+.align-between {
+  position: fixed;
+  /* top: 0; */
+  z-index: 999;
 }
