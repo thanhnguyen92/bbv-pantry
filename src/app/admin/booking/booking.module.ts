@@ -8,6 +8,7 @@ import { MaterialModule } from 'src/app/shared/modules/material.module';
 import { BookingItemComponent } from './booking-item/booking-item.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+
 @NgModule({
   declarations: [BookingComponent, BookingItemComponent],
   entryComponents: [BookingItemComponent],
@@ -17,7 +18,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     BookingRoutingModule,
     AngularFirestoreModule,
     MaterialModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+   
   ],
   providers: [BookingService]
 })

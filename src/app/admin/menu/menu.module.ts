@@ -8,17 +8,31 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { MenuService } from 'src/app/shared/services/menu.service';
 import { RestaurantSelectionComponent } from './restaurant-selection/restaurant-selection.component';
 import { MaterialModule } from 'src/app/shared/modules/material.module';
-
+import { CloudinaryModule } from '@cloudinary/angular-5.x';
+import { FileUploadModule } from 'ng2-file-upload';
+import { Cloudinary as CloudinaryCore } from 'cloudinary-core';
+const cloudinaryLib = {
+  Cloudinary: CloudinaryCore
+};
 @NgModule({
-  declarations: [MenuComponent, MenuItemComponent, RestaurantSelectionComponent],
+  declarations: [
+    MenuComponent,
+    MenuItemComponent,
+    RestaurantSelectionComponent
+  ],
   entryComponents: [MenuItemComponent, RestaurantSelectionComponent],
   imports: [
     CommonModule,
     MenuRoutingModule,
     FormsModule,
     AngularFirestoreModule,
-    MaterialModule
+    MaterialModule,
+    CloudinaryModule.forRoot(cloudinaryLib, {
+      cloud_name: 'bbvpantry',
+      upload_preset: 'gc0j1yzf'
+    }),
+    FileUploadModule
   ],
   providers: [MenuService]
 })
-export class MenuModule { }
+export class MenuModule {}
