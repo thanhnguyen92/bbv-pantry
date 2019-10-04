@@ -35,10 +35,14 @@ $spinner-size: 60px !default;
 .logo {
   width: 65px;
 }
-.container-full {
+.container-fluid {
   height: calc(100vh - 60px);
+  overflow-y: hidden;
 }
 
 mat-list-item.menu-item:hover {
   border-bottom: 1px solid pink;
+}
+.slide-bar-menu {
+  min-width: 16%;
 }

@@ -1,6 +1,6 @@
 <!-- <mat-label>Current Date: </mat-label> -->
 <!-- <span>{{ currentDate | date: 'dd.MM.y HH:mm:ss' }}</span> -->
-<div class="pb-4" style="max-width: 450px" *ngIf="!bookings">
+<div class="pb-4" style="max-width: 450px">
     <mat-label class="font-weight-bold">Restaurant: </mat-label>
     <mat-select (selectionChange)="onBookingChanged($event)" [(value)]="bookingId">
         <mat-option *ngFor="let booking of bookings" [value]="booking.id"
@@ -18,7 +18,7 @@
             (menuChanged)="menuChanged($event)"></app-user-menu>
     </div>
     <mat-divider [vertical]="true"></mat-divider>
-    <div class="col-4" *ngIf="!bookings">
+    <div class="col-4">
         <app-user-cart [cart]="cart" (changeCart)="changeCart($event)" (submitCart)="submitCart($event)">
         </app-user-cart>
     </div>
