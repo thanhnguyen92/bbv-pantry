@@ -5,11 +5,7 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { Utilities } from 'src/app/shared/services/utilities';
 import { OrderModel } from 'src/app/shared/models/order.model';
-import {
-  MatTableDataSource,
-  MatSort,
-  MatDialog
-} from '@angular/material';
+import { MatTableDataSource, MatSort, MatDialog } from '@angular/material';
 import { UserService } from 'src/app/shared/services/user.service';
 import { RestaurantModel } from 'src/app/shared/models/restaurant.model';
 import { RestaurantService } from 'src/app/shared/services/restaurant.service';
@@ -56,7 +52,7 @@ export class OrderComponent implements OnInit, OnDestroy {
     private bookingService: BookingService,
     private restaurantService: RestaurantService,
     private pushNotificationService: PushNotificationService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.appService.setLoadingStatus(true);
@@ -98,7 +94,9 @@ export class OrderComponent implements OnInit, OnDestroy {
         if (order && order.orderItems && order.orderItems.length > 0) {
           order.orderItems.forEach(item => {
             const dbItem = { ...item };
-            const orderedItem = orderedItems.find(t => t.menuId === dbItem.menuId);
+            const orderedItem = orderedItems.find(
+              t => t.menuId === dbItem.menuId
+            );
             if (orderedItem) {
               orderedItem.amount += dbItem.amount;
             } else {
@@ -117,7 +115,7 @@ export class OrderComponent implements OnInit, OnDestroy {
       });
 
       const listener = (e: ClipboardEvent) => {
-        e.clipboardData.setData('text/plain', (clipboardText));
+        e.clipboardData.setData('text/plain', clipboardText);
         e.preventDefault();
       };
 
@@ -134,7 +132,9 @@ export class OrderComponent implements OnInit, OnDestroy {
     this.bookingService.getByRestaurantId(this.restaurantId).subscribe(
       bookings => {
         if (bookings) {
-          this.bookings = bookings;
+          this.bookings = bookings.sort(
+            Utilities.fieldsSort(['-bookingFrom', '-bookingTo'])
+          );
           this.bookingId = bookings.length > 0 ? bookings[0].id : undefined;
           this.fetchOrderData(this.bookingId);
         } else {
@@ -168,7 +168,8 @@ export class OrderComponent implements OnInit, OnDestroy {
       }
     });
 
-    const payConfirmationSub = dialogRef.afterClosed()
+    const payConfirmationSub = dialogRef
+      .afterClosed()
       .pipe(finalize(() => Utilities.unsubscribe(payConfirmationSub)))
       .subscribe(res => {
         if (res) {

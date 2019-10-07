@@ -36,7 +36,10 @@ export class Utilities {
     return new Date();
   }
 
-  static buildQueryGetByPropWithArray(prop: string, arr: string[]): (ref: CollectionReference) => Query {
+  static buildQueryGetByPropWithArray(
+    prop: string,
+    arr: string[]
+  ): (ref: CollectionReference) => Query {
     return (ref: CollectionReference) => {
       const expression: Query = ref.where(prop, '==', arr[0]);
       arr.forEach((item, idx) => {
@@ -56,7 +59,11 @@ export class Utilities {
    * @param date1 Date 1 is the main date
    * @param date2 Date 2 to compare with Date 1
    */
-  public static compareDates(date1: Date, date2: Date, withoutTime?: boolean): number {
+  public static compareDates(
+    date1: Date,
+    date2: Date,
+    withoutTime?: boolean
+  ): number {
     const date1tmp = new Date(date1.getTime());
     const date2tmp = new Date(date2.getTime());
 
@@ -77,7 +84,10 @@ export class Utilities {
         Notification.requestPermission(permission => {
           // If the user accepts, let's create a notification
           if (permission === 'granted') {
-            const notification = new Notification('Thanks for your permission. Welcome to bbv Pantry!', options);
+            const notification = new Notification(
+              'Thanks for your permission. Welcome to bbv Pantry!',
+              options
+            );
           }
         });
       } else {
@@ -86,5 +96,28 @@ export class Utilities {
         }
       }
     }
+  }
+
+  public static fieldsSort(fields: string[]) {
+    return (a, b) => {
+      return fields
+        .map((o: string) => {
+          let dir = 1;
+          if (o[0] === '-') {
+            dir = -1;
+            o = o.slice(1);
+          }
+          if (a[o] > b[o]) {
+            return dir;
+          }
+          if (a[o] < b[o]) {
+            return -dir;
+          }
+          return 0;
+        })
+        .reduce(function firstNonZeroValue(p, n) {
+          return p ? p : n;
+        }, 0);
+    };
   }
 }
