@@ -64,7 +64,9 @@ export class OrderComponent implements OnInit, OnDestroy {
           this.bookingService.getByRestaurantId(this.restaurantId).subscribe(
             bookings => {
               if (bookings) {
-                this.bookings = bookings;
+                this.bookings = bookings.sort(
+                  Utilities.fieldsSort(['-bookingFrom', '-bookingTo'])
+                );
                 this.bookingId =
                   bookings.length > 0 ? bookings[0].id : undefined;
                 this.fetchOrderData(this.bookingId);
