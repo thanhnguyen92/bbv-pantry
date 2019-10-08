@@ -1,0 +1,28 @@
+<div class="example-container">
+
+
+    <!-- <mat-form-field>
+        <textarea matInput placeholder="Email"></textarea>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-select placeholder="Select">
+            <mat-option value="option">Option</mat-option>
+        </mat-select>
+    </mat-form-field> -->
+    <mat-card>
+        <mat-card-content>
+            <form [formGroup]='formGroup'>
+                <h2 class="md-6 ofset-3 text-center">Register Happy hours</h2>
+                <mat-form-field>
+                    <input matInput placeholder="Name" formControlName='name'>
+                </mat-form-field>
+                <mat-form-field>
+                    <input type="email" matInput placeholder="Email" formControlName='email'>
+                </mat-form-field>
+            </form>
+            <button mat-raised-button color="primary">Submit</button>
+        </mat-card-content>
+
+    </mat-card>
+</div>

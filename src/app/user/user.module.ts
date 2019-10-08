@@ -9,14 +9,22 @@ import { UserCartComponent } from './cart/cart.component';
 import { UserMenuComponent } from './menu/menu.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserProfileComponent } from './profile/user-profile.component';
+import { HappyHoursComponent } from './happy-hours/happy-hours.component';
 
 @NgModule({
-  imports: [CommonModule, UserRoutingModule, MaterialModule, FormsModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    UserRoutingModule,
+    MaterialModule,
+    FormsModule,
+    ReactiveFormsModule
+  ],
   declarations: [
     UserComponent,
     UserCartComponent,
     UserMenuComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    HappyHoursComponent
   ],
   providers: []
 })
