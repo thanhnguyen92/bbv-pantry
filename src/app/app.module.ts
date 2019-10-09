@@ -15,6 +15,11 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpErrorInterceptor } from './shared/interceptors';
 import { NotificationComponent } from './shared/components/notification/notification.component';
 import { AppService } from './shared/services/app.service';
+import {
+  HashLocationStrategy,
+  Location,
+  LocationStrategy
+} from '@angular/common';
 
 @NgModule({
   declarations: [AppComponent, ConfirmDialogComponent, NotificationComponent],
@@ -27,7 +32,7 @@ import { AppService } from './shared/services/app.service';
     AngularFirestoreModule,
     AngularFireAuthModule,
     MaterialModule,
-    AngularFireMessagingModule,
+    AngularFireMessagingModule
   ],
   entryComponents: [ConfirmDialogComponent],
   providers: [
@@ -36,6 +41,8 @@ import { AppService } from './shared/services/app.service';
       useClass: HttpErrorInterceptor,
       multi: true
     },
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    Location,
     AppService
   ],
   exports: [NotificationComponent],

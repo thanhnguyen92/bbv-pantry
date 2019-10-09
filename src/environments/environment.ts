@@ -4,7 +4,7 @@
 
 export const environment = {
   assetsUrl: '/assets/',
-  production: false,
+  production: true,
   firebase: {
     apiKey: 'AIzaSyDFmocOLK2FsV7TaQnh0qYNPU5AJCOxZJ8',
     authDomain: 'bbv-pantry.firebaseapp.com',

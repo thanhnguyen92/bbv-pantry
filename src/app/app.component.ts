@@ -140,7 +140,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   goToRestaurant() {
     this.setupNotification();
-    this.route.navigate(['admin', 'restaurant']);
+    this.route.navigate(['admin/restaurant']);
   }
 
   goToMenu() {
