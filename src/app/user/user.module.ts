@@ -10,6 +10,8 @@ import { UserMenuComponent } from './menu/menu.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserProfileComponent } from './profile/user-profile.component';
 import { HappyHoursComponent } from './happy-hours/happy-hours.component';
+import { HappyHoursListComponent } from './happy-hours/happy-hours-list/happy-hours-list.component';
+import { ClickOutsideDirective } from '../shared/directives/outside-click.directive';
 
 @NgModule({
   imports: [
@@ -24,7 +26,9 @@ import { HappyHoursComponent } from './happy-hours/happy-hours.component';
     UserCartComponent,
     UserMenuComponent,
     UserProfileComponent,
-    HappyHoursComponent
+    HappyHoursComponent,
+    HappyHoursListComponent,
+    ClickOutsideDirective
   ],
   providers: []
 })

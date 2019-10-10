@@ -3,11 +3,7 @@ import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
 import { MatDialog, MatTableDataSource, MatSort } from '@angular/material';
 import { MenuModel } from 'src/app/shared/models/menu.model';
 import { MenuItemComponent } from './menu-item/menu-item.component';
-import {
-  ActivatedRoute,
-  ParamMap,
-  Router
-} from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { MenuService } from 'src/app/shared/services/menu.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
@@ -26,13 +22,7 @@ export class MenuComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
 
   private restaurantId: string;
-  displayedColumns: string[] = [
-    'name',
-    'price',
-    'notes',
-    'status',
-    'actions'
-  ];
+  displayedColumns: string[] = ['name', 'price', 'notes', 'status', 'actions'];
   menus: MenuModel[] = [];
   dataSource = new MatTableDataSource(this.menus);
   loading = false;
@@ -42,7 +32,8 @@ export class MenuComponent implements OnInit {
     private router: Router,
     private appService: AppService,
     private activatedRoute: ActivatedRoute,
-    private menuService: MenuService) { }
+    private menuService: MenuService
+  ) {}
 
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
@@ -84,7 +75,8 @@ export class MenuComponent implements OnInit {
       .subscribe(menu => {
         if (menu) {
           menu.isActive = !element.isActive;
-          this.menuService.update(menu)
+          this.menuService
+            .update(menu)
             .then(() => {
               NotificationService.showSuccessMessage('Update successful');
               this.appService.setLoadingStatus(false);
@@ -104,11 +96,13 @@ export class MenuComponent implements OnInit {
   private fetchData() {
     this.appService.setLoadingStatus(true);
     this.dataSource.sort = this.sort;
-    this.menuService.getByRestaurantId(this.restaurantId)
-      .subscribe((results: MenuModel[]) => {
+    this.menuService.getByRestaurantId(this.restaurantId).subscribe(
+      (results: MenuModel[]) => {
         this.dataSource.data = results;
         this.appService.setLoadingStatus(false);
-      }, () => this.appService.setLoadingStatus(false));
+      },
+      () => this.appService.setLoadingStatus(false)
+    );
   }
 
   private showPopupMenuItem(menuItem: MenuModel = new MenuModel()) {
@@ -152,7 +146,8 @@ export class MenuComponent implements OnInit {
       hasBackdrop: false
     });
 
-    const restaurantSelectionSub = diaLogRef.afterClosed()
+    const restaurantSelectionSub = diaLogRef
+      .afterClosed()
       .pipe(finalize(() => Utilities.unsubscribe(restaurantSelectionSub)))
       .subscribe((data: RestaurantModel) => {
         if (data) {
@@ -165,9 +160,15 @@ export class MenuComponent implements OnInit {
     this.dialog.closeAll();
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '250px',
-      data: { title: 'Confirmation', content: 'Are you sure to delete?', noButton: 'No', yesButton: 'Yes' }
+      data: {
+        title: 'Confirmation',
+        content: 'Are you sure to delete?',
+        noButton: 'No',
+        yesButton: 'Yes'
+      }
     });
-    const deleteConfirmationSub = dialogRef.afterClosed()
+    const deleteConfirmationSub = dialogRef
+      .afterClosed()
       .pipe(finalize(() => Utilities.unsubscribe(deleteConfirmationSub)))
       .subscribe(res => {
         if (res) {

@@ -24,4 +24,4 @@ export const environment = {
  * on performance if an error is thrown.
  */
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
-// account firebase: bbv.firebase@bbv.ch 123456@A
+// account firebase: bbv.firebase@gmail.com 123456@A

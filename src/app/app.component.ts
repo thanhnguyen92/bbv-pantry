@@ -5,7 +5,9 @@ import {
   OnInit,
   OnDestroy,
   ChangeDetectorRef,
-  AfterViewChecked
+  AfterViewChecked,
+  ViewChild,
+  ElementRef
 } from '@angular/core';
 import { AuthService } from './shared/services/auth.service';
 import { Utilities } from './shared/services/utilities';
@@ -17,7 +19,7 @@ import { PushNotificationModel } from './shared/models/push-notification.model';
 import { PushNotificationService } from './shared/services/push-notification.service';
 import { environment } from 'src/environments/environment';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
+import { MatTreeFlattener, MatTreeFlatDataSource, MatButton } from '@angular/material';
 
 const MENU_DATA: MenuNode[] = [
   {
@@ -51,7 +53,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   isLoading = false;
   loggedUser;
   assetsUrl = environment.assetsUrl;
-
+  @ViewChild('buttonMenu', { static: false }) buttonMenu: MatButton;
   treeControl = new FlatTreeControl<MenuFlatNode>(
     node => node.level,
     node => node.expandable
@@ -139,34 +141,52 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   goToRestaurant() {
+    ((this.buttonMenu)._elementRef as ElementRef).nativeElement.click()
     this.setupNotification();
     this.route.navigate(['admin/restaurant']);
   }
 
   goToMenu() {
+    ((this.buttonMenu)._elementRef as ElementRef).nativeElement.click()
     this.setupNotification();
     this.route.navigate(['admin', 'menu']);
   }
 
   goToUserHistory() {
+    ((this.buttonMenu)._elementRef as ElementRef).nativeElement.click()
     this.setupNotification();
     this.route.navigate(['user', 'history']);
   }
 
   goToBooking() {
+    ((this.buttonMenu)._elementRef as ElementRef).nativeElement.click()
     this.setupNotification();
     this.route.navigate(['admin', 'booking']);
   }
 
   goToOrder() {
+    ((this.buttonMenu)._elementRef as ElementRef).nativeElement.click()
     this.setupNotification();
     this.route.navigate(['admin', 'order']);
   }
 
   goToUserManagement() {
+    ((this.buttonMenu)._elementRef as ElementRef).nativeElement.click()
     this.setupNotification();
     this.route.navigate(['admin', 'user-management']);
   }
+
+  goToMenuHappyHours() {
+    console.log(this.buttonMenu);
+    ((this.buttonMenu)._elementRef as ElementRef).nativeElement.click()
+    this.route.navigate(['user', 'happy-hours']);
+  }
+
+  goToRegisters() {
+    ((this.buttonMenu)._elementRef as ElementRef).nativeElement.click()
+    this.route.navigate(['user', 'registers']);
+  }
+
   profile() {
     this.route.navigate(['user', 'profile']);
   }
@@ -175,7 +195,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
     const displayName = this.loggedUser.displayName || '';
     const firstChar = displayName.slice(0, 1);
     result += firstChar;
-    const arrayName = this.loggedUser.displayName.split(' ');
+    const arrayName = displayName.split(' ');
     if (arrayName.length >= 2) {
       result += arrayName[1].slice(0, 1);
     }

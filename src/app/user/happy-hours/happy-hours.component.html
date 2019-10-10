@@ -43,7 +43,13 @@
     <section class="main">
 
         <div id="rm-container" class="rm-container" #container>
-
+            <div class="rm-modal" (clickOutside)='onClickOutside($event)'>
+                <div class="rm-thumb" [style.backgroundImage]="getImageUrl()" #thumnail>
+                </div>
+                <h5>{{selectedMenu.name}}</h5>
+                <p>{{selectedMenu.detail}}</p><a (click)='focusName()'>Register</a><span class="rm-close-modal"
+                    (click)='closeDetail()'>x</span>
+            </div>
             <div class="rm-wrapper">
 
                 <div class="rm-cover">
@@ -52,7 +58,7 @@
                         <div class="rm-content">
 
                             <div class="rm-logo"></div>
-                            <h2>BBV</h2>
+                            <h2><i>bbv</i></h2>
                             <h3>Happy hours</h3>
 
                             <a (click)='openMenu()' class="rm-button-open after">View the Menu</a>
@@ -66,13 +72,15 @@
                             </div>
                             <div>
                                 <mat-card class="register-box">
-                                    <form class="example-form">
+                                    <form class="example-form" [formGroup]='formGroup'>
                                         <mat-form-field>
-                                            <input matInput placeholder="Name" value="Toan Nguyen">
+                                            <input matInput placeholder="Type your name" formControlName='name'
+                                                (keyup.enter)='registerHappyHours()' tabindex="1">
                                         </mat-form-field>
+                                        <!-- <span *ngIf="duplicateMessage">{{duplicateMessage}}</span> -->
                                     </form>
-                                    <a href="https://bbv-pantry.firebaseapp.com/user/happy-hours"
-                                        class="rm-button-open">Register</a>
+                                    <a (click)='registerHappyHours()' class="rm-button-open" tabindex="2"
+                                        #register>Register</a>
                                 </mat-card>
 
                             </div>
@@ -83,25 +91,13 @@
                         <div class="rm-content">
                             <h4>Appetizers</h4>
                             <dl>
-                                <dt>Bella's Artichokes</dt>
-                                <dd>Roasted artichokes with chipotle aioli and cream cheese</dd>
-
-                                <dt>Bruschetta Blue Delight</dt>
-                                <dd>Blue cheese and citrus bruschetta</dd>
-
-                                <dt>Pomme Dulse</dt>
-                                <dd>Baked potatoes with crisped dulse</dd>
-
-                                <dt><a href="https://herbivoracious.com/2011/11/crostini-with-young-pecorino-grilled-figs-and-arugula-mint-pesto-recipe.html"
-                                        class="rm-viewdetails" data-thumb="images/1.jpg">Green Love Crostini</a>
-                                </dt>
-                                <dd>Crostini with young pecorino, grilled figs and arugula &amp; mint pesto</dd>
-
-                                <dt>Focaccia di Carciofi</dt>
-                                <dd>Artichoke focaccia with fresh thyme</dd>
+                                <div *ngFor='let menu of appetizers | async'>
+                                    <dt><a class="rm-viewdetails" (click)='viewDetail(menu)'>{{menu.name}}</a></dt>
+                                    <dd>{{menu.detail}}</dd>
+                                </div>
                             </dl>
 
-                            <h4>Salads &amp; More</h4>
+                            <!-- <h4>Salads &amp; More</h4>
                             <dl>
                                 <dt>Green Delight</dt>
                                 <dd>Watercress, frisee and avocado salad</dd>
@@ -112,7 +108,7 @@
 
                                 <dt>Panini Deluxe</dt>
                                 <dd>Buffalo mozzarella basil panini</dd>
-                            </dl>
+                            </dl> -->
                         </div><!-- /rm-content -->
                         <div class="rm-overlay"></div>
 
@@ -125,41 +121,51 @@
                         <div class="rm-content">
                             <h4>Main Courses</h4>
                             <dl>
-                                <dt><a href="https://herbivoracious.com/2009/03/panfried-gnocchi-with-arugula-recipe.html"
-                                        class="rm-viewdetails" data-thumb="images/11.jpg">Crispy Gnocchi with
-                                        Arugula</a></dt>
-                                <dd>Pan-fried potato gnocchi with arugula salad</dd>
+                                <div *ngFor='let menu of mainMenus | async'>
+                                    <dt><a class="rm-viewdetails" (click)='viewDetail(menu)'>{{menu.name}}</a></dt>
+                                    <dd>{{menu.detail}}</dd>
+                                </div>
+                                <!-- <dt><a data-href="https://herbivoracious.com/2009/03/panfried-gnocchi-with-arugula-recipe.html"
+                                        class="rm-viewdetails" data-thumb="images/11.jpg" (click)='viewDetail()'>Cánh gà
+                                        ướp gia vị cay với tỏi
+                                        ớt</a></dt>
+                                <dd>Cánh gà ướp gia vị cay với tỏi ớt</dd> -->
 
-                                <dt>Sea Palm Spicy Peanut Curry</dt>
+                                <!-- <dt>Sea Palm Spicy Peanut Curry</dt>
                                 <dd>Tender sea palm noodles, seasoned vegetables, spicy peanut curry and tempeh
-                                    fenel croquettes</dd>
+                                    fenel croquettes</dd> -->
 
-                                <dt><a href="https://herbivoracious.com/2012/09/caviar-lentil-salad-with-arugula-crispy-shallots-and-roasted-garlic-recipe.html"
-                                        class="rm-viewdetails" data-thumb="images/8.jpg">Lentil Caviar &amp;
-                                        Arugula</a></dt>
-                                <dd>Black lentil curry with arugula salad, caramelized shallots and roasted garlic
-                                </dd>
+                                <!-- <dt><a data-href="https://herbivoracious.com/2012/09/caviar-lentil-salad-with-arugula-crispy-shallots-and-roasted-garlic-recipe.html"
+                                        class="rm-viewdetails" data-thumb="images/8.jpg" (click)='viewDetail()'>Cá phi
+                                        lê viên sốt
+                                        Mayonaise</a></dt>
+                                <dd>Cá phi lê viên sốt Mayonaise
+                                </dd> -->
 
-                                <dt>Tamari-Maple Glazed Tofu</dt>
+                                <!-- <dt>Tamari-Maple Glazed Tofu</dt>
                                 <dd>Wasabi emulsion, sesame seeds and scallions</dd>
 
                                 <dt>Maple Barbeque Tofu</dt>
                                 <dd>Grilled marinated tofu, maple barbeque sauce, tahini slaw, grilled seasonal
-                                    vegetables and mashed potatoes</dd>
+                                    vegetables and mashed potatoes</dd> -->
 
-                                <dt><a href="https://herbivoracious.com/2012/07/king-oyster-mushroom-with-roasted-cherries-and-sage-no-that-isnt-meat-recipe-and-thought-process.html"
-                                        class="rm-viewdetails" data-thumb="images/4.jpg">Luxur Oyster</a></dt>
-                                <dd>King oyster mushroom with roasted cherries and sage</dd>
-
-                                <dt><a href="https://herbivoracious.com/2012/09/rigatoni-with-roasted-cauliflower-and-spicy-tomato-sauce-recipe.html"
-                                        class="rm-viewdetails" data-thumb="images/3.jpg">Rigatoni di Cavolfiore</a>
+                                <!-- <dt><a data-href="https://herbivoracious.com/2012/07/king-oyster-mushroom-with-roasted-cherries-and-sage-no-that-isnt-meat-recipe-and-thought-process.html"
+                                        class="rm-viewdetails" data-thumb="images/4.jpg" (click)='viewDetail()'>Ba chỉ
+                                        Bò cuộn nấm kim châm</a>
                                 </dt>
-                                <dd>Rigatoni with roasted cauliflower and spicy tomato sauce</dd>
+                                <dd>Ba chỉ Bò cuộn nấm kim châm</dd> -->
 
-                                <dt><a href="https://herbivoracious.com/2012/06/saffron-chickpea-stew-with-grilled-porcini-mushroom-recipe.html"
-                                        class="rm-viewdetails" data-thumb="images/14.jpg">Saffron Chana Secret</a>
+                                <!-- <dt><a data-href="https://herbivoracious.com/2012/09/rigatoni-with-roasted-cauliflower-and-spicy-tomato-sauce-recipe.html"
+                                        class="rm-viewdetails" data-thumb="images/3.jpg" (click)='viewDetail()'>Tôm hấp
+                                        bia</a>
                                 </dt>
-                                <dd>Saffron chickpea stew with grilled porcini mushrooms</dd>
+                                <dd>Tôm hấp bia</dd>
+
+                                <dt><a data-href="https://herbivoracious.com/2012/06/saffron-chickpea-stew-with-grilled-porcini-mushroom-recipe.html"
+                                        class="rm-viewdetails" data-thumb="images/14.jpg" (click)='viewDetail()'>Gỏi
+                                        xoài tai heo</a>
+                                </dt>
+                                <dd>Gỏi xoài tai heo</dd> -->
                             </dl>
                         </div><!-- /rm-content -->
                         <div class="rm-overlay"></div>
@@ -177,7 +183,11 @@
                         <div class="rm-content">
                             <h4>Desserts</h4>
                             <dl>
-                                <dt><a href="https://herbivoracious.com/2012/08/crepes-with-roasted-french-plums-yogurt-and-honey.html"
+                                <div *ngFor='let menu of desserts | async'>
+                                    <dt><a class="rm-viewdetails" (click)='viewDetail(menu)'>{{menu.name}}</a></dt>
+                                    <dd>{{menu.detail}}</dd>
+                                </div>
+                                <!-- <dt><a href="https://herbivoracious.com/2012/08/crepes-with-roasted-french-plums-yogurt-and-honey.html"
                                         class="rm-viewdetails" data-thumb="images/5.jpg">French Plum Crepes</a></dt>
                                 <dd>Crepes with roasted french plums, yogurt &amp; honey</dd>
 
@@ -198,27 +208,30 @@
                                 <dd>Dutch ginat oven-baked pancakes with sauteed apples</dd>
 
                                 <dt><a href="https://herbivoracious.com/2008/08/blueberry-napol.html"
-                                        class="rm-viewdetails" data-thumb="images/7.jpg">Blueberry Napoleon</a></dt>
-                                <dd>Blueberry Napoleon with crème fraîche and raspberry powder</dd>
+                                        (click)='viewDetail()' class="rm-viewdetails"
+                                        data-thumb="images/7.jpg">Blueberry Napoleon</a></dt>
+                                <dd>Blueberry Napoleon with crème fraîche and raspberry powder</dd> -->
 
-                                <dt><a href="https://herbivoracious.com/2008/09/rings-of-saturn.html"
+                                <!-- <dt><a href="https://herbivoracious.com/2008/09/rings-of-saturn.html"
                                         class="rm-viewdetails" data-thumb="images/2.jpg">Rings of Saturn</a></dt>
                                 <dd>Saturn peach on challah french toast</dd>
 
                                 <dt><a href="https://herbivoracious.com/2008/04/recipe-atayef.html"
                                         class="rm-viewdetails" data-thumb="images/9.jpg">Classic Atayef</a></dt>
-                                <dd>Syrian ricotta-filled dessert pancakes</dd>
+                                <dd>Syrian ricotta-filled dessert pancakes</dd> -->
                             </dl>
                             <div class="rm-order">
                                 <p><strong>Would you like to join with us?</strong> Call us &amp; join the event:
                                     <strong>Én</strong></p>
-                                <!-- <form class="example-form">
-                                    <mat-form-field>
-                                        <input matInput placeholder="Name" value="Toan Nguyen">
-                                    </mat-form-field>
-                                </form> -->
-                                <a href="https://bbv-pantry.firebaseapp.com/user/happy-hours"
-                                    class="rm-button-open">Register</a>
+                                <mat-card class="register-box">
+                                    <form class="example-form" [formGroup]='formGroup2'>
+                                        <mat-form-field>
+                                            <input matInput tabindex="3" placeholder="Type your name"
+                                                (keyup.enter)="register2()" formControlName='name' #registerName>
+                                        </mat-form-field>
+                                    </form>
+                                    <a (click)='register2()' tabindex="4" class="rm-button-open">Register</a>
+                                </mat-card>
                             </div>
                         </div><!-- /rm-content -->
                     </div><!-- /rm-back -->

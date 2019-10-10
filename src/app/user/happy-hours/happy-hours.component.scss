@@ -171,7 +171,7 @@ $rootcss: '../../styles/custom-css';
 a.rm-button-open,
 .rm-modal h5 {
   font-weight: 700;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   font-family: 'Arvo', Arial, sans-serif;
 }
 
@@ -303,8 +303,8 @@ a.rm-viewdetails:before {
 }
 
 .rm-modal .rm-thumb {
-  width: 100px;
-  height: 100px;
+  width: 200px;
+  height: 200px;
   background-repeat: no-repeat;
   background-position: center center;
   float: left;
@@ -312,7 +312,9 @@ a.rm-viewdetails:before {
   box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.2),
     1px 1px 1px rgba(255, 255, 255, 0.9);
 }
-
+// .rm-thumb:hover {
+//   transform: scale(3);
+// }
 .rm-modal a:after {
   content: '\2192';
   display: inline-block;
@@ -353,7 +355,7 @@ a.rm-viewdetails:hover,
   padding: 2px 5px;
   top: -19px;
   opacity: 0;
-  right: 30px;
+  right: 0px;
   cursor: pointer;
 }
 
@@ -592,4 +594,7 @@ a.rm-viewdetails:hover,
 }
 .register-box {
   height: 130px;
+}
+a {
+  cursor: pointer;
 }

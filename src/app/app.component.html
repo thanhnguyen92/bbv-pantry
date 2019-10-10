@@ -5,7 +5,7 @@
       <img src="{{ assetsUrl + 'images/logo.svg' }}" class="logo pr-2" alt="{{ 'bbv Pantry' }}" />
       Pantry
     </a>
-    <button mat-icon-button aria-label="Settings" (click)="menu.toggle()">
+    <button mat-icon-button aria-label="Settings" (click)="menu.toggle()" #buttonMenu>
       <!-- <button *ngIf="isLogged && authService.isAdmin" mat-icon-button aria-label="Settings" [matMenuTriggerFor]="spaces"> -->
 
       <mat-icon>menu</mat-icon>
@@ -100,9 +100,11 @@
           </mat-panel-description> -->
         </mat-expansion-panel-header>
         <mat-list>
-          <mat-list-item class="menu-item" (click)="goToUser()">Order</mat-list-item>
+          <mat-list-item class="menu-item" *ngIf="isLogged" (click)="goToUser()">Order</mat-list-item>
           <mat-divider></mat-divider>
-          <mat-list-item class="menu-item" (click)="goToUserHistory()">History</mat-list-item>
+          <mat-list-item class="menu-item" *ngIf="isLogged" (click)="goToUserHistory()">History</mat-list-item>
+          <mat-list-item class="menu-item" (click)="goToMenuHappyHours()">Menu</mat-list-item>
+          <mat-list-item class="menu-item" (click)="goToRegisters()">Registers</mat-list-item>
         </mat-list>
 
       </mat-expansion-panel>
