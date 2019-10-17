@@ -43,7 +43,7 @@
     <section class="main">
 
         <div id="rm-container" class="rm-container" #container>
-            <div class="rm-modal" (clickOutside)='onClickOutside($event)'>
+            <div class="rm-modal">
                 <div class="rm-thumb" [style.backgroundImage]="getImageUrl()" #thumnail>
                 </div>
                 <h5>{{selectedMenu.name}}</h5>
@@ -59,28 +59,37 @@
 
                             <div class="rm-logo"></div>
                             <h2><i>bbv</i></h2>
-                            <h3>Happy hours</h3>
-
+                            <!-- <h3>Happy hours</h3> -->
+                            <p>You're invited to Happy Hour 25.10</p>
                             <a (click)='openMenu()' class="rm-button-open after">View the Menu</a>
                             <div class="rm-info">
                                 <p>
-                                    <strong>Bbv Happy Hours</strong><br>
+                                    <!-- <strong>bbv Happy Hours</strong><br>
                                     Floor 3, Anna Building<br>
-                                    QTSC, HCMC<br>
-                                    <strong>Phone</strong> Én<br>
-                                    <strong>Fax</strong> Én</p>
+                                    QTSC, HCMC<br> -->
+                                    <strong>Location</strong> &nbsp; <b>Tell</b> <br>
+                                    <strong>Time</strong> &nbsp; <b>6PM</b><br>
+                                    <strong>Register before</strong> &nbsp; <b>18.10</b>
+                                </p>
                             </div>
                             <div>
                                 <mat-card class="register-box">
                                     <form class="example-form" [formGroup]='formGroup'>
                                         <mat-form-field>
-                                            <input matInput placeholder="Type your name" formControlName='name'
-                                                (keyup.enter)='registerHappyHours()' tabindex="1">
+                                            <input matInput placeholder="Type your First Name - Last Name"
+                                                formControlName='name' (keyup.enter)='registerHappyHours()'
+                                                tabindex="1">
+                                            <mat-error align="start"
+                                                *ngIf="(name.dirty || name.touched) && name.invalid && name.errors.isDuplicate"
+                                                class="form__error">Name is duplicated.</mat-error>
                                         </mat-form-field>
-                                        <!-- <span *ngIf="duplicateMessage">{{duplicateMessage}}</span> -->
+
+
+                                        <a (click)='registerHappyHours()' class="rm-button-open" tabindex="2"
+                                            #registerLink>Register</a>
+
                                     </form>
-                                    <a (click)='registerHappyHours()' class="rm-button-open" tabindex="2"
-                                        #register>Register</a>
+
                                 </mat-card>
 
                             </div>
@@ -181,7 +190,7 @@
                     <div class="rm-back">
                         <span (click)='closeMenu()' class="rm-close">Close</span>
                         <div class="rm-content">
-                            <h4>Desserts</h4>
+                            <h4>Desserts & Drinks</h4>
                             <dl>
                                 <div *ngFor='let menu of desserts | async'>
                                     <dt><a class="rm-viewdetails" (click)='viewDetail(menu)'>{{menu.name}}</a></dt>
@@ -221,17 +230,24 @@
                                 <dd>Syrian ricotta-filled dessert pancakes</dd> -->
                             </dl>
                             <div class="rm-order">
-                                <p><strong>Would you like to join with us?</strong> Call us &amp; join the event:
-                                    <strong>Én</strong></p>
-                                <mat-card class="register-box">
-                                    <form class="example-form" [formGroup]='formGroup2'>
-                                        <mat-form-field>
-                                            <input matInput tabindex="3" placeholder="Type your name"
-                                                (keyup.enter)="register2()" formControlName='name' #registerName>
-                                        </mat-form-field>
-                                    </form>
-                                    <a (click)='register2()' tabindex="4" class="rm-button-open">Register</a>
-                                </mat-card>
+                                <p><strong>Would you like to join with us?</strong> Register now:
+
+                                    <mat-card class="register-box">
+                                        <form class="example-form" [formGroup]='formGroup2'>
+                                            <mat-form-field>
+                                                <input matInput tabindex="3"
+                                                    placeholder="Type your First Name - Last Name"
+                                                    (keyup.enter)="registerHappyHoursInner()" formControlName='name'
+                                                    #registerName>
+                                                <mat-error align="start"
+                                                    *ngIf="(name2.dirty || name2.touched) && name2.invalid && name2.errors.isDuplicate"
+                                                    class="form__error">Name is duplicated.</mat-error>
+                                            </mat-form-field>
+                                        </form>
+                                        <a (click)='registerHappyHoursInner()' tabindex="4" class="rm-button-open"
+                                            #registerLink2>Register</a>
+                                    </mat-card>
+                                </p>
                             </div>
                         </div><!-- /rm-content -->
                     </div><!-- /rm-back -->

@@ -110,7 +110,7 @@ export class OrderComponent implements OnInit, OnDestroy {
 
       let clipboardText = '';
       orderedItems.forEach((item, idx) => {
-        clipboardText += `${item.name} (${item.amount})`;
+        clipboardText += `${item.name} (${item.amount}) (${item.note})`;
         if (idx < orderedItems.length - 1) {
           clipboardText += `\r\n`;
         }

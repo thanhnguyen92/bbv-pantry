@@ -5,4 +5,5 @@ export class HappyHoursModel implements BaseEntity {
   uid?: string;
   name: string;
   email?: string;
+  date?: Date;
 }

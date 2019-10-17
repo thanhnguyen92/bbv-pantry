@@ -42,20 +42,32 @@ export class HappyHoursService {
   checkExitsName(name) {
     this.firebaseService.setPath(ENTITY_NAME);
     return this.firebaseService
-      .gets<MenuModel>(t => t.where('name', '==', name))
+      .gets<MenuModel>()
       .valueChanges()
       .pipe(
         map(entities => {
-          return entities.map(entity => {
-            const data = entity as MenuModel;
-            const id = entity.id;
-            return { id, ...data };
-          });
+          return entities
+            .filter(entity => {
+              if (
+                entity.name.localeCompare(name, ['vn', 'en'], {
+                  sensitivity: 'accent'
+                }) === 0
+              ) {
+                return entity;
+              }
+            })
+            .map(entity => {
+              const data = entity as MenuModel;
+
+              const id = entity.id;
+              return { id, ...data };
+            });
         })
       );
   }
   add(entity: HappyHoursModel) {
     this.firebaseService.setPath(ENTITY_NAME);
+    entity.date = new Date();
     return this.firebaseService.add<HappyHoursModel>(entity);
   }
 

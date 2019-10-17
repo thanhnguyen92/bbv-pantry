@@ -4,7 +4,8 @@ import {
   NgZone,
   ViewChild,
   ElementRef,
-  Renderer2
+  Renderer2,
+  AfterViewInit
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HappyHoursService } from 'src/app/shared/services/happy-hours.service';
@@ -13,10 +14,12 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
 import { AppService } from 'src/app/shared/services/app.service';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
+import { utils } from 'protractor';
+import { Utilities } from 'src/app/shared/services/utilities';
 const APPETIZERS = of([
   {
     name: 'Gỏi xoài tai heo',
-    detail: 'Gỏi xoài tai heo',
+    detail: 'Pork with mango salad',
     thumnail:
       'https://res.cloudinary.com/bbvpantry/image/upload/c_scale,h_200,w_200/v1570609491/happy-hours/goi_tocfoq.jpg'
   }
@@ -24,31 +27,37 @@ const APPETIZERS = of([
 const MAINMENUS = of([
   {
     name: 'Tôm hấp bia',
-    detail: 'Tôm hấp bia',
+    detail: 'Shrimp steamed with beer',
     thumnail:
       'https://res.cloudinary.com/bbvpantry/image/upload/c_scale,h_200,w_200/v1570607320/happy-hours/tom_zyfrp0.jpg'
   },
   {
     name: 'Heo quay bánh hỏi',
-    detail: 'Heo quay bánh hỏi',
+    detail: 'Roasted pork with fine rice vermicelli',
     thumnail:
       'https://res.cloudinary.com/bbvpantry/image/upload/c_scale,h_200,w_200/v1570609488/happy-hours/heoquay_ex0zb7.jpg'
   },
   {
+    name: 'Xôi vò hạt sen',
+    detail: 'Sticky rice with lotus seeds',
+    thumnail:
+      'https://res.cloudinary.com/bbvpantry/image/upload/c_scale,h_200,w_200/v1571037483/happy-hours/xoi_ajd7qz.jpg'
+  },
+  {
     name: 'Cá phi lê viên sốt Mayonaise',
-    detail: 'Cá phi lê viên sốt Mayonaise',
+    detail: 'Fish fillet with Mayonnaise sauce',
     thumnail:
       'https://res.cloudinary.com/bbvpantry/image/upload/c_scale,h_200,w_200/v1570609489/happy-hours/ca_gefdx8.jpg'
   },
   {
     name: 'Ba chỉ Bò cuộn nấm kim châm',
-    detail: 'Ba chỉ Bò cuộn nấm kim châm',
+    detail: 'Beef bacon with enoki mushrooms',
     thumnail:
       'https://res.cloudinary.com/bbvpantry/image/upload/c_scale,h_200,w_200/v1570609489/happy-hours/bachibo_tv8inq.jpg'
   },
   {
     name: 'Cánh gà ướp gia vị cay với tỏi ớt',
-    detail: 'Cánh gà ướp gia vị cay với tỏi ớt',
+    detail: 'Chiken wings marinated with chill and garlic',
     thumnail:
       'https://res.cloudinary.com/bbvpantry/image/upload/c_scale,h_200,w_200/v1570609488/happy-hours/canhga_pqu1fn.jpg'
   }
@@ -56,28 +65,28 @@ const MAINMENUS = of([
 
 const DESSERTS = of([
   {
-    name: 'Bia',
-    detail: 'Bia',
-    thumnail:
-      'https://res.cloudinary.com/bbvpantry/image/upload/c_scale,h_200,w_200/v1570609204/happy-hours/bia_w0tcnf.jpg'
-  },
-  {
     name: 'Rau câu',
     detail: 'Rau câu',
     thumnail:
       'https://res.cloudinary.com/bbvpantry/image/upload/c_scale,h_200,w_200/v1570609316/happy-hours/raucau_n2gljp.jpg'
   },
   {
-    name: 'Nước ngọt',
-    detail: 'Nước ngọt',
-    thumnail:
-      'https://res.cloudinary.com/bbvpantry/image/upload/c_scale,h_200,w_200/v1570609203/happy-hours/nuocngot_qacqwc.jpg'
-  },
-  {
     name: 'Bánh trứng bông lan cuộn',
     detail: 'Bánh trứng bông lan cuộn',
     thumnail:
       'https://res.cloudinary.com/bbvpantry/image/upload/c_scale,h_200,w_200/v1570609316/happy-hours/bonglan_enyde7.jpg'
+  },
+  {
+    name: 'Bia',
+    detail: 'Beer',
+    thumnail:
+      'https://res.cloudinary.com/bbvpantry/image/upload/c_scale,h_200,w_200/v1570609204/happy-hours/bia_w0tcnf.jpg'
+  },
+  {
+    name: 'Nước ngọt',
+    detail: 'Nước ngọt',
+    thumnail:
+      'https://res.cloudinary.com/bbvpantry/image/upload/c_scale,h_200,w_200/v1570609203/happy-hours/nuocngot_qacqwc.jpg'
   }
 ]);
 @Component({
@@ -85,17 +94,20 @@ const DESSERTS = of([
   templateUrl: './happy-hours.component.html',
   styleUrls: ['./happy-hours.component.scss']
 })
-export class HappyHoursComponent implements OnInit {
+export class HappyHoursComponent implements OnInit, AfterViewInit {
   formGroup: FormGroup;
   formGroup2: FormGroup;
   @ViewChild('container', { static: false }) container: ElementRef;
-  @ViewChild('register', { static: false }) registerLink: ElementRef;
+  @ViewChild('registerLink', { static: false }) registerLink: ElementRef;
+
+  @ViewChild('registerLink2', { static: false }) register2Link: ElementRef;
+
   @ViewChild('registerName', { static: false }) registerName: ElementRef;
   @ViewChild('thumnail', { static: false }) thumnail: ElementRef;
   mainMenus = MAINMENUS;
   desserts = DESSERTS;
   appetizers = APPETIZERS;
-  imageDetailUrl: string = '';
+  imageDetailUrl: '';
   selectedMenu: any = {};
   isOpenDetail = false;
   constructor(
@@ -122,7 +134,9 @@ export class HappyHoursComponent implements OnInit {
     //   });
     // });
   }
-
+  ngAfterViewInit(): void {
+    this.registerTimout();
+  }
   openMenu() {
     this.container.nativeElement.classList.add('rm-open');
   }
@@ -133,47 +147,65 @@ export class HappyHoursComponent implements OnInit {
     });
   }
 
-  registerHappyHours() {
+  async registerHappyHours() {
     const formVal = this.formGroup.value as HappyHoursModel;
-    if (this.checkDuplicateName(formVal.name)) {
-      // this.duplicateMessage = 'Please fill another name.';
-    }
+    let isDuplicate = false;
     if (!this.formGroup.invalid) {
       this.appService.setLoadingStatus(true);
-      let index = 100;
-      while (index > 0) {
-        index--;
-        this.happyHoursService
-          .add(formVal)
-          .then(res => {
-            console.log(res);
-            NotificationService.showSuccessMessage('Register successfully!');
-          })
-          .finally(() => {
-            this.appService.setLoadingStatus(false);
-            this.router.navigate(['user', 'registers']);
-          });
+    }
+    await this.checkDuplicateName(formVal.name).then((res: boolean) => {
+      isDuplicate = res;
+      if (res) {
+        this.formGroup.controls.name.setErrors({ isDuplicate: true });
+        this.appService.setLoadingStatus(false);
       }
-    }
-  }
-  register2() {
-    const formVal = this.formGroup2.value as HappyHoursModel;
-    if (this.checkDuplicateName(formVal.name)) {
-      // this.duplicateMessage = 'Please fill another name.';
-    }
-    if (!this.formGroup2.invalid) {
-      this.appService.setLoadingStatus(true);
+    });
+    if (!this.formGroup.invalid && !this.registerTimout() && !isDuplicate) {
+      // this.checkDuplicateName(formVal.name).subscribe(res => {
+      //   if (!res || res.length === 0) {
 
       this.happyHoursService
         .add(formVal)
-        .then(res => {
-          console.log(res);
+        .then(response => {
           NotificationService.showSuccessMessage('Register successfully!');
         })
         .finally(() => {
           this.appService.setLoadingStatus(false);
           this.router.navigate(['user', 'registers']);
         });
+      //   }
+      // });
+    }
+  }
+  async registerHappyHoursInner() {
+    const formVal = this.formGroup2.value as HappyHoursModel;
+    let isDuplicate = false;
+    if (!this.formGroup2.invalid) {
+      this.appService.setLoadingStatus(true);
+    }
+    await this.checkDuplicateName(formVal.name).then((res: boolean) => {
+      isDuplicate = res;
+      if (res) {
+        this.formGroup2.controls.name.setErrors({ isDuplicate: true });
+        this.appService.setLoadingStatus(false);
+      }
+    });
+    
+    if (!this.formGroup2.invalid && !this.registerTimout() && !isDuplicate) {
+      // this.checkDuplicateName(formVal.name).subscribe(res => {
+      // if (!res || res.length === 0) {
+
+      this.happyHoursService
+        .add(formVal)
+        .then(response => {
+          NotificationService.showSuccessMessage('Register successfully!');
+        })
+        .finally(() => {
+          this.appService.setLoadingStatus(false);
+          this.router.navigate(['user', 'registers']);
+        });
+      // }
+      // });
     }
   }
 
@@ -195,21 +227,32 @@ export class HappyHoursComponent implements OnInit {
     this.closeDetail();
     this.registerName.nativeElement.focus();
   }
+  get name() {
+    return this.formGroup.controls.name;
+  }
 
-  onClickOutside(event) {
-    // console.log(event);
-    // const modal = document.querySelector('.rm-in');
-    // if (!event && modal) {
-    //   this.renderer.removeClass(this.container.nativeElement, 'rm-in');
-    //   this.isOpenDetail = false;
-    // }
+  get name2() {
+    return this.formGroup2.controls.name;
   }
   private checkDuplicateName(name) {
-    return this.happyHoursService.checkExitsName(name).subscribe(res => {
-      if (res && res.length > 0) {
-        return true;
-      }
-      return false;
+    return new Promise((resolve, reject) => {
+      this.happyHoursService.checkExitsName(name).subscribe(res => {
+        if (res && res.length > 0) {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      });
     });
+  }
+  private registerTimout() {
+    const currentDate = new Date();
+    const expiredDate = new Date(2019, 10, 18);
+    if (Utilities.compareDates(currentDate, expiredDate) > 1) {
+      this.registerLink.nativeElement.classList.add('disabled-link');
+      this.register2Link.nativeElement.classList.add('disabled-link');
+      return true;
+    }
+    return false;
   }
 }
