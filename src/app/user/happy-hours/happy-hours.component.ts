@@ -190,7 +190,7 @@ export class HappyHoursComponent implements OnInit, AfterViewInit {
         this.appService.setLoadingStatus(false);
       }
     });
-    
+
     if (!this.formGroup2.invalid && !this.registerTimout() && !isDuplicate) {
       // this.checkDuplicateName(formVal.name).subscribe(res => {
       // if (!res || res.length === 0) {
@@ -248,9 +248,19 @@ export class HappyHoursComponent implements OnInit, AfterViewInit {
   private registerTimout() {
     const currentDate = new Date();
     const expiredDate = new Date(2019, 10, 18);
-    if (Utilities.compareDates(currentDate, expiredDate) > 1) {
-      this.registerLink.nativeElement.classList.add('disabled-link');
-      this.register2Link.nativeElement.classList.add('disabled-link');
+    if (Utilities.compareDates(currentDate, expiredDate, true) > 1) {
+      if (
+        this.registerLink.nativeElement.classList.indexOf('disabled-link') ===
+        -1
+      ) {
+        this.registerLink.nativeElement.classList.add('disabled-link');
+      }
+      if (
+        this.register2Link.nativeElement.classList.indexOf('disabled-link') ===
+        -1
+      ) {
+        this.register2Link.nativeElement.classList.add('disabled-link');
+      }
       return true;
     }
     return false;

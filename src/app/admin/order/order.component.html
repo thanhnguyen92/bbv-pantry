@@ -62,7 +62,7 @@
                 <div class="m-0">
                     <span>{{ orderItem.name }}</span>
                     <span>({{ orderItem.amount }})</span>
-                    <span>({{ orderItem.note }})</span>
+                    <span *ngIf="orderItem.note">({{ orderItem.note }})</span>
                 </div>
 
                 <span [ngClass]="element.isPaid ? 'success' : 'failed'">{{ orderItem.price | currency:'VND' }}</span>
