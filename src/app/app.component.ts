@@ -13,7 +13,12 @@ import { AuthService } from './shared/services/auth.service';
 import { Utilities } from './shared/services/utilities';
 import { PubSubChannel } from './shared/constants/pub-sub-channel.constant';
 import { AppService } from './shared/services/app.service';
-import { Router } from '@angular/router';
+import {
+  Router,
+  ActivatedRoute,
+  NavigationEnd,
+  NavigationStart
+} from '@angular/router';
 import { NotificationService } from './shared/services/notification.service';
 import { PushNotificationModel } from './shared/models/push-notification.model';
 import { PushNotificationService } from './shared/services/push-notification.service';
@@ -22,8 +27,10 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import {
   MatTreeFlattener,
   MatTreeFlatDataSource,
-  MatButton
+  MatButton,
+  MatMenu
 } from '@angular/material';
+import { map } from 'rxjs/operators';
 
 const MENU_DATA: MenuNode[] = [
   {
@@ -55,8 +62,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   title = 'bbv-pantry';
   isLogged = false;
   isLoading = false;
+  isPantryApp = false;
   loggedUser;
   assetsUrl = environment.assetsUrl;
+  activeRouteName: string;
   @ViewChild('buttonMenu', { static: false }) buttonMenu: MatButton;
   treeControl = new FlatTreeControl<MenuFlatNode>(
     node => node.level,
@@ -105,6 +114,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.loggedUser = this.authService.currentUser;
 
     this.dataSource.data = MENU_DATA;
+    this.route.events.subscribe(res => {
+      this.activeRouteName = this.route.url;
+    });
   }
 
   ngOnInit(): void {
@@ -135,6 +147,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
     });
   }
 
+  logIn() {
+    this.route.navigate(['auth', 'login']);
+  }
   goToAdmin() {
     this.setupNotification();
     this.route.navigate(['admin']);
@@ -191,9 +206,26 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
     (this.buttonMenu._elementRef as ElementRef).nativeElement.click();
     this.route.navigate(['user', 'registers']);
   }
-
+  gotoPantry() {
+    this.isPantryApp = true;
+  }
+  goToMyApp() {
+    this.isPantryApp = false;
+  }
   profile() {
     this.route.navigate(['user', 'profile']);
+  }
+
+  gotoPmWeb() {
+    this.route.navigate(['user', 'pm-web']);
+  }
+  gotoPlanner() {
+    this.route.navigate(['user', 'project-planner']);
+  }
+  gotoPerfomanceReview() {}
+  gotoProficiencyEvalution() {}
+  isActiveMenuItem(routeName: string) {
+    return this.activeRouteName.indexOf(routeName) !== -1;
   }
   get profileName() {
     let result = '';
@@ -206,6 +238,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
     return result;
   }
+
   private setupNotification() {
     if (this.notificationSubscription) {
       this.notificationSubscription.unsubscribe();

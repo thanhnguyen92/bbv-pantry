@@ -7,6 +7,8 @@ import { UserProfileComponent } from './profile/user-profile.component';
 import { HappyHoursComponent } from './happy-hours/happy-hours.component';
 import { AnonimousGuard } from '../shared/guards/anonimous.guard';
 import { HappyHoursListComponent } from './happy-hours/happy-hours-list/happy-hours-list.component';
+import { PmWebComponent } from './pm-web/pm-web.component';
+import { ProjectPlannerComponent } from './project-planner/project-planner.component';
 
 export const UserRoutingModule = RouterModule.forChild([
   { path: '', component: UserComponent, canActivate: [AuthGuard] },
@@ -27,6 +29,16 @@ export const UserRoutingModule = RouterModule.forChild([
   {
     path: 'registers',
     component: HappyHoursListComponent,
+    canActivate: [AnonimousGuard]
+  },
+  {
+    path: 'pm-web',
+    component: PmWebComponent,
+    canActivate: [AnonimousGuard]
+  },
+  {
+    path: 'project-planner',
+    component: ProjectPlannerComponent,
     canActivate: [AnonimousGuard]
   }
 ]);

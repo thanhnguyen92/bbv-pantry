@@ -30,7 +30,6 @@ export class PushNotificationService {
               //   'minutes'
               // );
               // const isValid = moment().diff(dateSubstract, 'minute');
-              debugger;
               if (
                 (email && data.email === email) ||
                 (userId && data.userId === userId)

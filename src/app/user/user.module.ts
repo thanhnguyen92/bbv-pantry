@@ -12,6 +12,8 @@ import { UserProfileComponent } from './profile/user-profile.component';
 import { HappyHoursComponent } from './happy-hours/happy-hours.component';
 import { HappyHoursListComponent } from './happy-hours/happy-hours-list/happy-hours-list.component';
 import { ClickOutsideDirective } from '../shared/directives/outside-click.directive';
+import { PmWebComponent } from './pm-web/pm-web.component';
+import { ProjectPlannerComponent } from './project-planner/project-planner.component';
 
 @NgModule({
   imports: [
@@ -28,7 +30,9 @@ import { ClickOutsideDirective } from '../shared/directives/outside-click.direct
     UserProfileComponent,
     HappyHoursComponent,
     HappyHoursListComponent,
-    ClickOutsideDirective
+    ClickOutsideDirective,
+    PmWebComponent,
+    ProjectPlannerComponent
   ],
   providers: []
 })

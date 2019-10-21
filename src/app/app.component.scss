@@ -49,11 +49,27 @@ mat-list-item.menu-item:hover {
   padding-top: 60px;
 }
 .example-container {
-  height: calc(100vh - 0px);
+  height: calc(100vh - 21px);
   padding-top: 60px;
 }
 .align-between {
   position: fixed;
   /* top: 0; */
   z-index: 999;
+}
+mat-list-item.disabled {
+  cursor: not-allowed !important;
+  opacity: 0.5;
+  text-decoration: none;
+}
+.footer {
+  width: 100%;
+  height: 5px;
+  color: #aaaaaa;
+  padding: 0px;
+  text-align: center;
+  vertical-align: middle;
+}
+mat-list-item.active {
+  font-weight: bold;
 }
