@@ -235,15 +235,3 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
   }
 }
-
-interface MenuNode {
-  name: string;
-  action?: string;
-  children?: MenuNode[];
-}
-
-interface MenuFlatNode {
-  expandable: boolean;
-  name: string;
-  level: number;
-}
