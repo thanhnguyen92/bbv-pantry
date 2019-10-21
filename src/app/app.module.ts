@@ -32,7 +32,7 @@ import {
     AngularFirestoreModule,
     AngularFireAuthModule,
     MaterialModule,
-    AngularFireMessagingModule
+    AngularFireMessagingModule,
   ],
   entryComponents: [ConfirmDialogComponent],
   providers: [

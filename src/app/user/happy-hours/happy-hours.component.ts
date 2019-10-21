@@ -247,20 +247,12 @@ export class HappyHoursComponent implements OnInit, AfterViewInit {
   }
   private registerTimout() {
     const currentDate = new Date();
-    const expiredDate = new Date(2019, 10, 18);
+    const expiredDate = new Date(2019, 9, 18);
     if (Utilities.compareDates(currentDate, expiredDate, true) > 1) {
-      if (
-        this.registerLink.nativeElement.classList.indexOf('disabled-link') ===
-        -1
-      ) {
-        this.registerLink.nativeElement.classList.add('disabled-link');
-      }
-      if (
-        this.register2Link.nativeElement.classList.indexOf('disabled-link') ===
-        -1
-      ) {
-        this.register2Link.nativeElement.classList.add('disabled-link');
-      }
+      this.registerLink.nativeElement.classList.add('disabled-link');
+
+      this.register2Link.nativeElement.classList.add('disabled-link');
+
       return true;
     }
     return false;
