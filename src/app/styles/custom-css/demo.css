@@ -7,7 +7,7 @@
   -webkit-font-smoothing: antialiased;
   font-weight: 300;
   margin: -25px;
-  height: calc(100vh - 60px);
+  height: calc(100vh - 82px);
   overflow-y: auto;
 }
 
@@ -18,11 +18,6 @@ a {
 
 strong {
   font-weight: 500;
-}
-
-.container-menu {
-  /* width: 100%;
-  position: relative; */
 }
 
 .clr {

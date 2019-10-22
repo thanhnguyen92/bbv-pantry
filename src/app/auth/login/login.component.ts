@@ -23,9 +23,6 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   isLogged = false;
   adminAccess = false;
-  isRegister = false;
-  isResetPassword = false;
-
   constructor(
     private route: ActivatedRoute,
     private pubSubService: PublishSubcribeService,
@@ -54,20 +51,22 @@ export class LoginComponent implements OnInit {
 
     this.isLogged = this.authService.getIsLogged();
     if (this.isLogged) {
-      if (this.authService.isAdmin) {
-        // Show selection
-        this.showSectionSelection();
-      } else {
-        // Navigate to User
-        this.router.navigate(['user']);
-      }
+      // if (this.authService.isAdmin) {
+      //   // Show selection
+      //   this.showSectionSelection();
+      // } else {
+      // Navigate to User
+      this.router.navigate(['user', 'pantry', 'order']);
+      // }
     }
 
     this.pubSubService.subscribe(PubSubChannel.IS_USER_LOGGED, content => {
       this.isLogged = content;
     });
   }
-
+  gotoRegister() {
+    this.router.navigate(['auth', 'register']);
+  }
   login() {
     this.appService.setLoadingStatus(true);
     const formVal = this.loginForm.value;
@@ -105,13 +104,13 @@ export class LoginComponent implements OnInit {
                 this.authService.setIsLogged(true);
                 this.authService.setUserRoles(security.roles);
                 this.isLogged = true;
-                if (this.authService.isAdmin) {
-                  // Show selection
-                  this.showSectionSelection();
-                } else {
-                  // Navigate to User
-                  this.router.navigate(['user']);
-                }
+                // if (this.authService.isAdmin) {
+                //   // Show selection
+                //   this.showSectionSelection();
+                // } else {
+                //   // Navigate to User
+                this.router.navigate(['user', 'pantry', 'order']);
+                // }
               } else {
                 NotificationService.showErrorMessage('Access denied');
                 this.authService.logOut();
@@ -128,92 +127,13 @@ export class LoginComponent implements OnInit {
       });
   }
 
-  register() {
-    if (!this.loginForm.valid) {
-      NotificationService.showWarningMessage(
-        'Please fill in some required fields'
-      );
-      return;
-    }
-    const formVal = this.loginForm.value;
-    this.appService.setLoadingStatus(true);
-    this.authService
-      .register(formVal.userName, formVal.password)
-      .then(async result => {
-        const userData: UserModel = {
-          id: result.user.uid,
-          email: result.user.email,
-          displayName: formVal.displayName,
-          photoURL: result.user.photoURL,
-          emailVerified: result.user.emailVerified
-        };
-
-        // Add roles
-        if (this.adminAccess) {
-          await this.securityService.assignRoles(userData.id, [
-            UserRole.Admin,
-            UserRole.User
-          ]);
-        } else {
-          await this.securityService.assignRoles(userData.id, [UserRole.User]);
-        }
-
-        await this.authService.sendVerification();
-        await this.authService.setUserData(userData);
-
-        this.appService.setLoadingStatus(false);
-        NotificationService.showSuccessMessage(
-          'Register successful. Please check your email for verification'
-        );
-
-        // Back to Login form
-        this.isRegister = false;
-        this.loginForm.controls.isRegister.setValue(false);
-      })
-      .catch(error => {
-        this.appService.setLoadingStatus(false);
-        NotificationService.showErrorMessage(error.message);
-      });
-  }
-
-  onRegisterAccount(event) {
-    if (event) {
-      this.isRegister = event.checked;
-    }
-  }
-
-  resetPassword() {
-    const formVal = this.loginForm.value;
-    const email = formVal.userName;
-
-    this.appService.setLoadingStatus(true);
-    this.authService
-      .resetPassword(email)
-      .then(async () => {
-        this.appService.setLoadingStatus(false);
-        NotificationService.showSuccessMessage(
-          'An email has been sent to email with further instructions on how to reset your password.'
-        );
-
-        // Back to Login form
-        this.isResetPassword = false;
-        this.isRegister = false;
-        this.loginForm.controls.isRegister.setValue(false);
-      })
-      .catch(err => {
-        NotificationService.showErrorMessage(err.message);
-        this.appService.setLoadingStatus(false);
-      });
-  }
   submitLogin(event) {
-    if (event.keyCode === 13 && !this.loginForm.controls.isRegister.value) {
+    if (event.keyCode === 13) {
       this.login();
-    } else if (
-      event.keyCode === 13 &&
-      this.loginForm.controls.isRegister.value
-    ) {
-      this.register();
     }
+  }
+  gotoResetPassword() {
+    this.router.navigate(['auth', 'reset-password']);
   }
   private showSectionSelection() {
     this.dialog.closeAll();

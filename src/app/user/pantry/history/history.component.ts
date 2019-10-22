@@ -1,4 +1,4 @@
-import { AuthService } from './../../shared/services/auth.service';
+import { AuthService } from '../../../shared/services/auth.service';
 import { BookingService } from 'src/app/shared/services/booking.service';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatTableDataSource, MatSort } from '@angular/material';

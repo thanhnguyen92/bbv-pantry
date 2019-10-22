@@ -60,6 +60,7 @@ const MENU_DATA: MenuNode[] = [
 })
 export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   title = 'bbv-pantry';
+  haveLogin = false;
   isLogged = false;
   isLoading = false;
   isPantryApp = false;
@@ -150,6 +151,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   logIn() {
     this.route.navigate(['auth', 'login']);
   }
+
+  gotoRegister() {
+    this.route.navigate(['auth', 'register']);
+  }
   goToAdmin() {
     this.setupNotification();
     this.route.navigate(['admin']);
@@ -159,7 +164,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.setupNotification();
     this.route.navigate(['user']);
   }
-
+  gotoUserOrder() {
+    (this.buttonMenu._elementRef as ElementRef).nativeElement.click();
+    this.setupNotification();
+    this.route.navigate(['user', 'pantry', 'order']);
+  }
   goToRestaurant() {
     (this.buttonMenu._elementRef as ElementRef).nativeElement.click();
     this.setupNotification();
@@ -175,7 +184,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   goToUserHistory() {
     (this.buttonMenu._elementRef as ElementRef).nativeElement.click();
     this.setupNotification();
-    this.route.navigate(['user', 'history']);
+    this.route.navigate(['user', 'pantry', 'history']);
   }
 
   goToBooking() {
@@ -197,34 +206,38 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   goToMenuHappyHours() {
-    console.log(this.buttonMenu);
     (this.buttonMenu._elementRef as ElementRef).nativeElement.click();
-    this.route.navigate(['user', 'happy-hours']);
+    this.route.navigate(['user', 'pantry', 'happy-hours']);
   }
 
   goToRegisters() {
     (this.buttonMenu._elementRef as ElementRef).nativeElement.click();
-    this.route.navigate(['user', 'registers']);
+    this.route.navigate(['user', 'pantry', 'registers']);
   }
   gotoPantry() {
-    this.isPantryApp = true;
-  }
-  goToMyApp() {
-    this.isPantryApp = false;
+    (this.buttonMenu._elementRef as ElementRef).nativeElement.click();
+    this.route.navigate(['user', 'pantry']);
   }
   profile() {
     this.route.navigate(['user', 'profile']);
   }
 
   gotoPmWeb() {
+    this.haveLogin = false;
+    (this.buttonMenu._elementRef as ElementRef).nativeElement.click();
     this.route.navigate(['user', 'pm-web']);
   }
   gotoPlanner() {
+    this.haveLogin = false;
+    (this.buttonMenu._elementRef as ElementRef).nativeElement.click();
     this.route.navigate(['user', 'project-planner']);
   }
   gotoPerfomanceReview() {}
   gotoProficiencyEvalution() {}
   isActiveMenuItem(routeName: string) {
+    if (!this.activeRouteName) {
+      return false;
+    }
     return this.activeRouteName.indexOf(routeName) !== -1;
   }
   get profileName() {

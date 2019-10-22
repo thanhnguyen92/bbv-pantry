@@ -1,11 +1,15 @@
-<mat-card *ngIf="!isLogged" class="example-card">
+<mat-card class="example-card">
     <h4 class="pb-3 m-0">
-        Login
+        Register
     </h4>
     <mat-card-content class="mb-0">
-        <form class="example-form" [formGroup]="loginForm" (keydown)="submitLogin($event)">
+        <form class="example-form" [formGroup]="registerForm" (keydown)="submitRegister($event)">
             <mat-form-field class="example-full-width">
                 <input matInput placeholder="Email" formControlName="userName" name="username" required>
+                <mat-hint>This email is used for verification. Please use the real email.</mat-hint>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <input matInput placeholder="Display Name" formControlName="displayName" name="displayName" required>
             </mat-form-field>
             <mat-form-field class="example-full-width">
                 <input matInput placeholder="Password" formControlName="password" type="password" name="password"
@@ -19,12 +23,14 @@
                 Reset your password
             </a>
         </div>
-
+        <!-- <div *ngIf="isResetPassword">
+                {{ 'Remember your account credential?' }} <a href="javascrip:void();"
+                    (click)="isResetPassword = false">{{ 'Log In!' }}</a>
+            </div> -->
     </mat-card-content>
     <mat-card-actions>
         <div class="p-2">
-            <button mat-raised-button (click)="login()" color="primary">Login</button>
-            <button mat-raised-button (click)="gotoRegister()" color="accent">Register</button>
+            <button mat-raised-button (click)="register()" color="primary">Register</button>
         </div>
     </mat-card-actions>
 </mat-card>

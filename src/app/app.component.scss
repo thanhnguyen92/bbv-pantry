@@ -72,4 +72,13 @@ mat-list-item.disabled {
 }
 mat-list-item.active {
   font-weight: bold;
+  color: #d32f42;
+  font-style: italic;
+}
+mat-list > mat-expansion-panel {
+  box-shadow: none;
+}
+
+.mat-expansion-panel-header {
+  padding: 0px 15px;
 }

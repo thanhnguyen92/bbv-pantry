@@ -1,7 +1,6 @@
 <mat-toolbar class="align-between">
   <div class="d-flex">
-    <a class="header-item pr-3 align-self-center text-decoration-none hyperlink" style="color: #e53935;"
-      (click)="goToMyApp()">
+    <a class="header-item pr-3 align-self-center text-decoration-none hyperlink" style="color: #D32F42;">
       <img src="{{ assetsUrl + 'images/logo.svg' }}" class="logo pr-2" alt="{{ 'bbv Pantry' }}" />
       App
     </a>
@@ -18,7 +17,7 @@
         History
       </button>
     </div> -->
-    <mat-menu #spaces="matMenu">
+    <!-- <mat-menu #spaces="matMenu">
       <button mat-menu-item *ngIf="authService.isAdmin" (click)="goToAdmin()"
         [matMenuTriggerFor]="adminSection">Admin</button>
       <button mat-menu-item [matMenuTriggerFor]="userSection">User</button>
@@ -33,21 +32,23 @@
     <mat-menu #userSection="matMenu">
       <button mat-menu-item (click)="goToUser()">Order</button>
       <button mat-menu-item (click)="goToUserHistory()">History</button>
-    </mat-menu>
+    </mat-menu> -->
   </div>
   <span class="spacer"></span>
+  <div *ngIf="haveLogin || isLogged">
+    <p class="m-0 px-3" [matMenuTriggerFor]="belowMenu">
+      <button mat-mini-fab *ngIf="loggedUser"
+        matTooltip="{{ loggedUser.displayName ? loggedUser.displayName + ' - ' : '(empty) - ' }}{{ loggedUser.email }}">{{profileName}}</button>
+      <button *ngIf="!loggedUser" mat-mini-fab matTooltip="Login">Login</button>
+    </p>
+    <mat-menu #belowMenu="matMenu" yPosition="below">
+      <button mat-menu-item *ngIf="loggedUser" (click)="profile()">Profile</button>
+      <button mat-menu-item *ngIf="loggedUser" color="accent" (click)="logOut()">Logout</button>
+      <button mat-menu-item *ngIf="!loggedUser" color="accent" (click)="logIn()">Login</button>
+      <button mat-menu-item *ngIf="!loggedUser" color="accent" (click)="gotoRegister()">Register</button>
+    </mat-menu>
+  </div>
 
-  <p class="m-0 px-3" [matMenuTriggerFor]="belowMenu">
-    <button mat-mini-fab *ngIf="loggedUser"
-      matTooltip="{{ loggedUser.displayName ? loggedUser.displayName + ' - ' : '(empty) - ' }}{{ loggedUser.email }}">{{profileName}}</button>
-    <button *ngIf="!loggedUser" mat-mini-fab matTooltip="Login">Login</button>
-  </p>
-  <mat-menu #belowMenu="matMenu" yPosition="below">
-    <button mat-menu-item *ngIf="loggedUser" (click)="profile()">Profile</button>
-    <button mat-menu-item *ngIf="loggedUser" color="accent" (click)="logOut()">Logout</button>
-    <button mat-menu-item *ngIf="!loggedUser" color="accent" (click)="logIn()">Login</button>
-    <button mat-menu-item *ngIf="!loggedUser" color="accent" (click)="logIn()">Register</button>
-  </mat-menu>
 
 </mat-toolbar>
 <mat-sidenav-container class="example-container" [hasBackdrop]="true">
@@ -71,16 +72,16 @@
       </mat-tree-node>
     </mat-tree> -->
     <mat-accordion>
-      <div *ngIf="isPantryApp else myAppMenu">
+      <!-- <div *ngIf="isPantryApp else myAppMenu">
         <mat-expansion-panel *ngIf="authService.isAdmin">
           <mat-expansion-panel-header>
             <mat-panel-title>
               Admin
-            </mat-panel-title>
-            <!-- <mat-panel-description>
+            </mat-panel-title> -->
+      <!-- <mat-panel-description>
                   Type your name and age
                 </mat-panel-description> -->
-          </mat-expansion-panel-header>
+      <!-- </mat-expansion-panel-header>
           <mat-list>
             <mat-list-item class="menu-item" *ngIf="authService.isAdmin" (click)="goToRestaurant()">Restaurant
             </mat-list-item>
@@ -94,63 +95,147 @@
             <mat-list-item class="menu-item" *ngIf="authService.isAdmin" (click)="goToUserManagement()">User Management
             </mat-list-item>
           </mat-list>
-        </mat-expansion-panel>
-        <!-- <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false"> -->
-        <mat-expansion-panel>
+        </mat-expansion-panel> -->
+      <!-- <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false"> -->
+      <!-- <mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>
               User
-            </mat-panel-title>
-            <!-- <mat-panel-description>
+            </mat-panel-title> -->
+      <!-- <mat-panel-description>
                   Currently I am {{panelOpenState ? 'open' : 'closed'}}
                 </mat-panel-description> -->
-          </mat-expansion-panel-header>
+      <!-- </mat-expansion-panel-header>
           <mat-list>
             <mat-list-item class="menu-item" *ngIf="isLogged" (click)="goToUser()">Order</mat-list-item>
             <mat-divider></mat-divider>
             <mat-list-item class="menu-item" *ngIf="isLogged" (click)="goToUserHistory()">History</mat-list-item>
             <mat-list-item class="menu-item" (click)="goToMenuHappyHours()">Menu</mat-list-item>
             <mat-list-item class="menu-item" (click)="goToRegisters()">Registers</mat-list-item>
+
           </mat-list>
 
         </mat-expansion-panel>
-      </div>
+      </div> -->
 
 
-      <ng-template #myAppMenu>
-        <mat-list>
-          <mat-list-item class="menu-item" [ngClass]="{active: isActiveMenuItem('pm-web')}" (click)="gotoPmWeb()">PM Web
-          </mat-list-item>
-          <mat-divider></mat-divider>
-          <mat-list-item class="menu-item" [ngClass]="{active: isActiveMenuItem('project-planner')}"
-            (click)="gotoPlanner()">Project Planner</mat-list-item>
-          <mat-divider></mat-divider>
-          <mat-list-item class="menu-item" class='disabled'>
-            Performance Review
-          </mat-list-item>
-          <mat-divider></mat-divider>
-          <mat-list-item class=" menu-item" class="disabled">Proficiency Evaluation</mat-list-item>
-          <mat-divider></mat-divider>
-          <mat-expansion-panel>
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                Pantry
-              </mat-panel-title>
-              <!-- <mat-panel-description>
+      <!-- <ng-template #myAppMenu> -->
+      <mat-list>
+        <mat-list-item class="menu-item" [ngClass]="{active: isActiveMenuItem('pm-web')}" (click)="gotoPmWeb()">PM Web
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item class="menu-item" [ngClass]="{active: isActiveMenuItem('project-planner')}"
+          (click)="gotoPlanner()">Project Planner</mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item class="menu-item" class='disabled'>
+          Performance Review
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item class=" menu-item" class="disabled">Proficiency Evaluation</mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header (click)='haveLogin = true' (click)="gotoPantry()">
+            <mat-panel-title>
+              Pantry
+            </mat-panel-title>
+            <!-- <mat-panel-description>
                       Currently I am {{panelOpenState ? 'open' : 'closed'}}
                     </mat-panel-description> -->
-            </mat-expansion-panel-header>
-            <mat-list>
-              <mat-list-item class="menu-item" *ngIf="isLogged" (click)="goToUser()">Order</mat-list-item>
-              <mat-divider></mat-divider>
-              <mat-list-item class="menu-item" *ngIf="isLogged" (click)="goToUserHistory()">History</mat-list-item>
-              <mat-list-item class="menu-item" (click)="goToMenuHappyHours()">Menu</mat-list-item>
-              <mat-list-item class="menu-item" (click)="goToRegisters()">Registers</mat-list-item>
-            </mat-list>
+          </mat-expansion-panel-header>
+          <mat-list *ngIf="!authService.isAdmin else adminMenu">
+            <mat-list-item class="menu-item" *ngIf="isLogged" [ngClass]="{active: isActiveMenuItem('order')}"
+              (click)="gotoUserOrder()">Order</mat-list-item>
+            <mat-list-item class="menu-item" *ngIf="isLogged" [ngClass]="{active: isActiveMenuItem('history')}"
+              (click)="goToUserHistory()">History</mat-list-item>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header (click)="goToMenuHappyHours()">
+                <mat-panel-title [ngClass]="{active: isActiveMenuItem('happy-hours')}">
+                  Happy hour
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <!-- <mat-list-item class="menu-item" [ngClass]="{active: isActiveMenuItem('happy-hours')}"
+                    (click)="goToMenuHappyHours()">Happy hour</mat-list-item> -->
+              <mat-list>
+                <mat-list-item class="menu-item" [ngClass]="{active: isActiveMenuItem('registers')}"
+                  (click)="goToRegisters()">Registers</mat-list-item>
+              </mat-list>
+            </mat-expansion-panel>
 
-          </mat-expansion-panel>
-        </mat-list>
-      </ng-template>
+          </mat-list>
+          <ng-template #adminMenu>
+            <mat-list>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    User
+                  </mat-panel-title>
+                  <!-- <mat-panel-description>
+                                  Currently I am {{panelOpenState ? 'open' : 'closed'}}
+                                </mat-panel-description> -->
+                </mat-expansion-panel-header>
+                <mat-list>
+                  <mat-list-item class="menu-item" *ngIf="isLogged" [ngClass]="{active: isActiveMenuItem('order')}"
+                    (click)="gotoUserOrder()">Order</mat-list-item>
+                  <mat-list-item class="menu-item" *ngIf="isLogged" [ngClass]="{active: isActiveMenuItem('history')}"
+                    (click)="goToUserHistory()">History</mat-list-item>
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header (click)="goToMenuHappyHours()">
+                      <mat-panel-title>
+                        Happy hour
+                      </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <!-- <mat-list-item class="menu-item" [ngClass]="{active: isActiveMenuItem('happy-hours')}"
+                      (click)="goToMenuHappyHours()">Happy hour</mat-list-item> -->
+                    <mat-list>
+                      <mat-list-item class="menu-item" [ngClass]="{active: isActiveMenuItem('registers')}"
+                        (click)="goToRegisters()">Registers</mat-list-item>
+                    </mat-list>
+                  </mat-expansion-panel>
+                </mat-list>
+
+              </mat-expansion-panel>
+              <mat-expansion-panel *ngIf="authService.isAdmin">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Admin
+                  </mat-panel-title>
+                  <!-- <mat-panel-description>
+                                Type your name and age
+                              </mat-panel-description> -->
+                </mat-expansion-panel-header>
+                <mat-list>
+                  <mat-list-item class="menu-item" [ngClass]="{active: isActiveMenuItem('restaurant')}"
+                    (click)="goToRestaurant()">Restaurant
+                  </mat-list-item>
+
+                  <mat-list-item class="menu-item" [ngClass]="{active: isActiveMenuItem('menu')}" (click)="goToMenu()">
+                    Menu</mat-list-item>
+
+                  <mat-list-item class="menu-item" [ngClass]="{active: isActiveMenuItem('booking')}"
+                    (click)="goToBooking()">Booking
+                  </mat-list-item>
+
+                  <mat-list-item class="menu-item" [ngClass]="{active: isActiveMenuItem('admin/order')}"
+                    (click)="goToOrder()">Order
+                  </mat-list-item>
+
+                  <mat-list-item class="menu-item" [ngClass]="{active: isActiveMenuItem('user-management')}"
+                    (click)="goToUserManagement()">User
+                    Management
+                  </mat-list-item>
+                </mat-list>
+              </mat-expansion-panel>
+              <!-- <mat-list-item class="menu-item" *ngIf="isLogged" (click)="goToUser()">Order</mat-list-item>
+                    <mat-divider></mat-divider>
+                    <mat-list-item class="menu-item" *ngIf="isLogged" (click)="goToUserHistory()">History</mat-list-item>
+                    <mat-list-item class="menu-item" (click)="goToMenuHappyHours()">Menu</mat-list-item>
+                    <mat-list-item class="menu-item" (click)="goToRegisters()">Registers</mat-list-item> -->
+            </mat-list>
+          </ng-template>
+
+        </mat-expansion-panel>
+      </mat-list>
+      <!-- </ng-template> -->
 
     </mat-accordion>
   </mat-sidenav>
