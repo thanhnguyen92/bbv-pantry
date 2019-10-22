@@ -121,6 +121,9 @@
 
       <!-- <ng-template #myAppMenu> -->
       <mat-list>
+        <mat-list-item class="menu-item" [ngClass]="{active: isActiveMenuItem('wiki')}" (click)="gotoWiki()">Wiki bbv
+          VN
+        </mat-list-item>
         <mat-list-item class="menu-item" [ngClass]="{active: isActiveMenuItem('pm-web')}" (click)="gotoPmWeb()">PM Web
         </mat-list-item>
         <mat-divider></mat-divider>
@@ -134,8 +137,8 @@
         <mat-list-item class=" menu-item" class="disabled">Proficiency Evaluation</mat-list-item>
         <mat-divider></mat-divider>
         <mat-expansion-panel>
-          <mat-expansion-panel-header (click)='haveLogin = true' (click)="gotoPantry()">
-            <mat-panel-title>
+          <mat-expansion-panel-header>
+            <mat-panel-title (click)='haveLogin = true' (click)="gotoPantry()">
               Pantry
             </mat-panel-title>
             <!-- <mat-panel-description>
@@ -148,8 +151,8 @@
             <mat-list-item class="menu-item" *ngIf="isLogged" [ngClass]="{active: isActiveMenuItem('history')}"
               (click)="goToUserHistory()">History</mat-list-item>
             <mat-expansion-panel>
-              <mat-expansion-panel-header (click)="goToMenuHappyHours()">
-                <mat-panel-title [ngClass]="{active: isActiveMenuItem('happy-hours')}">
+              <mat-expansion-panel-header>
+                <mat-panel-title (click)="goToMenuHappyHours()">
                   Happy hour
                 </mat-panel-title>
               </mat-expansion-panel-header>
@@ -179,8 +182,8 @@
                   <mat-list-item class="menu-item" *ngIf="isLogged" [ngClass]="{active: isActiveMenuItem('history')}"
                     (click)="goToUserHistory()">History</mat-list-item>
                   <mat-expansion-panel>
-                    <mat-expansion-panel-header (click)="goToMenuHappyHours()">
-                      <mat-panel-title>
+                    <mat-expansion-panel-header>
+                      <mat-panel-title (click)="goToMenuHappyHours()">
                         Happy hour
                       </mat-panel-title>
                     </mat-expansion-panel-header>
@@ -231,8 +234,26 @@
                     <mat-list-item class="menu-item" (click)="goToMenuHappyHours()">Menu</mat-list-item>
                     <mat-list-item class="menu-item" (click)="goToRegisters()">Registers</mat-list-item> -->
             </mat-list>
-          </ng-template>
 
+          </ng-template>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Plugins
+              <mat-icon class="success mat-icon notranslate material-icons mat-icon-no-color" role="img"
+                title="Add Plugin">playlist_add
+              </mat-icon>
+            </mat-panel-title>
+            <!-- <mat-panel-description>
+                              Currently I am {{panelOpenState ? 'open' : 'closed'}}
+                            </mat-panel-description> -->
+          </mat-expansion-panel-header>
+          <mat-list>
+            <mat-list-item *ngFor="let menu of menuItems" class="menu-item"
+              [ngClass]="{active: isActiveMenuItem(menu.routeName)}" (click)="redirect(menu)">{{menu.name}}
+            </mat-list-item>
+          </mat-list>
         </mat-expansion-panel>
       </mat-list>
       <!-- </ng-template> -->

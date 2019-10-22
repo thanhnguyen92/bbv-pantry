@@ -6,6 +6,7 @@ import { UserProfileComponent } from './profile/user-profile.component';
 import { AnonimousGuard } from '../shared/guards/anonimous.guard';
 import { PmWebComponent } from './pm-web/pm-web.component';
 import { ProjectPlannerComponent } from './project-planner/project-planner.component';
+import { WikiComponent } from './wiki/wiki.component';
 
 export const UserRoutingModule = RouterModule.forChild([
   { path: '', component: PmWebComponent, canActivate: [AnonimousGuard] },
@@ -13,6 +14,11 @@ export const UserRoutingModule = RouterModule.forChild([
     path: 'profile',
     component: UserProfileComponent,
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'wiki',
+    component: WikiComponent,
+    canActivate: [AnonimousGuard]
   },
   {
     path: 'pm-web',

@@ -67,6 +67,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   loggedUser;
   assetsUrl = environment.assetsUrl;
   activeRouteName: string;
+  menuItems: [
+    {
+      name: 'Menu Name 1';
+      routeName: 'route-name';
+      routeRedirect: ['user', 'route-name'];
+    }
+  ];
   @ViewChild('buttonMenu', { static: false }) buttonMenu: MatButton;
   treeControl = new FlatTreeControl<MenuFlatNode>(
     node => node.level,
@@ -231,6 +238,17 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.haveLogin = false;
     (this.buttonMenu._elementRef as ElementRef).nativeElement.click();
     this.route.navigate(['user', 'project-planner']);
+  }
+
+  gotoWiki() {
+    this.haveLogin = false;
+    (this.buttonMenu._elementRef as ElementRef).nativeElement.click();
+    this.route.navigate(['user', 'wiki']);
+  }
+  redirect(menuItem) {
+    this.haveLogin = false;
+    (this.buttonMenu._elementRef as ElementRef).nativeElement.click();
+    this.route.navigate(menuItem.routeRedirect);
   }
   gotoPerfomanceReview() {}
   gotoProficiencyEvalution() {}

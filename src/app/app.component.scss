@@ -57,6 +57,9 @@ mat-list-item.menu-item:hover {
   /* top: 0; */
   z-index: 999;
 }
+mat-list-item {
+  cursor: pointer;
+}
 mat-list-item.disabled {
   cursor: not-allowed !important;
   opacity: 0.5;
@@ -74,6 +77,7 @@ mat-list-item.active {
   font-weight: bold;
   color: #d32f42;
   font-style: italic;
+  border-bottom: 1px solid pink;
 }
 mat-list > mat-expansion-panel {
   box-shadow: none;
@@ -81,4 +85,5 @@ mat-list > mat-expansion-panel {
 
 .mat-expansion-panel-header {
   padding: 0px 15px;
+  font-size: 16px;
 }

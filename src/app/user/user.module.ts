@@ -14,6 +14,7 @@ import { PmWebComponent } from './pm-web/pm-web.component';
 import { ProjectPlannerComponent } from './project-planner/project-planner.component';
 import { HappyHoursComponent } from './pantry/happy-hours/happy-hours.component';
 import { HappyHoursListComponent } from './pantry/happy-hours/happy-hours-list/happy-hours-list.component';
+import { WikiComponent } from './wiki/wiki.component';
 
 @NgModule({
   imports: [
@@ -27,7 +28,8 @@ import { HappyHoursListComponent } from './pantry/happy-hours/happy-hours-list/h
     UserProfileComponent,
     ClickOutsideDirective,
     PmWebComponent,
-    ProjectPlannerComponent
+    ProjectPlannerComponent,
+    WikiComponent
   ],
   providers: []
 })
