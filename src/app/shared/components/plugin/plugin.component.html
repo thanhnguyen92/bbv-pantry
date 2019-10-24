@@ -1,13 +1,13 @@
 <mat-card>
-    <div class="w-100 d-flex justify-content-end">
-        <mat-icon *ngIf='!isZoom' class="success mat-icon notranslate material-icons mat-icon-no-color" role="img"
-            (click)='explain()' title="Zoom In">zoom_in
-        </mat-icon>
-        <mat-icon *ngIf='isZoom' class="success mat-icon notranslate material-icons mat-icon-no-color" role="img"
-            (click)='collapse()' title="Zoom Out">zoom_out
-        </mat-icon>
-    </div>
+  <div class="w-100 d-flex justify-content-end">
+    <mat-icon *ngIf='!isZoom' class="success mat-icon notranslate material-icons mat-icon-no-color" role="img"
+      (click)='explain()' title="Zoom In">zoom_in
+    </mat-icon>
+    <mat-icon *ngIf='isZoom' class="success mat-icon notranslate material-icons mat-icon-no-color" role="img"
+      (click)='collapse()' title="Zoom Out">zoom_out
+    </mat-icon>
+  </div>
 
-    <iframe id="companyFrame" sandbox="allow-same-origin" [src]='safeResourceUrl' class="full-screen" scrolling="yes">
-    </iframe>
+  <embed [src]='safeResourceUrl' class="full-screen" />
+
 </mat-card>

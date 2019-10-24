@@ -1,5 +1,11 @@
 import { AppService } from './../../shared/services/app.service';
-import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewEncapsulation,
+  ViewChild,
+  OnDestroy
+} from '@angular/core';
 import { MatDialog, MatTableDataSource, MatSort } from '@angular/material';
 import { MenuModel } from 'src/app/shared/models/menu.model';
 import { MenuItemComponent } from './menu-item/menu-item.component';
@@ -18,7 +24,7 @@ import { RestaurantModel } from 'src/app/shared/models/restaurant.model';
   styleUrls: ['./menu.component.scss'],
   encapsulation: ViewEncapsulation.Emulated
 })
-export class MenuComponent implements OnInit {
+export class MenuComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
 
   private restaurantId: string;
@@ -184,5 +190,9 @@ export class MenuComponent implements OnInit {
             });
         }
       });
+  }
+
+  ngOnDestroy(): void {
+    this.dialog.closeAll();
   }
 }
