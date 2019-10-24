@@ -1,0 +1,18 @@
+.full-screen {
+  height: calc(100vh - 193px);
+}
+
+.zoom {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+.zoom > iframe {
+  height: 100vh;
+}
+mat-toolbar.hidden {
+  position: none;
+}

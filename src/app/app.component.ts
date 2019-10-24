@@ -28,30 +28,15 @@ import {
   MatTreeFlattener,
   MatTreeFlatDataSource,
   MatButton,
-  MatMenu
+  MatMenu,
+  MatDialog
 } from '@angular/material';
-import { map } from 'rxjs/operators';
+import { map, finalize } from 'rxjs/operators';
+import { PluginModel } from './shared/models/plugin.model';
+import { PluginItemComponent } from './user/plugins/plugin-item/plugin-item.component';
+import { PluginService } from './shared/services/plugin.service';
+import { ConfirmDialogComponent } from './shared/confirm-dialog/confirm-dialog.component';
 
-const MENU_DATA: MenuNode[] = [
-  {
-    name: 'Admin',
-    action: 'goToAdmin()',
-    children: [{ name: 'Apple' }, { name: 'Banana' }, { name: 'Fruit loops' }]
-  },
-  {
-    name: 'Vegetables',
-    children: [
-      {
-        name: 'Green',
-        children: [{ name: 'Broccoli' }, { name: 'Brussel sprouts' }]
-      },
-      {
-        name: 'Orange',
-        children: [{ name: 'Pumpkins' }, { name: 'Carrots' }]
-      }
-    ]
-  }
-];
 
 @Component({
   selector: 'app-root',
@@ -60,6 +45,7 @@ const MENU_DATA: MenuNode[] = [
 })
 export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   title = 'bbv-pantry';
+  menuSelectedName = '';
   haveLogin = false;
   isLogged = false;
   isLoading = false;
@@ -67,38 +53,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
   loggedUser;
   assetsUrl = environment.assetsUrl;
   activeRouteName: string;
-  menuItems: [
-    {
-      name: 'Menu Name 1';
-      routeName: 'route-name';
-      routeRedirect: ['user', 'route-name'];
-    }
-  ];
+  menuItems: PluginModel[];
+  
   @ViewChild('buttonMenu', { static: false }) buttonMenu: MatButton;
-  treeControl = new FlatTreeControl<MenuFlatNode>(
-    node => node.level,
-    node => node.expandable
-  );
-  // tslint:disable-next-line:variable-name
-  private _transformer = (node: MenuNode, level: number) => {
-    return {
-      expandable: !!node.children && node.children.length > 0,
-      name: node.name,
-      acction: node.action,
-      level
-    };
-  };
-  // tslint:disable-next-line:member-ordering
-  treeFlattener = new MatTreeFlattener(
-    this._transformer,
-    node => node.level,
-    node => node.expandable,
-    node => node.children
-  );
-
-  dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-  /** Flat node with expandable and level information */
-  hasChild = (_: number, node: MenuFlatNode) => node.expandable;
+  
   over = 'over';
   private isLoggedSub: Subscription;
   private isLoadingSub: Subscription;
@@ -110,7 +68,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
     private pubSubService: PublishSubcribeService,
     private appService: AppService,
     private cdr: ChangeDetectorRef,
-    private pushNotificationService: PushNotificationService
+    private pushNotificationService: PushNotificationService,
+    private dialog: MatDialog,
+    private pluginService: PluginService
   ) {
     this.isLogged = authService.getIsLogged();
     this.isLoadingSub = this.appService.isLoading.subscribe(
@@ -120,8 +80,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
     );
 
     this.loggedUser = this.authService.currentUser;
-
-    this.dataSource.data = MENU_DATA;
     this.route.events.subscribe(res => {
       this.activeRouteName = this.route.url;
     });
@@ -136,6 +94,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.loggedUser = this.authService.currentUser;
       }, 100);
     });
+
+    this.loadPluginsMenu();
   }
 
   ngOnDestroy(): void {
@@ -246,9 +206,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.route.navigate(['user', 'wiki']);
   }
   redirect(menuItem) {
+    this.menuSelectedName = menuItem.routeName;
     this.haveLogin = false;
     (this.buttonMenu._elementRef as ElementRef).nativeElement.click();
-    this.route.navigate(menuItem.routeRedirect);
+    this.route.navigate(menuItem.routeRedirect, {
+      queryParams: { url: menuItem.url }
+    });
   }
   gotoPerfomanceReview() {}
   gotoProficiencyEvalution() {}
@@ -257,6 +220,42 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
       return false;
     }
     return this.activeRouteName.indexOf(routeName) !== -1;
+  }
+
+  showPopupAddPluginItem() {
+    this.dialog.closeAll();
+    const diaLogRef = this.dialog.open(PluginItemComponent, {
+      width: '250px',
+      data: {},
+      hasBackdrop: false
+    });
+
+    const dialogSubscription = diaLogRef
+      .afterClosed()
+      .pipe(finalize(() => Utilities.unsubscribe(dialogSubscription)))
+      .subscribe((data: PluginModel) => {
+        if (data) {
+          let service;
+          if (data.id) {
+            service = this.pluginService.update({ ...data });
+          } else {
+            service = this.pluginService.add({
+              ...data
+              // ...{ restaurantId: this.restaurantId }
+            });
+          }
+          service
+            .then(() => {
+              NotificationService.showSuccessMessage('Save successful');
+            })
+            .catch(() => {
+              NotificationService.showErrorMessage('Save failed');
+            });
+        }
+      });
+  }
+  removePlugin(plugin) {
+    this.showDialogConfirmDelete(plugin);
   }
   get profileName() {
     let result = '';
@@ -297,5 +296,62 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewChecked {
           }
         });
     }
+  }
+  private loadPluginsMenu() {
+    const currentUser = this.authService.currentUser;
+    const currentUserId = currentUser ? currentUser.id : '';
+    // if (currentUserId) {
+    //   this.menuItems = [];
+    //   return;
+    // }
+    this.pluginService
+      .getByUserId(currentUserId)
+      .pipe(
+        map(entities => {
+          return entities.map(entity => {
+            return {
+              name: entity.name,
+              routeName: entity.name,
+              routeRedirect: ['user', 'plugins'],
+              url: entity.url,
+              id: entity.id
+            };
+          });
+        })
+      )
+      .subscribe(res => {
+        console.log(res);
+        this.menuItems = res;
+      });
+  }
+
+  private showDialogConfirmDelete(plugin: PluginModel) {
+    this.dialog.closeAll();
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '250px',
+      data: {
+        title: 'Confirmation',
+        content: 'Are you sure to delete?',
+        noButton: 'No',
+        yesButton: 'Yes'
+      }
+    });
+    const deleteConfirmationSub = dialogRef
+      .afterClosed()
+      .pipe(finalize(() => Utilities.unsubscribe(deleteConfirmationSub)))
+      .subscribe(res => {
+        if (res) {
+          this.pluginService
+            .delete(plugin.id)
+            .then(() => {
+              NotificationService.showSuccessMessage('Delete successful');
+            })
+            .catch(() => {
+              NotificationService.showErrorMessage(
+                'Something went wrong, please try again'
+              );
+            });
+        }
+      });
   }
 }

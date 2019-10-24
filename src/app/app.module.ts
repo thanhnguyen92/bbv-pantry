@@ -20,9 +20,17 @@ import {
   Location,
   LocationStrategy
 } from '@angular/common';
+import { PluginComponent } from './shared/components/plugin/plugin.component';
+import { PluginItemComponent } from './user/plugins/plugin-item/plugin-item.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [AppComponent, ConfirmDialogComponent, NotificationComponent],
+  declarations: [
+    AppComponent,
+    ConfirmDialogComponent,
+    NotificationComponent,
+    PluginItemComponent
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -33,8 +41,9 @@ import {
     AngularFireAuthModule,
     MaterialModule,
     AngularFireMessagingModule,
+    ReactiveFormsModule
   ],
-  entryComponents: [ConfirmDialogComponent],
+  entryComponents: [ConfirmDialogComponent, PluginItemComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

@@ -15,6 +15,9 @@ import { ProjectPlannerComponent } from './project-planner/project-planner.compo
 import { HappyHoursComponent } from './pantry/happy-hours/happy-hours.component';
 import { HappyHoursListComponent } from './pantry/happy-hours/happy-hours-list/happy-hours-list.component';
 import { WikiComponent } from './wiki/wiki.component';
+import { PluginsComponent } from './plugins/plugins.component';
+import { PluginComponent } from '../shared/components/plugin/plugin.component';
+import { PluginItemComponent } from './plugins/plugin-item/plugin-item.component';
 
 @NgModule({
   imports: [
@@ -29,7 +32,9 @@ import { WikiComponent } from './wiki/wiki.component';
     ClickOutsideDirective,
     PmWebComponent,
     ProjectPlannerComponent,
-    WikiComponent
+    WikiComponent,
+    PluginsComponent,
+    PluginComponent
   ],
   providers: []
 })

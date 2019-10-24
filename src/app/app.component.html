@@ -53,72 +53,7 @@
 </mat-toolbar>
 <mat-sidenav-container class="example-container" [hasBackdrop]="true">
   <mat-sidenav #menu [mode]='over' class='slide-bar-menu'>
-    <!-- <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-     
-      <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-        
-        <button mat-icon-button disabled></button>
-        <button mat-menu-item>{{node.name}}</button>
-        <mat-divider [inset]="true"></mat-divider>
-      </mat-tree-node>
-      
-      <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
-        <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
-          <mat-icon class="mat-icon-rtl-mirror">
-            {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-          </mat-icon>
-        </button>
-        {{node.name}}
-      </mat-tree-node>
-    </mat-tree> -->
     <mat-accordion>
-      <!-- <div *ngIf="isPantryApp else myAppMenu">
-        <mat-expansion-panel *ngIf="authService.isAdmin">
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Admin
-            </mat-panel-title> -->
-      <!-- <mat-panel-description>
-                  Type your name and age
-                </mat-panel-description> -->
-      <!-- </mat-expansion-panel-header>
-          <mat-list>
-            <mat-list-item class="menu-item" *ngIf="authService.isAdmin" (click)="goToRestaurant()">Restaurant
-            </mat-list-item>
-            <mat-divider></mat-divider>
-            <mat-list-item class="menu-item" *ngIf="authService.isAdmin" (click)="goToMenu()">Menu</mat-list-item>
-            <mat-divider></mat-divider>
-            <mat-list-item class="menu-item" *ngIf="authService.isAdmin" (click)="goToBooking()">Booking</mat-list-item>
-            <mat-divider></mat-divider>
-            <mat-list-item class="menu-item" *ngIf="authService.isAdmin" (click)="goToOrder()">Order</mat-list-item>
-            <mat-divider></mat-divider>
-            <mat-list-item class="menu-item" *ngIf="authService.isAdmin" (click)="goToUserManagement()">User Management
-            </mat-list-item>
-          </mat-list>
-        </mat-expansion-panel> -->
-      <!-- <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false"> -->
-      <!-- <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              User
-            </mat-panel-title> -->
-      <!-- <mat-panel-description>
-                  Currently I am {{panelOpenState ? 'open' : 'closed'}}
-                </mat-panel-description> -->
-      <!-- </mat-expansion-panel-header>
-          <mat-list>
-            <mat-list-item class="menu-item" *ngIf="isLogged" (click)="goToUser()">Order</mat-list-item>
-            <mat-divider></mat-divider>
-            <mat-list-item class="menu-item" *ngIf="isLogged" (click)="goToUserHistory()">History</mat-list-item>
-            <mat-list-item class="menu-item" (click)="goToMenuHappyHours()">Menu</mat-list-item>
-            <mat-list-item class="menu-item" (click)="goToRegisters()">Registers</mat-list-item>
-
-          </mat-list>
-
-        </mat-expansion-panel>
-      </div> -->
-
-
       <!-- <ng-template #myAppMenu> -->
       <mat-list>
         <mat-list-item class="menu-item" [ngClass]="{active: isActiveMenuItem('wiki')}" (click)="gotoWiki()">Wiki bbv
@@ -129,6 +64,14 @@
         <mat-divider></mat-divider>
         <mat-list-item class="menu-item" [ngClass]="{active: isActiveMenuItem('project-planner')}"
           (click)="gotoPlanner()">Project Planner</mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item class="menu-item" [ngClass]="{active: menuSelectedName === 'leave-request'}"
+          (click)="redirect({routeName: 'leave-request', routeRedirect: ['user', 'plugins'], url: 'https://bbvsoftwareservices.sharepoint.com/teams/vn/Lists/LeaveRequest/NewForm.aspx'})">
+          Leave Request</mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item class="menu-item" [ngClass]="{active: menuSelectedName === 'bug-zilla'}"
+          (click)="redirect({routeName: 'bug-zilla', routeRedirect: ['user', 'plugins'], url: 'https://bugzilla.bbv.ch/bbvIssues/'})">
+          Bug Zilla</mat-list-item>
         <mat-divider></mat-divider>
         <mat-list-item class="menu-item" class='disabled'>
           Performance Review
@@ -241,9 +184,9 @@
           <mat-expansion-panel-header>
             <mat-panel-title>
               Plugins
-              <mat-icon class="success mat-icon notranslate material-icons mat-icon-no-color" role="img"
-                title="Add Plugin">playlist_add
-              </mat-icon>
+              <!-- <mat-icon class="success mat-icon notranslate material-icons mat-icon-no-color" role="img"
+                (click)='showPopupAddPluginItem()' title="Add Plugin">playlist_add
+              </mat-icon> -->
             </mat-panel-title>
             <!-- <mat-panel-description>
                               Currently I am {{panelOpenState ? 'open' : 'closed'}}
@@ -251,7 +194,20 @@
           </mat-expansion-panel-header>
           <mat-list>
             <mat-list-item *ngFor="let menu of menuItems" class="menu-item"
-              [ngClass]="{active: isActiveMenuItem(menu.routeName)}" (click)="redirect(menu)">{{menu.name}}
+              [ngClass]="{active: (menu.routeName === menuSelectedName)}" (click)="redirect(menu)">
+              <div class="w-100 d-flex align-items-center justify-content-between">
+                <span>{{menu.name}}</span>
+                <mat-icon class="success mat-icon notranslate material-icons mat-icon-no-color red-color" role="img"
+                  (click)='removePlugin(menu)' title="Remove Plugin">remove_circle_outline
+                </mat-icon>
+              </div>
+            </mat-list-item>
+            <mat-list-item>
+              <div class="w-100 d-flex align-items-center justify-content-center">
+                <mat-icon class="success mat-icon notranslate material-icons mat-icon-no-color" role="img"
+                  (click)='showPopupAddPluginItem()' title="Add Plugin">add_circle_outline
+                </mat-icon>
+              </div>
             </mat-list-item>
           </mat-list>
         </mat-expansion-panel>
