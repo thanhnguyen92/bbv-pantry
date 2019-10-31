@@ -1,0 +1,101 @@
+<mat-card>
+    <mat-card-content>
+        <form [formGroup]='formGroup' (keydown)="submitOrder($event)">
+            <mat-form-field class="example-full-width">
+                <input matInput placeholder="Name" formControlName="name">
+                <mat-error *ngIf="control('name').hasError('required')">
+                    Name is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="example-full-width">
+                <input matInput placeholder="Food" formControlName="food"
+                    (keydown.Tab)='formatFood($event, foodControl); false;' #foodControl>
+                <mat-hint>Use Tab to order quickly.</mat-hint>
+                <mat-error *ngIf="control('food').hasError('required')">
+                    Food is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+                <input matInput placeholder="Notes" formControlName="notes">
+            </mat-form-field>
+        </form>
+
+    </mat-card-content>
+    <div class="w-100 d-flex align-items-center justify-content-end">
+        <button mat-raised-button color="primary" (click)="order()" [disabled]='!formGroup.valid'>Order</button>
+        <button mat-raised-button color="primary" (click)="onCopyOrderItems()" *ngIf='isAdmin'
+            [disabled]='!orderNotes'>Copy
+            Orders</button>
+
+    </div>
+</mat-card>
+<!-- <mat-card> -->
+<mat-card class='overflow-auto'>
+    <mat-paginator [length]="100" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+    </mat-paginator>
+    <table mat-table [dataSource]="dataSource" matSort>
+        <!--- Note that these columns can be defined in any order.
+                            The actual rendered columns are set as a property on the row definition" -->
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        </ng-container>
+        <ng-container matColumnDef="food">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Food</th>
+            <td mat-cell *matCellDef="let element">{{ element.food }}</td>
+        </ng-container>
+        <ng-container matColumnDef="notes">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Notes</th>
+            <td mat-cell *matCellDef="let element">{{ element.notes }}</td>
+        </ng-container>
+        <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
+            <td mat-cell *matCellDef="let element" (click)='activeEditPrice()'>
+
+                <span *ngIf='!isEditablePrice'>{{ element.price }}</span>
+                <mat-form-field class="example-full-width" *ngIf="isEditablePrice">
+                    <input matInput placeholder="Price" value='{{element.price}}'
+                        (change)="element.price = priceEditable.value" (focusout)="updatePrice(element)" #priceEditable>
+                    <!-- <mat-error *ngIf="control('food').hasError('required')">
+                        Foood is <strong>required</strong>
+                    </mat-error> -->
+                </mat-form-field>
+
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="paied">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Paid</th>
+            <td mat-cell *matCellDef="let element">
+                <mat-icon *ngIf="element.paied" class="success" aria-hidden="false" aria-label="Paid" title="Paid">
+                    check_circle</mat-icon>
+                <mat-icon *ngIf="!element.paied" class="failed" aria-hidden="false" aria-label="Unpaid" title="Unpaid"
+                    (click)='updatePaid(element)'>
+                    clear</mat-icon>
+            </td>
+        </ng-container>
+        <!-- Date Column -->
+        <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+            <td mat-cell *matCellDef="let element">{{ element.date.toDate() | date: 'dd/MM/yyyy hh:mm:ss' }}</td>
+        </ng-container>
+        <!-- Actions Column -->
+        <ng-container *ngIf="isAdmin" matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element">
+                <button mat-icon-button (click)="onCancelRegister(element)">
+                    <mat-icon aria-hidden="false" class="color-red" title="Cancel register"
+                        aria-label="Cancel register">
+                        cancel
+                    </mat-icon>
+                </button>
+            </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+</mat-card>
+<!-- </mat-card> -->

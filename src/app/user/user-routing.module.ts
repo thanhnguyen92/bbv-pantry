@@ -8,6 +8,7 @@ import { PmWebComponent } from './pm-web/pm-web.component';
 import { ProjectPlannerComponent } from './project-planner/project-planner.component';
 import { WikiComponent } from './wiki/wiki.component';
 import { PluginsComponent } from './plugins/plugins.component';
+import { OrderNotesComponent } from './order-notes/order-notes.component';
 
 export const UserRoutingModule = RouterModule.forChild([
   { path: '', component: PmWebComponent, canActivate: [AnonimousGuard] },
@@ -38,6 +39,11 @@ export const UserRoutingModule = RouterModule.forChild([
   {
     path: 'plugins',
     component: PluginsComponent,
+    canActivate: [AnonimousGuard]
+  },
+  {
+    path: 'order-notes',
+    component: OrderNotesComponent,
     canActivate: [AnonimousGuard]
   }
 ]);

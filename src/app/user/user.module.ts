@@ -18,6 +18,7 @@ import { WikiComponent } from './wiki/wiki.component';
 import { PluginsComponent } from './plugins/plugins.component';
 import { PluginComponent } from '../shared/components/plugin/plugin.component';
 import { PluginItemComponent } from './plugins/plugin-item/plugin-item.component';
+import { OrderNotesComponent } from './order-notes/order-notes.component';
 
 @NgModule({
   imports: [
@@ -34,7 +35,8 @@ import { PluginItemComponent } from './plugins/plugin-item/plugin-item.component
     ProjectPlannerComponent,
     WikiComponent,
     PluginsComponent,
-    PluginComponent
+    PluginComponent,
+    OrderNotesComponent
   ],
   providers: []
 })
