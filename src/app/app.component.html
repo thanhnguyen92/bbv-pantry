@@ -1,5 +1,8 @@
 <!-- PROGRESS BAR -->
-<fuse-progress-bar></fuse-progress-bar>
+<div class="background" *ngIf="isLoading">
+    <fuse-progress-bar></fuse-progress-bar>
+    <!-- <mat-progress-spinner [color]="'accent'" [mode]="'indeterminate'"></mat-progress-spinner> -->
+</div>
 <!-- / PROGRESS BAR -->
 
 <!-- VERTICAL LAYOUT 1 -->

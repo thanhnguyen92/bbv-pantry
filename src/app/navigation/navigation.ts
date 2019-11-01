@@ -8,26 +8,54 @@ export const navigation: FuseNavigation[] = [
         type: 'group',
         children: [
             {
-                id: 'sample',
-                title: 'Sample',
+                id: 'admin',
+                title: 'Admin',
                 translate: 'NAV.PANTRY.ADMIN.TITLE',
-                type: 'item',
                 icon: 'supervised_user_circle',
-                url: '/admin',
-                // badge: {
-                //     title: '25',
-                //     translate: 'NAV.PANTRY.USER.TITLE',
-                //     bg: '#F44336',
-                //     fg: '#FFFFFF'
-                // }
+                // url: '/admin',
+                type: 'collapsable',
+                children: [
+                    {
+                        id: 'restaurant',
+                        title: 'Restaurant',
+                        translate: 'NAV.PANTRY.ADMIN.RESTAURANT.TITLE',
+                        type: 'item',
+                        icon: 'restaurant',
+                        url: '/admin/restaurant'
+                    },
+                    {
+                        id: 'menu',
+                        title: 'Menu',
+                        translate: 'NAV.PANTRY.ADMIN.MENU.TITLE',
+                        type: 'item',
+                        icon: 'restaurant_menu',
+                        url: '/admin/menu'
+                    },
+                    {
+                        id: 'booking',
+                        title: 'Booking',
+                        translate: 'NAV.PANTRY.ADMIN.BOOKING.TITLE',
+                        type: 'item',
+                        icon: 'restaurant',
+                        url: '/admin/booking'
+                    },
+                    {
+                        id: 'order',
+                        title: 'Order',
+                        translate: 'NAV.PANTRY.ORDER.TITLE',
+                        type: 'item',
+                        icon: 'receipt',
+                        url: '/admin/order'
+                    }
+                ]
             },
             {
-                id: 'user',
-                title: 'User',
-                translate: 'NAV.PANTRY.USER.TITLE',
+                id: 'order',
+                title: 'Order',
+                translate: 'NAV.PANTRY.ORDER.TITLE',
                 type: 'item',
-                icon: 'people',
-                url: '/user'
+                icon: 'receipt',
+                url: '/user/order'
             }
         ]
     }

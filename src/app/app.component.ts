@@ -15,6 +15,8 @@ import { navigation } from 'app/navigation/navigation';
 import { locale as navigationEnglish } from 'app/navigation/i18n/en';
 import { locale as navigationTurkish } from 'app/navigation/i18n/tr';
 import { FuseNavigation } from '@fuse/types';
+import { FuseProgressBarService } from '@fuse/components/progress-bar/progress-bar.service';
+import { AppService } from './shared/services/app.service';
 
 @Component({
     selector   : 'app',
@@ -25,6 +27,7 @@ export class AppComponent implements OnInit, OnDestroy
 {
     fuseConfig: any;
     navigation: FuseNavigation[];
+    isLoading = false;
 
     // Private
     private _unsubscribeAll: Subject<any>;
@@ -48,8 +51,10 @@ export class AppComponent implements OnInit, OnDestroy
         private _fuseSidebarService: FuseSidebarService,
         private _fuseSplashScreenService: FuseSplashScreenService,
         private _fuseTranslationLoaderService: FuseTranslationLoaderService,
+        private _fuseProgressBarService: FuseProgressBarService,
         private _translateService: TranslateService,
-        private _platform: Platform
+        private _platform: Platform,
+        private _appService: AppService
     )
     {
         // Get default navigation
@@ -72,6 +77,18 @@ export class AppComponent implements OnInit, OnDestroy
 
         // Use a language
         this._translateService.use('en');
+
+        this._appService.isLoading.subscribe(
+            (isLoading: boolean) => {
+                this.isLoading = isLoading;
+                if (isLoading) {
+                    this._fuseProgressBarService.show();
+                    this._fuseProgressBarService.setMode('indeterminate');
+                } else {
+                    this._fuseProgressBarService.hide();
+                }
+            }
+        );
 
         /**
          * ----------------------------------------------------------------------------------------------------

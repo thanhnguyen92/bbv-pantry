@@ -4,11 +4,23 @@ export const locale = {
         'NAV': {
             'PANTRY': {
                 'TITLE': 'Pantry',
+                'ORDER': {
+                    'TITLE': 'Order'
+                },
                 'ADMIN': {
-                    'TITLE': 'Admin Section'
+                    'TITLE': 'Admin Management',
+                    'RESTAURANT': {
+                        'TITLE': 'Restaurant',
+                    },
+                    'MENU': {
+                        'TITLE': 'Menu',
+                    },
+                    'BOOKING': {
+                        'TITLE': 'Booking',
+                    }
                 },
                 'USER': {
-                    'TITLE': 'User Section'
+                    'TITLE': 'User'
                 }
             }
         }
