@@ -19,6 +19,7 @@ import { AppComponent } from 'app/app.component';
 import { LayoutModule } from 'app/layout/layout.module';
 import { SampleModule } from 'app/main/sample/sample.module';
 import { AppService } from './shared/services/app.service';
+import { AuthService } from './shared/services/auth.service';
 
 const appRoutes: Routes = [
     {
@@ -60,7 +61,10 @@ const appRoutes: Routes = [
     bootstrap: [
         AppComponent
     ],
-    providers: [AppService]
+    providers: [
+        AppService,
+        AuthService
+    ]
 })
 export class AppModule {
 }
