@@ -41,6 +41,7 @@ export class OrderNotesComponent implements OnInit, OnDestroy {
   isEditablePrice = false;
   filterChangeSubcription: Subscription;
   getDataSubscription: Subscription;
+  selectedRow: any = {};
   constructor(
     private orderNotesService: OrderNotesService,
     private appService: AppService,
@@ -72,7 +73,6 @@ export class OrderNotesComponent implements OnInit, OnDestroy {
       )
       .subscribe(res => {
         this.orderNotes = res;
-
         this.dataSource.data = res;
         this.appService.setLoadingStatus(false);
       });
@@ -128,6 +128,7 @@ export class OrderNotesComponent implements OnInit, OnDestroy {
       .then(res => {
         NotificationService.showSuccessMessage('Order successfully!');
         console.log(res);
+        this.formGroup.reset();
       })
       .finally(() => {
         this.appService.setLoadingStatus(false);
@@ -156,11 +157,12 @@ export class OrderNotesComponent implements OnInit, OnDestroy {
   control(name) {
     return this.formGroup.controls[name];
   }
-  activeEditPrice() {
+  activeEditPrice(orderNotes: OrderNotes) {
     if (!this.authService.isAdmin) {
       return;
     }
     this.isEditablePrice = true;
+    this.selectedRow = orderNotes;
     setTimeout(() => {
       this.priceEditable.nativeElement.focus();
     }, 0);

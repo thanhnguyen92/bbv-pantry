@@ -53,10 +53,10 @@
         </ng-container>
         <ng-container matColumnDef="price">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Price</th>
-            <td mat-cell *matCellDef="let element" (click)='activeEditPrice()'>
+            <td mat-cell *matCellDef="let element" (click)='activeEditPrice(element)'>
 
                 <span *ngIf='!isEditablePrice'>{{ element.price }}</span>
-                <mat-form-field class="example-full-width" *ngIf="isEditablePrice">
+                <mat-form-field class="example-full-width" *ngIf="isEditablePrice && element.id == selectedRow.id">
                     <input matInput placeholder="Price" value='{{element.price}}'
                         (change)="element.price = priceEditable.value" (focusout)="updatePrice(element)" #priceEditable>
                     <!-- <mat-error *ngIf="control('food').hasError('required')">
