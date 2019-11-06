@@ -1,0 +1,38 @@
+[debug] [2019-11-06T03:18:08.971Z] ----------------------------------------------------------------------
+[debug] [2019-11-06T03:18:08.973Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\toannguyen\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2019-11-06T03:18:08.973Z] CLI Version:   7.3.2
+[debug] [2019-11-06T03:18:08.973Z] Platform:      win32
+[debug] [2019-11-06T03:18:08.974Z] Node Version:  v10.13.0
+[debug] [2019-11-06T03:18:08.985Z] Time:          Wed Nov 06 2019 10:18:08 GMT+0700 (Indochina Time)
+[debug] [2019-11-06T03:18:08.985Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-11-06T03:18:09.014Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-11-06T03:18:09.016Z] > authorizing via signed-in user
+[debug] [2019-11-06T03:18:09.016Z] [iam] checking project bbv-pantry for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2019-11-06T03:18:09.018Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2019-11-06T03:18:09.018Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2019-11-06T03:18:09.315Z] <<< HTTP RESPONSE 200
+[debug] [2019-11-06T03:18:09.323Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/bbv-pantry:testIamPermissions  
+
+[debug] [2019-11-06T03:18:10.573Z] <<< HTTP RESPONSE 200
+[debug] [2019-11-06T03:18:10.575Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/bbv-pantry  
+ 
+[debug] [2019-11-06T03:18:11.411Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'bbv-pantry'...
+[info] 
+[info] i  deploying hosting
+[debug] [2019-11-06T03:18:11.420Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/bbv-pantry/versions  
+
+[debug] [2019-11-06T03:18:13.554Z] <<< HTTP RESPONSE 200
+[info] i  hosting[bbv-pantry]: beginning deploy...
+[info] i  hosting[bbv-pantry]: found 91 files in public
+[debug] [2019-11-06T03:18:13.608Z] [hosting] hash cache [cHVibGlj] load error: lines is not defined
+[debug] [2019-11-06T03:18:13.854Z] [hosting] hash cache [cHVibGlj] stored for 91 files
+[debug] [2019-11-06T03:18:13.855Z] [hosting][hash queue][FINAL]
+[debug] [2019-11-06T03:18:13.855Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/bbv-pantry/versions/50a02eeee9206c8d:populateFiles  
+ <request body omitted>
+[debug] [2019-11-06T03:18:17.819Z] <<< HTTP RESPONSE 200
+[debug] [2019-11-06T03:18:17.822Z] [hosting][populate queue][FINAL]
+[debug] [2019-11-06T03:18:17.823Z] [hosting] uploads queued: 5
