@@ -3,11 +3,13 @@ import { Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@ang
 import { NavigationEnd, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { delay, filter, take, takeUntil } from 'rxjs/operators';
-
 import { FuseConfigService } from '@fuse/services/config.service';
 import { FuseNavigationService } from '@fuse/components/navigation/navigation.service';
 import { FusePerfectScrollbarDirective } from '@fuse/directives/fuse-perfect-scrollbar/fuse-perfect-scrollbar.directive';
 import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
+import { PublishSubcribeService } from 'app/shared/services/pub-sub.service';
+import { PubSubChannel } from 'app/shared/constants/pub-sub-channels.contants';
+import { UserModel } from 'app/shared/models/user.model';
 
 @Component({
     selector: 'navbar-vertical-style-1',
@@ -18,6 +20,8 @@ import { FuseSidebarService } from '@fuse/components/sidebar/sidebar.service';
 export class NavbarVerticalStyle1Component implements OnInit, OnDestroy {
     fuseConfig: any;
     navigation: any;
+    isUserLogged = false;
+    userInfo: UserModel;
 
     // Private
     private _fusePerfectScrollbar: FusePerfectScrollbarDirective;
@@ -32,16 +36,25 @@ export class NavbarVerticalStyle1Component implements OnInit, OnDestroy {
      * @param {Router} _router
      */
     constructor(
-        private _fuseConfigService: FuseConfigService,
         private _fuseNavigationService: FuseNavigationService,
         private _fuseSidebarService: FuseSidebarService,
+        private _pubSubService: PublishSubcribeService,
+        private _fuseConfigService: FuseConfigService,
         private _authService: AuthService,
-        private _router: Router
-    ) {
+        private _router: Router) {
+        this.userInfo = {
+            displayName: 'Guest',
+            email: 'guest@bbv.vn'
+        };
+
         // Set the private defaults
         this._unsubscribeAll = new Subject();
 
-        // this._authService.isLogged
+        // Check authentication state
+        this.isUserLogged = this._authService.isLogged;
+        this._pubSubService.subscribe(PubSubChannel.IS_USER_LOGGED, (authState: boolean) => {
+            this.isUserLogged = authState;
+        });
     }
 
     // -----------------------------------------------------------------------------------------------------

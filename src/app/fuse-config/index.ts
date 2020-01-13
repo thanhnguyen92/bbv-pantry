@@ -17,7 +17,7 @@ export const fuseConfig: FuseConfig = {
         width    : 'fullwidth',
         navbar   : {
             primaryBackground  : 'fuse-navy-700',
-            secondaryBackground: 'fuse-navy-900',
+            secondaryBackground: 'fuse-navy-10',
             folded             : false,
             hidden             : false,
             position           : 'left',

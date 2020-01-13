@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>{{ data.title | translate }}</h1>
+<div mat-dialog-content>
+    <p>{{ data.content | translate }}</p>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button color="default" (click)="onNoClick()">{{ data.noButton | translate }}</button>
+    <button mat-raised-button color="accent" [mat-dialog-close]="data" cdkFocusInitial>{{ data.yesButton | translate}}</button>
+</div>

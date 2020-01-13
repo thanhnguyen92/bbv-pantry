@@ -16,6 +16,7 @@ $fuse-black: (
 );
 
 $fuse-navy: (
+    10: #F5F5F5,
     50: #ECECEE,
     100: #C5C6CB,
     200: #9EA1A9,
@@ -122,6 +123,10 @@ body.theme-default {
     );
 
     @include fuse-color-classes($palettes);
+
+    .accent {
+        background-color: #bd0a28 !important;
+    }
 }
 
 // -----------------------------------------------------------------------------------------------------
@@ -227,4 +232,16 @@ body.theme-pink-dark {
     );
 
     @include fuse-color-classes($palettes);
+}
+
+.d-flex {
+    display: flex !important;
+}
+
+.justify-content-end {
+    justify-content: flex-end !important;
+}
+
+span {
+    line-height: 1.5;
 }

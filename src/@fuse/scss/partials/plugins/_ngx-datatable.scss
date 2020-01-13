@@ -39,6 +39,7 @@
 
             .datatable-footer {
                 color: map-get($foreground, secondary-text);
+                font-size: 16px;
 
                 .datatable-pager {
 
@@ -93,7 +94,7 @@
                 align-items: center;
                 line-height: 1;
                 min-height: 48px;
-                font-size: 13px;
+                font-size: 16px;
                 padding: 0 24px;
 
                 .datatable-header-cell-template-wrap {
@@ -133,6 +134,7 @@
                     transition: none;
                     padding: 0 24px;
                     overflow: hidden;
+                    font-size: 16px;
                 }
             }
         }
