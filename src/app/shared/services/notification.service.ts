@@ -23,6 +23,10 @@ export class NotificationService {
         message: string = '',
         timeout: number = 3500
     ) {
+        if (!messageCode) {
+            messageCode = 'Something went wrong, please try again';
+        }
+
         this.message.next({
             id: NotificationEnum.ERROR,
             i18n: messageCode,

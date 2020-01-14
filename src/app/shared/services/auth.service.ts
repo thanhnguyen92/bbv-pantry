@@ -7,6 +7,9 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { UserRole } from '../enums/user-roles.enum';
 import { UserModel } from '../models/user.model';
+import { MsalService } from '@azure/msal-angular';
+import { PublishSubcribeService } from './pub-sub.service';
+import { PubSubChannel } from '../constants/pub-sub-channels.contants';
 
 const USER_INFO = 'USER-INFO';
 const USER_PERMISSIONS = 'USER-PERMISSIONS';
@@ -19,17 +22,19 @@ export class AuthService {
     userData: firebase.User;
 
     constructor(
+        private _router: Router,
+        private _msalService: MsalService,
         private afs: AngularFirestore,
         private afAuth: AngularFireAuth,
-        private router: Router) {
-        this.afAuth.authState.subscribe(async result => {
-            if (result) {
-                this.userData = result;
-                await this.setUserStorage(result);
-            } else {
-                this.clearStorage();
-            }
-        });
+        private _pubSubService: PublishSubcribeService) {
+        // this.afAuth.authState.subscribe(async result => {
+        //     if (result) {
+        //         this.userData = result;
+        //         await this.setUserStorage(result);
+        //     } else {
+        //         this.clearStorage();
+        //     }
+        // });
     }
 
     login(email, password) {
@@ -57,11 +62,25 @@ export class AuthService {
         });
     }
 
+    async msalLogin() {
+        return await this._msalService.loginPopup();
+    }
+
+    async msalGetUser() {
+        return await this._msalService.getUser();
+    }
+
     async logOut() {
-        return this.afAuth.auth.signOut().then(() => {
+        this._router.navigate(['/']);
+        setTimeout(() => {
             this.clearStorage();
-            this.router.navigate(['auth', 'login']);
+            this._msalService.logout();
+            this._pubSubService.publish(PubSubChannel.IS_USER_LOGGED, false);
         });
+        // return this.afAuth.auth.signOut().then(() => {
+        //     this.clearStorage();
+        //     this.router.navigate(['auth', 'login']);
+        // });
     }
 
     async setUserRoles(roles: UserRole[]) {
@@ -87,7 +106,13 @@ export class AuthService {
         return accessToken;
     }
 
-    get isLogged(): boolean {
+    set accessToken(value) {
+        if (value) {
+            localStorage.setItem(USER_ACCESSTOKEN, value);
+        }
+    }
+
+    get isAuthenticated(): boolean {
         const user = localStorage.getItem(USER_INFO);
         if (user && user !== null) {
             return true;
@@ -106,10 +131,10 @@ export class AuthService {
         return false;
     }
 
-    get currentUser(): UserModel {
+    get currentUser(): any {
         const user = localStorage.getItem(USER_INFO);
         if (user) {
-            return JSON.parse(user) as UserModel;
+            return JSON.parse(user) as any;
         }
 
         return undefined;

@@ -1,0 +1,38 @@
+#error-404 {
+    width: 100%;
+}
+.container {
+    flex-direction: column;
+    box-sizing: border-box;
+    display: flex;
+    place-content: center;
+    align-items: center;
+}
+.content {
+    max-width: 512px !important;
+    .error-code {
+        font-size: 112px;
+        text-align: center;
+        line-height: 1;
+        margin-bottom: 16px;
+        font-weight: 600;
+    }
+    .message {
+        color: rgba(0, 0, 0, 0.54);
+        font-size: 24px;
+        text-align: center;
+    }
+    .search {
+        box-sizing: border-box;
+        display: flex;
+        margin: 48px auto 16px;
+        padding: 16px;
+        border: 1px solid;
+        border-color: rgba(0, 0, 0, 0.12);
+        box-shadow: none;
+    }
+    .back-link {
+        font-size: 15px;
+        text-align: center;
+    }
+}

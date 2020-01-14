@@ -2,7 +2,7 @@ import { Component, Inject, OnDestroy, OnInit, ChangeDetectorRef } from '@angula
 import { DOCUMENT } from '@angular/common';
 import { Platform } from '@angular/cdk/platform';
 import { TranslateService } from '@ngx-translate/core';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { FuseConfigService } from '@fuse/services/config.service';
@@ -18,6 +18,12 @@ import { locale as navigationTurkish } from 'app/navigation/i18n/tr';
 import { FuseNavigation } from '@fuse/types';
 import { FuseProgressBarService } from '@fuse/components/progress-bar/progress-bar.service';
 import { AppService } from './shared/services/app.service';
+import { BroadcastService } from '@azure/msal-angular';
+import { Utilities } from './shared/services/utilities';
+import { AuthService } from './shared/services/auth.service';
+import { NotificationService } from './shared/services/notification.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from './shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
     selector: 'app',
@@ -31,6 +37,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // Private
     private _unsubscribeAll: Subject<any>;
+    private _loginFailureSubscription: Subscription;
+    private _loginSuccessSubscription: Subscription;
 
     /**
      * Constructor
@@ -54,9 +62,11 @@ export class AppComponent implements OnInit, OnDestroy {
         private _fuseProgressBarService: FuseProgressBarService,
         private _translateService: TranslateService,
         private _platform: Platform,
+        private _dialog: MatDialog,
         private _appService: AppService,
-        private _cdr: ChangeDetectorRef
-    ) {
+        private _authService: AuthService,
+        private _cdr: ChangeDetectorRef,
+        private msalBroadcastService: BroadcastService) {
         // Get default navigation
         this.navigation = navigation;
 
@@ -67,7 +77,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this._fuseNavigationService.setCurrentNavigation('main');
 
         // Add languages
-        this._translateService.addLangs(['en', 'tr']);
+        this._translateService.addLangs(['en', 'de']);
 
         // Set the default language
         this._translateService.setDefaultLang('en');
@@ -92,6 +102,32 @@ export class AppComponent implements OnInit, OnDestroy {
                 }
             }
         );
+
+        Utilities.unsubscribe(this._loginFailureSubscription);
+        this._loginFailureSubscription = this.msalBroadcastService.subscribe('msal:loginFailure', (payload) => {
+            if (payload) {
+                // Handle error
+                switch (payload.error) {
+                    case 'popup_window_error':
+                        this._dialog.open(ConfirmDialogComponent, {
+                            width: '250px',
+                            data: { title: 'Warning', content: payload.errorDesc, noButton: 'BUTTON.OK' }
+                        });
+                        // NotificationService.showWarningMessage(payload.errorDesc, '', {}, 6500);
+                        break;
+                }
+                NotificationService.showWarningMessage(payload.errorDesc, '', {}, 3000);
+            }
+            // console.log('loginFailure', payload);
+        });
+
+        Utilities.unsubscribe(this._loginSuccessSubscription);
+        this._loginSuccessSubscription = this.msalBroadcastService.subscribe('msal:loginSuccess', (payload) => {
+            // console.log('loginSuccess', payload);
+            if (payload) {
+                this._authService.accessToken = payload.token;
+            }
+        });
 
         /**
          * ----------------------------------------------------------------------------------------------------
@@ -159,13 +195,19 @@ export class AppComponent implements OnInit, OnDestroy {
                 }
 
                 // Color theme - Use normal for loop for IE11 compatibility
-                for (let i = 0; i < this.document.body.classList.length; i++) {
-                    const className = this.document.body.classList[i];
-
+                this.document.body.classList.forEach(className => {
                     if (className.startsWith('theme-')) {
                         this.document.body.classList.remove(className);
                     }
-                }
+                });
+
+                // for (let i = 0; i < this.document.body.classList.length; i++) {
+                //     const className = this.document.body.classList[i];
+
+                //     if (className.startsWith('theme-')) {
+                //         this.document.body.classList.remove(className);
+                //     }
+                // }
 
                 this.document.body.classList.add(this.fuseConfig.colorTheme);
             });
@@ -178,6 +220,10 @@ export class AppComponent implements OnInit, OnDestroy {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
+
+        this.msalBroadcastService.getMSALSubject().next(1);
+        Utilities.unsubscribe(this._loginFailureSubscription);
+        Utilities.unsubscribe(this._loginSuccessSubscription);
     }
 
     // -----------------------------------------------------------------------------------------------------

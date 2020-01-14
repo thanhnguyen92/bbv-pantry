@@ -3,17 +3,14 @@ import { AdminComponent } from './admin.component';
 import { Routes, RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { RestaurantItemComponent } from './restaurant-item/restaurant-item.component';
+import { Error404Component } from 'app/errors/error-404/error-404.component';
 
 const appRoutes: Routes = [
     { path: '', component: AdminComponent },
     {
-        path: 'restaurant', children: [
-            { path: '', component: RestaurantAdminComponent },
-            { path: ':id', component: RestaurantItemComponent },
-            { path: 'create', component: RestaurantItemComponent }
-        ]
-    }
-    // { path: '**', component: PageNotFoundComponent }
+        path: 'restaurant', component: RestaurantAdminComponent
+    },
+    // { path: '**', component: Error404Component }
 ];
 @NgModule({
     imports: [

@@ -4,11 +4,10 @@ import { AdminRoutingModule } from './admin-routing.module';
 import { RestaurantAdminComponent } from './restaurant/restaurant.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FuseSharedModule } from '@fuse/shared.module';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { RestaurantItemComponent } from './restaurant-item/restaurant-item.component';
-import { MatTableModule, MatPaginatorModule } from '@angular/material';
+import { MatTableModule, MatPaginatorModule, MatSortModule, MatDialogModule, MatFormFieldModule, MatInputModule } from '@angular/material';
 
 @NgModule({
     imports: [
@@ -20,15 +19,19 @@ import { MatTableModule, MatPaginatorModule } from '@angular/material';
         MatIconModule,
         MatTableModule,
         MatPaginatorModule,
+        MatSortModule,
+        MatDialogModule,
+        MatFormFieldModule,
+        MatInputModule,
 
-        AdminRoutingModule,
-        NgxDatatableModule
+        AdminRoutingModule
     ],
     declarations: [
         AdminComponent,
         RestaurantAdminComponent,
         RestaurantItemComponent
     ],
+    entryComponents: [RestaurantItemComponent],
     bootstrap: [AdminComponent]
 })
 export class AdminModule { }

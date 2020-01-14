@@ -1,1 +1,29 @@
-<p>restaurant-item works!</p>
+<h1 mat-dialog-title>{{ (data.id ? 'COMMON.EDIT' : 'COMMON.ADD') | translate }}</h1>
+<div mat-dialog-content>
+    <mat-form-field>
+        <input matInput
+               placeholder="{{ 'COMMON.COLUMN.NAME' | translate }}"
+               [(ngModel)]="data.name" />
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput
+               placeholder="{{ 'COMMON.COLUMN.LOCATION' | translate }}"
+               [(ngModel)]="data.location" />
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput
+               placeholder="{{ 'COMMON.COLUMN.PHONE' | translate }}"
+               [(ngModel)]="data.phone" />
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button
+            mat-dialog-close
+            (click)="onCancel()">{{ 'BUTTON.CANCEL' | translate }}</button>
+    <button mat-raised-button
+            color="accent"
+            [mat-dialog-close]="data"
+            [disabled]="!data.name">
+        {{ 'BUTTON.SAVE' | translate }}
+    </button>
+</div>

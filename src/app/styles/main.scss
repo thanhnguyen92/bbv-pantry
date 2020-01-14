@@ -22,6 +22,13 @@
             padding: 0 16px;
             border: none;
             outline: 0;
+            color: #282c36 !important;
         }
     }
+}
+
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

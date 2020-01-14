@@ -12,6 +12,7 @@ import { PublishSubcribeService } from 'app/shared/services/pub-sub.service';
 import { AuthService } from 'app/shared/services/auth.service';
 import { UserModel } from 'app/shared/models/user.model';
 import { PubSubChannel } from 'app/shared/constants/pub-sub-channels.contants';
+import { UserService } from '../../../shared/services/user.service';
 
 @Component({
     selector: 'toolbar',
@@ -47,7 +48,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         private _fuseConfigService: FuseConfigService,
         private _translateService: TranslateService,
         private _authService: AuthService,
-    ) {
+        private _userService: UserService) {
         this.userInfo = {
             displayName: 'Guest',
             email: 'guest@bbv.vn'
@@ -90,8 +91,8 @@ export class ToolbarComponent implements OnInit, OnDestroy {
             },
             {
                 id: 'tr',
-                title: 'Turkish',
-                flag: 'tr'
+                title: 'German',
+                flag: 'de'
             }
         ];
 
@@ -101,9 +102,16 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         this._unsubscribeAll = new Subject();
 
         // Check authentication state
-        this.isUserLogged = this._authService.isLogged;
+        this.isUserLogged = this._authService.isAuthenticated;
         this._pubSubService.subscribe(PubSubChannel.IS_USER_LOGGED, (authState: boolean) => {
             this.isUserLogged = authState;
+            if (this._authService.currentUser) {
+                this.userInfo = {
+                    displayName: `${this._authService.currentUser.vorname} ${this._authService.currentUser.name}`,
+                    email: this._authService.currentUser.skypeName,
+                    phone: this._authService.currentUser.telMobile
+                } as UserModel;
+            }
         });
     }
 
@@ -126,6 +134,14 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
         // Set the selected language from default languages
         this.selectedLanguage = _.find(this.languages, { id: this._translateService.currentLang });
+
+        if (this._authService.currentUser) {
+            this.userInfo = {
+                displayName: `${this._authService.currentUser.vorname} ${this._authService.currentUser.name}`,
+                email: this._authService.currentUser.skypeName,
+                phone: this._authService.currentUser.telMobile
+            } as UserModel;
+        }
     }
 
     /**
@@ -171,5 +187,30 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
         // Use the selected language for translations
         this._translateService.use(lang.id);
+    }
+
+    login() {
+        this._authService.msalLogin().then(async idToken => {
+            const msUser = await this._authService.msalGetUser();
+
+            await this._userService.getUserInfo(msUser.displayableId, idToken).subscribe(user => {
+                this._authService.currentUser = user;
+                this._pubSubService.publish(PubSubChannel.IS_USER_LOGGED, true);
+            }, err => console.log(err));
+        });
+    }
+
+    logOut() {
+        this._authService.logOut();
+    }
+
+    get shortName() {
+        const displayName = this.userInfo.displayName || '';
+        const arrayName = displayName.split(' ');
+        if (arrayName.length === 1) {
+            return arrayName[0].slice(0, 1);
+        } else {
+            return arrayName[0].slice(0, 1) + arrayName[arrayName.length - 1].slice(0, 1);
+        }
     }
 }

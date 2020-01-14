@@ -1,5 +1,6 @@
 <!-- PROGRESS BAR -->
-<div class="background" *ngIf="isLoading">
+<div class="background"
+     *ngIf="isLoading">
     <fuse-progress-bar></fuse-progress-bar>
     <!-- <mat-progress-spinner [color]="'accent'" [mode]="'indeterminate'"></mat-progress-spinner> -->
 </div>
@@ -35,7 +36,13 @@
     <mat-icon>settings</mat-icon>
 </button> -->
 
-<fuse-sidebar name="themeOptionsPanel" class="theme-options-sidebar" position="right" [invisibleOverlay]="true">
+<fuse-sidebar name="themeOptionsPanel"
+              class="theme-options-sidebar"
+              position="right"
+              [invisibleOverlay]="true">
     <fuse-theme-options></fuse-theme-options>
 </fuse-sidebar>
 <!-- / THEME OPTIONS PANEL -->
+
+<!--- NOTIFICATION -->
+<app-notification></app-notification>

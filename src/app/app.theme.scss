@@ -238,10 +238,26 @@ body.theme-pink-dark {
     display: flex !important;
 }
 
+.d-block {
+    display: block !important;
+}
+
+.flex-direction-column {
+    flex-direction: column !important;
+}
+
 .justify-content-end {
     justify-content: flex-end !important;
 }
 
 span {
     line-height: 1.5;
+}
+
+.mat-header-cell,
+.mat-paginator-page-size-label,
+.mat-paginator-range-label,
+.mat-select-value,
+.mat-option-text {
+    font-size: 14px;
 }

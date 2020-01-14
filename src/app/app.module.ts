@@ -1,52 +1,69 @@
+import 'hammerjs';
+import { fuseConfig } from 'app/fuse-config';
+import { environment } from 'environments/environment';
+
+/** Components */
+import { AppComponent } from 'app/app.component';
+import { Error404Component } from './errors/error-404/error-404.component';
+import { Error500Component } from './errors/error-500/error-500.component';
+import { NotificationComponent } from './shared/components/notification/notification.component';
+import { ConfirmDialogComponent } from './shared/components/confirm-dialog/confirm-dialog.component';
+
+/** App Modules */
+import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterModule, Routes } from '@angular/router';
-import { MatMomentDateModule } from '@angular/material-moment-adapter';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { AngularFireModule } from '@angular/fire';
 import { TranslateModule } from '@ngx-translate/core';
-import 'hammerjs';
+import { LayoutModule } from 'app/layout/layout.module';
+import { SampleModule } from 'app/main/sample/sample.module';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AuthGuard } from './core/guards/auth.guard';
 
+/** Fuse Modules */
 import { FuseModule } from '@fuse/fuse.module';
 import { FuseSharedModule } from '@fuse/shared.module';
 import { FuseProgressBarModule, FuseSidebarModule, FuseThemeOptionsModule } from '@fuse/components';
 
-import { fuseConfig } from 'app/fuse-config';
+/** Mat Modules */
+import { MatTableModule, MatPaginatorModule, MatSnackBarModule } from '@angular/material';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
 
-import { AppComponent } from 'app/app.component';
-import { LayoutModule } from 'app/layout/layout.module';
-import { SampleModule } from 'app/main/sample/sample.module';
+/** Services */
 import { AppService } from './shared/services/app.service';
 import { AuthService } from './shared/services/auth.service';
-import { AngularFireModule } from '@angular/fire';
-import { environment } from 'environments/environment';
-import { AngularFireAuthModule } from '@angular/fire/auth';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { ConfirmDialogComponent } from './shared/components/confirm-dialog/confirm-dialog.component';
-import { MatDialogModule } from '@angular/material/dialog';
-import { NotificationComponent } from './shared/components/notification/notification.component';
-import { MatTableModule, MatPaginatorModule } from '@angular/material';
-import { AdminModule } from './admin/admin.module';
+
+/** Azure */
+import { MsalGuard, MsalInterceptor, MsalModule } from '@azure/msal-angular';
+import { UserService } from './shared/services/user.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 const appRoutes: Routes = [
     { path: '', loadChildren: './main/main.module#MainModule' },
     { path: 'main', loadChildren: './main/main.module#MainModule' },
-    { path: 'admin', loadChildren: './admin/admin.module#AdminModule' }
+    { path: 'admin', loadChildren: './admin/admin.module#AdminModule', canActivate: [AuthGuard] },
+    { path: '**', component: Error404Component }
 ];
 
 @NgModule({
     declarations: [
         AppComponent,
         ConfirmDialogComponent,
-        NotificationComponent
+        NotificationComponent,
+        Error404Component,
+        Error500Component
     ],
     entryComponents: [
-        ConfirmDialogComponent,
-        NotificationComponent
+        ConfirmDialogComponent
     ],
     imports: [
+        // Angular modules
         BrowserModule,
         BrowserAnimationsModule,
         HttpClientModule,
@@ -58,15 +75,15 @@ const appRoutes: Routes = [
         AngularFireAuthModule,
         AngularFirestoreModule,
 
-        // Material moment date module
-        MatMomentDateModule,
-
         // Material
         MatTableModule,
         MatPaginatorModule,
         MatButtonModule,
         MatDialogModule,
         MatIconModule,
+        MatSnackBarModule,
+        MatMomentDateModule,
+        MatTooltipModule,
 
         // Fuse modules
         FuseModule.forRoot(fuseConfig),
@@ -77,14 +94,40 @@ const appRoutes: Routes = [
 
         // App modules
         LayoutModule,
-        SampleModule
+        SampleModule,
+
+        // Azure module
+        MsalModule.forRoot({
+            clientID: environment.aadClientId,
+            authority: environment.aadAuthority,
+            consentScopes: ['user.read', environment.aadScope],
+            validateAuthority: true,
+            cacheLocation: 'sessionStorage',
+            protectedResourceMap: [[environment.firebase.databaseURL, [environment.aadScope]]],
+            redirectUri: environment.url,
+            storeAuthStateInCookie: window.navigator.userAgent.indexOf('MSIE ') > -1
+                || window.navigator.userAgent.indexOf('Trident/') > -1
+        })
+    ],
+    exports: [
+        NotificationComponent
     ],
     bootstrap: [
         AppComponent
     ],
     providers: [
+        // Services
         AppService,
-        AuthService
+        AuthService,
+        UserService,
+
+        // Guards
+        AuthGuard,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: MsalInterceptor,
+            multi: true
+        }
     ]
 })
 export class AppModule {

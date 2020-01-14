@@ -33,7 +33,7 @@ toolbar {
         min-width: 64px;
         height: 64px;
 
-        @include media-breakpoint('xs') {
+        @include media-breakpoint("xs") {
             height: 56px;
         }
     }
@@ -47,8 +47,12 @@ toolbar {
         height: 64px;
         width: 1px;
 
-        @include media-breakpoint('xs') {
+        @include media-breakpoint("xs") {
             height: 56px;
         }
+    }
+
+    .mat-mini-fab.mat-warn {
+        background-color: #bd0a28 !important;
     }
 }
