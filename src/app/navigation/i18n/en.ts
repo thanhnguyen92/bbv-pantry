@@ -3,12 +3,12 @@ export const locale = {
     data: {
         'NAV': {
             'PANTRY': {
-                'TITLE': 'Pantry',
+                'TITLE': 'Foods & Beverages',
                 'ORDER': {
                     'TITLE': 'Order'
                 },
                 'ADMIN': {
-                    'TITLE': 'Admin Management',
+                    'TITLE': 'Management',
                     'RESTAURANT': {
                         'TITLE': 'Restaurant',
                     },
@@ -21,6 +21,12 @@ export const locale = {
                 },
                 'USER': {
                     'TITLE': 'User'
+                }
+            },
+            'APPS': {
+                'TITLE': 'Applications',
+                'IFRAME': {
+                    'TITLE': 'iFrame',
                 }
             }
         }

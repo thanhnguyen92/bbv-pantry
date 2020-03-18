@@ -2,14 +2,14 @@ import { FuseNavigation } from '@fuse/types';
 
 export const navigation: FuseNavigation[] = [
     {
-        id: 'applications',
-        title: 'Applications',
+        id: 'pantry',
+        title: 'Foods & Beverages',
         translate: 'NAV.PANTRY.TITLE',
         type: 'group',
         children: [
             {
                 id: 'admin',
-                title: 'Admin',
+                title: 'Management',
                 translate: 'NAV.PANTRY.ADMIN.TITLE',
                 icon: 'supervised_user_circle',
                 // url: '/admin',
@@ -56,6 +56,22 @@ export const navigation: FuseNavigation[] = [
                 type: 'item',
                 icon: 'receipt',
                 url: '/user/order'
+            }
+        ]
+    },
+    {
+        id: 'applications',
+        title: 'Applications',
+        translate: 'NAV.APPS.TITLE',
+        type: 'group',
+        children: [
+            {
+                id: 'iframe',
+                title: 'iFrame',
+                translate: 'NAV.APPS.IFRAME.TITLE',
+                type: 'item',
+                icon: 'airplay',
+                url: '/iframe'
             }
         ]
     }

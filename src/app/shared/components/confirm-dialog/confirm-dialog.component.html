@@ -1,5 +1,9 @@
-<h1 mat-dialog-title>{{ data.title | translate }}</h1>
+<h1 mat-dialog-title
+    class="m-0">{{ data.title | translate }}</h1>
 <div mat-dialog-content>
+    <input matInput
+           placeholder="{{ 'Please enter a URL' }}"
+           [(ngModel)]="data.input" />
     <p>{{ data.content | translate }}</p>
 </div>
 <div mat-dialog-actions>

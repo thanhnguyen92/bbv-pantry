@@ -23,6 +23,9 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AuthGuard } from './core/guards/auth.guard';
 
+/** Telerik Modules */
+import { WindowModule } from '@progress/kendo-angular-dialog';
+
 /** Fuse Modules */
 import { FuseModule } from '@fuse/fuse.module';
 import { FuseSharedModule } from '@fuse/shared.module';
@@ -43,11 +46,15 @@ import { AuthService } from './shared/services/auth.service';
 import { MsalGuard, MsalInterceptor, MsalModule } from '@azure/msal-angular';
 import { UserService } from './shared/services/user.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { IframeComponent } from './iframe/iframe.component';
+import { SafePipe } from './iframe/safe-url.pipe';
+import { ButtonsModule } from '@progress/kendo-angular-buttons';
 
 const appRoutes: Routes = [
     { path: '', loadChildren: './main/main.module#MainModule' },
     { path: 'main', loadChildren: './main/main.module#MainModule' },
     { path: 'admin', loadChildren: './admin/admin.module#AdminModule', canActivate: [AuthGuard] },
+    { path: 'iframe', component: IframeComponent },
     { path: '**', component: Error404Component }
 ];
 
@@ -57,7 +64,9 @@ const appRoutes: Routes = [
         ConfirmDialogComponent,
         NotificationComponent,
         Error404Component,
-        Error500Component
+        Error500Component,
+        IframeComponent,
+        SafePipe
     ],
     entryComponents: [
         ConfirmDialogComponent
@@ -84,6 +93,10 @@ const appRoutes: Routes = [
         MatSnackBarModule,
         MatMomentDateModule,
         MatTooltipModule,
+
+        // Telerik modules
+        WindowModule,
+        ButtonsModule,
 
         // Fuse modules
         FuseModule.forRoot(fuseConfig),

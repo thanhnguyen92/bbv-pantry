@@ -1,0 +1,19 @@
+<div class="page-layout carded fullwidth inner-scroll boundary"
+     fusePerfectScrollbar>
+    <kendo-window [minWidth]="250"
+                  [width]="450">
+        <kendo-window-titlebar>
+            <div class='k-window-title'>{{ sourceURL }}</div>
+            <button kendoButton
+                    [icon]="'folder'"
+                    [look]="'bare'"></button>
+            <button kendoWindowMinimizeAction></button>
+            <button kendoWindowMaximizeAction></button>
+            <button kendoWindowRestoreAction></button>
+            <button kendoWindowCloseAction></button>
+        </kendo-window-titlebar>
+        <iframe [src]="sourceURL | safe"
+                class="frame">
+        </iframe>
+    </kendo-window>
+</div>
