@@ -1,13 +1,16 @@
 import { NgModule } from '@angular/core';
-import { AdminComponent } from './admin.component';
-import { AdminRoutingModule } from './admin-routing.module';
-import { RestaurantAdminComponent } from './restaurant/restaurant.component';
 import { TranslateModule } from '@ngx-translate/core';
+
+/** Modules */
+import { AdminRoutingModule } from './admin-routing.module';
 import { FuseSharedModule } from '@fuse/shared.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { RestaurantItemComponent } from './restaurant-item/restaurant-item.component';
-import { MatTableModule, MatPaginatorModule, MatSortModule, MatDialogModule, MatFormFieldModule, MatInputModule } from '@angular/material';
+import { MatTableModule, MatPaginatorModule, MatSortModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatOptionModule, MatSelectModule, MatCheckboxModule, MatTooltipModule } from '@angular/material';
+
+/** Components */
+import { AdminComponent } from './admin.component';
+import { RoleComponent } from './role/role.component';
 
 @NgModule({
     imports: [
@@ -23,15 +26,17 @@ import { MatTableModule, MatPaginatorModule, MatSortModule, MatDialogModule, Mat
         MatDialogModule,
         MatFormFieldModule,
         MatInputModule,
+        MatOptionModule,
+        MatSelectModule,
+        MatCheckboxModule,
+        MatTooltipModule,
 
         AdminRoutingModule
     ],
     declarations: [
         AdminComponent,
-        RestaurantAdminComponent,
-        RestaurantItemComponent
+        RoleComponent
     ],
-    entryComponents: [RestaurantItemComponent],
     bootstrap: [AdminComponent]
 })
 export class AdminModule { }

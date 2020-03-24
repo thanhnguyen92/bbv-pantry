@@ -1,15 +1,14 @@
-import { RestaurantAdminComponent } from './restaurant/restaurant.component';
 import { AdminComponent } from './admin.component';
 import { Routes, RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { RestaurantItemComponent } from './restaurant-item/restaurant-item.component';
 import { Error404Component } from 'app/errors/error-404/error-404.component';
 
 const appRoutes: Routes = [
     { path: '', component: AdminComponent },
-    {
-        path: 'restaurant', component: RestaurantAdminComponent
-    },
+    { path: 'restaurants', loadChildren: './restaurant/restaurant.module#RestaurantAdminModule' },
+    { path: 'menus', loadChildren: './menu/menu.module#MenuAdminModule' },
+    { path: 'menus/restaurant/:id', loadChildren: './menu/menu.module#MenuAdminModule' },
+    { path: 'users', loadChildren: './user/user.module#UserAdminModule' }
     // { path: '**', component: Error404Component }
 ];
 @NgModule({

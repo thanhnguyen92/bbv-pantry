@@ -21,7 +21,7 @@ export const navigation: FuseNavigation[] = [
                         translate: 'NAV.PANTRY.ADMIN.RESTAURANT.TITLE',
                         type: 'item',
                         icon: 'restaurant',
-                        url: '/admin/restaurant'
+                        url: '/admin/restaurants'
                     },
                     {
                         id: 'menu',
@@ -29,7 +29,7 @@ export const navigation: FuseNavigation[] = [
                         translate: 'NAV.PANTRY.ADMIN.MENU.TITLE',
                         type: 'item',
                         icon: 'restaurant_menu',
-                        url: '/admin/menu'
+                        url: '/admin/menus'
                     },
                     {
                         id: 'booking',
@@ -45,7 +45,7 @@ export const navigation: FuseNavigation[] = [
                         translate: 'NAV.PANTRY.ORDER.TITLE',
                         type: 'item',
                         icon: 'receipt',
-                        url: '/admin/order'
+                        url: '/admin/orders'
                     }
                 ]
             },
@@ -60,19 +60,43 @@ export const navigation: FuseNavigation[] = [
         ]
     },
     {
-        id: 'applications',
-        title: 'Applications',
-        translate: 'NAV.APPS.TITLE',
+        id: 'administrations',
+        title: 'Administrations',
+        translate: 'NAV.ADMINISTRATIONS.TITLE',
         type: 'group',
         children: [
             {
-                id: 'iframe',
-                title: 'iFrame',
-                translate: 'NAV.APPS.IFRAME.TITLE',
+                id: 'users',
+                title: 'Users',
+                translate: 'NAV.ADMINISTRATIONS.USER.TITLE',
                 type: 'item',
-                icon: 'airplay',
-                url: '/iframe'
+                icon: 'person',
+                url: '/admin/users'
+            },
+            {
+                id: 'roles',
+                title: 'Roles and administrators',
+                translate: 'NAV.ADMINISTRATIONS.ROLES.TITLE',
+                type: 'item',
+                icon: 'supervised_user_circle',
+                url: '/admin/roles'
             }
         ]
-    }
+    },
+    // {
+    //     id: 'applications',
+    //     title: 'Applications',
+    //     translate: 'NAV.APPS.TITLE',
+    //     type: 'group',
+    //     children: [
+    //         {
+    //             id: 'iframe',
+    //             title: 'iFrame',
+    //             translate: 'NAV.APPS.IFRAME.TITLE',
+    //             type: 'item',
+    //             icon: 'airplay',
+    //             url: '/iframe'
+    //         }
+    //     ]
+    // }
 ];

@@ -16,7 +16,7 @@ export class Utilities {
   }
 
   static isObjectEmpty(obj) {
-    return Object.keys(obj).length > 0 ? false : true;
+    return Object.entries(obj).length === 0 && obj.constructor === Object;
   }
 
   static convertToUTC(date: Date) {

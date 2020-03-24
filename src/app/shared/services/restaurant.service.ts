@@ -11,11 +11,11 @@ const RESTAURANT_BOOKING_ENTITY = 'restaurantBooking';
     providedIn: 'root'
 })
 export class RestaurantService {
-    constructor(private firestoreService: FirestoreService) { }
+    constructor(private _firestoreService: FirestoreService) { }
 
     gets() {
-        this.firestoreService.setPath(RESTAURANT_ENTITY);
-        return this.firestoreService
+        this._firestoreService.setPath(RESTAURANT_ENTITY);
+        return this._firestoreService
             .gets<RestaurantModel>()
             .snapshotChanges()
             .pipe(
@@ -30,8 +30,8 @@ export class RestaurantService {
     }
 
     getByRestaurantIds(restaurantIds: string[]) {
-        this.firestoreService.setPath(RESTAURANT_ENTITY);
-        return this.firestoreService
+        this._firestoreService.setPath(RESTAURANT_ENTITY);
+        return this._firestoreService
             .gets<RestaurantModel>()
             .snapshotChanges()
             .pipe(
@@ -53,8 +53,8 @@ export class RestaurantService {
     }
 
     getByBookingDate(bookingDate) {
-        this.firestoreService.setPath(RESTAURANT_BOOKING_ENTITY);
-        return this.firestoreService
+        this._firestoreService.setPath(RESTAURANT_BOOKING_ENTITY);
+        return this._firestoreService
             .gets<BookingModel>(t => t.where('isClosed', '==', false))
             .snapshotChanges()
             .pipe(
@@ -87,17 +87,17 @@ export class RestaurantService {
     }
 
     add(entity: RestaurantModel) {
-        this.firestoreService.setPath(RESTAURANT_ENTITY);
-        return this.firestoreService.add<RestaurantModel>(entity);
+        this._firestoreService.setPath(RESTAURANT_ENTITY);
+        return this._firestoreService.add<RestaurantModel>(entity);
     }
 
     update(entity: RestaurantModel) {
-        this.firestoreService.setPath(RESTAURANT_ENTITY);
-        return this.firestoreService.update<RestaurantModel>(entity, entity.id);
+        this._firestoreService.setPath(RESTAURANT_ENTITY);
+        return this._firestoreService.update<RestaurantModel>(entity, entity.id);
     }
 
     delete(uid) {
-        this.firestoreService.setPath(RESTAURANT_ENTITY);
-        return this.firestoreService.delete(uid);
+        this._firestoreService.setPath(RESTAURANT_ENTITY);
+        return this._firestoreService.delete(uid);
     }
 }

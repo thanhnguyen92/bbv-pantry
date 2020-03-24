@@ -1,3 +1,3 @@
 export const PubSubChannel = {
-    IS_USER_LOGGED: 'IS-USER-LOGGED'
+    LOGGED_STATE: 'IS-USER-LOGGED'
 };

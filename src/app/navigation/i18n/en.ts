@@ -28,6 +28,15 @@ export const locale = {
                 'IFRAME': {
                     'TITLE': 'iFrame',
                 }
+            },
+            'ADMINISTRATIONS': {
+                'TITLE': 'Applications',
+                'USER': {
+                    'TITLE': 'Users',
+                },
+                'ROLES': {
+                    'TITLE': 'Roles and administrators',
+                }
             }
         }
     }

@@ -33,13 +33,13 @@ export class AuthGuard implements CanActivate {
                     console.log(msUser, idToken);
                     this._appService.setLoadingStatus(true);
                     await this._userService
-                        .getUserInfo(msUser.displayableId, idToken)
+                        .getBbvUserInfo(msUser.displayableId, idToken)
                         .toPromise()
                         .then(user => {
                             console.log(user);
                             this._authService.currentUser = user;
                             this._pubSubService.publish(
-                                PubSubChannel.IS_USER_LOGGED,
+                                PubSubChannel.LOGGED_STATE,
                                 true
                             );
                             result = true;

@@ -1,0 +1,147 @@
+<div class="page-layout carded fullwidth inner-scroll"
+     fusePerfectScrollbar>
+    <div class="top-bg accent"></div>
+    <div class="center">
+        <div class="header accent"
+             fxLayout="column"
+             fxLayout.gt-sm="row"
+             fxLayoutAlign="center center"
+             fxLayoutAlign.gt-sm="space-between center">
+            <div class="logo mb-24 mb-md-0"
+                 fxLayout="row"
+                 fxLayoutAlign="start center">
+                <mat-icon class="logo-icon s-32 mr-16"
+                          role="img"
+                          aria-hidden="true"> shopping_basket </mat-icon><span class="logo-text h1">
+                    {{ 'ADMIN.MENU.LABEL' | translate }} </span>
+            </div>
+            <div class="search mx-32 mx-md-0"
+                 fxLayout="row">
+                <div class="search__container"
+                     fxLayout="row"
+                     fxLayoutAlign="start center"
+                     style="padding: 0px 18px;">
+                    <mat-icon class="mat-icon notranslate material-icons mat-icon-no-color"
+                              role="img"
+                              aria-hidden="true"
+                              class="search__container__icon">search</mat-icon>
+                    <input matInput
+                           class="ng-tns-c80-1993 search__container__input-lg"
+                           placeholder="{{ 'PLACEHOLDER.SEARCH' | translate }}"
+                           (keyup)="applyFilter($event)">
+                </div>
+            </div>
+            <div>
+                <!-- <button class="mr-0 mr-sm-16 ng-tns-c251-42 mat-icon-button mat-button-base"
+                        matTooltip="{{ 'LABEL.RELOAD_RESTAURANT' | translate }}"
+                        (click)="goToRestaurant()">
+                    <span class="mat-button-wrapper">
+                        <mat-icon role="img"
+                                  class="mat-icon notranslate material-icons mat-icon-no-color"
+                                  aria-hidden="true">refresh</mat-icon>
+                    </span>
+                </button> -->
+                <mat-form-field class="mr-20">
+                    <mat-label>{{ 'LABEL.SELECT_RESTAURANT' | translate }}</mat-label>
+                    <mat-select (selectionChange)="onRestaurantSelected($event)"
+                                [(value)]="restaurantId">
+                        <mat-option *ngFor="let restaurant of restaurants"
+                                    [value]="restaurant.id">
+                            {{restaurant.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <button class="mt-24 mt-md-0"
+                        mat-raised-button
+                        color="primary"
+                        (click)="onCreate()">{{ 'BUTTON.CREATE' |  translate }}</button>
+            </div>
+        </div>
+        <div class="content-card">
+            <div class="table-container">
+                <table mat-table
+                       [dataSource]="dataSource"
+                       matSort>
+
+                    <!-- Name Column -->
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell
+                            *matHeaderCellDef
+                            mat-sort-header> {{ 'COMMON.COLUMN.NAME' | translate }} </th>
+                        <td mat-cell
+                            *matCellDef="let element"> {{element.name}} </td>
+                    </ng-container>
+
+                    <!-- Price Column -->
+                    <ng-container matColumnDef="price">
+                        <th mat-header-cell
+                            *matHeaderCellDef
+                            mat-sort-header> {{ 'COMMON.COLUMN.PRICE' | translate }} </th>
+                        <td mat-cell
+                            *matCellDef="let element">{{ element.price | currency:'VND' }}</td>
+                    </ng-container>
+
+                    <!-- Notes Column -->
+                    <ng-container matColumnDef="notes">
+                        <th mat-header-cell
+                            *matHeaderCellDef
+                            mat-sort-header> {{ 'COMMON.COLUMN.NOTES' | translate }} </th>
+                        <td mat-cell
+                            *matCellDef="let element">{{ element.notes }}</td>
+                    </ng-container>
+
+                    <!-- Status Column -->
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell
+                            *matHeaderCellDef
+                            mat-sort-header> {{ 'COLUMN.IS_AVAILABLE' | translate }} </th>
+                        <td mat-cell
+                            *matCellDef="let element">
+                            <button mat-icon-button
+                                    (click)="onChangeState(element)">
+                                <mat-icon *ngIf="element.isActive"
+                                          class="color-green"
+                                          aria-hidden="false"
+                                          title="Active">check
+                                </mat-icon>
+                                <mat-icon *ngIf="!element.isActive"
+                                          class="color-red"
+                                          aria-hidden="false"
+                                          title="Inactive">clear
+                                </mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <!-- Actions Column -->
+                    <ng-container matColumnDef="actions">
+                        <th mat-header-cell
+                            *matHeaderCellDef> {{ 'COMMON.COLUMN.ACTIONS' | translate }} </th>
+                        <td mat-cell
+                            *matCellDef="let element">
+                            <button mat-icon-button
+                                    class="pr-3"
+                                    (click)="onEdit(element)">
+                                <mat-icon aria-hidden="false"
+                                          aria-label="Edit restaurant">edit</mat-icon>
+                            </button>
+                            <button mat-icon-button
+                                    class="pr-3"
+                                    (click)="onDelete(element)">
+                                <mat-icon aria-hidden="false"
+                                          aria-label="Delete restaurant">delete</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row
+                        *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                    <tr mat-row
+                        *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+            </div>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                           showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+</div>

@@ -52,13 +52,13 @@ export class NavbarVerticalStyle1Component implements OnInit, OnDestroy {
 
         // Check authentication state
         this.isUserLogged = this._authService.isAuthenticated;
-        this._pubSubService.subscribe(PubSubChannel.IS_USER_LOGGED, (authState: boolean) => {
+        this._pubSubService.subscribe(PubSubChannel.LOGGED_STATE, (authState: boolean) => {
             this.isUserLogged = authState;
             if (this._authService.currentUser) {
                 this.userInfo = {
-                    displayName: `${this._authService.currentUser.vorname} ${this._authService.currentUser.name}`,
-                    email: this._authService.currentUser.skypeName,
-                    phone: this._authService.currentUser.telMobile
+                    displayName: `${this._authService.currentUser.firstName} ${this._authService.currentUser.lastName}`,
+                    email: this._authService.currentUser.email,
+                    phone: this._authService.currentUser.mobileNumber
                 } as UserModel;
             }
         });
@@ -140,9 +140,9 @@ export class NavbarVerticalStyle1Component implements OnInit, OnDestroy {
 
         if (this._authService.currentUser) {
             this.userInfo = {
-                displayName: `${this._authService.currentUser.vorname} ${this._authService.currentUser.name}`,
-                email: this._authService.currentUser.skypeName,
-                phone: this._authService.currentUser.telMobile
+                displayName: `${this._authService.currentUser.firstName} ${this._authService.currentUser.lastName}`,
+                email: this._authService.currentUser.email,
+                phone: this._authService.currentUser.mobileNumber
             } as UserModel;
         }
     }

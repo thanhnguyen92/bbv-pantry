@@ -9,7 +9,7 @@ import { ConfirmDialogComponent } from 'app/shared/components/confirm-dialog/con
 import { NotificationService } from 'app/shared/services/notification.service';
 import { RestaurantModel } from 'app/shared/models/restaurant.model';
 import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
-import { RestaurantItemComponent } from '../restaurant-item/restaurant-item.component';
+import { RestaurantItemComponent } from './restaurant-item/restaurant-item.component';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -32,8 +32,8 @@ export class RestaurantAdminComponent implements OnInit {
     private _restaurantService: RestaurantService,
     private _appService: AppService,
     private _dialog: MatDialog,
-    private route: Router,
-    private activeRoute: ActivatedRoute) {
+    private _route: Router,
+    private _activatedRoute: ActivatedRoute) {
     // this._fuseTranslationLoaderService.loadTranslations(english);
   }
 
@@ -44,11 +44,11 @@ export class RestaurantAdminComponent implements OnInit {
   }
 
   onCreate() {
-    this.showDialog();
+    this.showItemDialog();
   }
 
   onEdit(restaurant) {
-    this.showDialog(restaurant);
+    this.showItemDialog(restaurant);
   }
 
   onDelete(restaurant) {
@@ -71,8 +71,8 @@ export class RestaurantAdminComponent implements OnInit {
   }
 
   onGotoMenu(restaurant) {
-    this.route.navigate([restaurant.id, 'menu'], {
-      relativeTo: this.activeRoute
+    this._route.navigate([restaurant.id, 'menu'], {
+      relativeTo: this._activatedRoute
     });
   }
 
@@ -91,7 +91,7 @@ export class RestaurantAdminComponent implements OnInit {
       }, () => this._appService.setLoadingStatus(false));
   }
 
-  private showDialog(restaurant: RestaurantModel = new RestaurantModel()) {
+  private showItemDialog(restaurant: RestaurantModel = new RestaurantModel()) {
     this._dialog.closeAll();
     const dialogRef = this._dialog.open(RestaurantItemComponent, {
       width: '350px',

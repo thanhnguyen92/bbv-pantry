@@ -10,6 +10,7 @@ import { UserModel } from '../models/user.model';
 import { MsalService } from '@azure/msal-angular';
 import { PublishSubcribeService } from './pub-sub.service';
 import { PubSubChannel } from '../constants/pub-sub-channels.contants';
+import { Utilities } from './utilities';
 
 const USER_INFO = 'USER-INFO';
 const USER_PERMISSIONS = 'USER-PERMISSIONS';
@@ -26,16 +27,7 @@ export class AuthService {
         private _msalService: MsalService,
         private afs: AngularFirestore,
         private afAuth: AngularFireAuth,
-        private _pubSubService: PublishSubcribeService) {
-        // this.afAuth.authState.subscribe(async result => {
-        //     if (result) {
-        //         this.userData = result;
-        //         await this.setUserStorage(result);
-        //     } else {
-        //         this.clearStorage();
-        //     }
-        // });
-    }
+        private _pubSubService: PublishSubcribeService) { }
 
     login(email, password) {
         return this.afAuth.auth.signInWithEmailAndPassword(email, password);
@@ -75,7 +67,7 @@ export class AuthService {
         setTimeout(() => {
             this.clearStorage();
             this._msalService.logout();
-            this._pubSubService.publish(PubSubChannel.IS_USER_LOGGED, false);
+            this._pubSubService.publish(PubSubChannel.LOGGED_STATE, false);
         });
         // return this.afAuth.auth.signOut().then(() => {
         //     this.clearStorage();
@@ -134,15 +126,28 @@ export class AuthService {
     get currentUser(): any {
         const user = localStorage.getItem(USER_INFO);
         if (user) {
-            return JSON.parse(user) as any;
+            return JSON.parse(user) as UserModel;
         }
 
         return undefined;
     }
 
-    set currentUser(value) {
-        if (value) {
-            localStorage.setItem(USER_INFO, JSON.stringify(value));
+    set currentUser(value: any) {
+        if (value || !Utilities.isObjectEmpty(value)) {
+            // Mapping from msal user to bbv user
+            const bbvUser = {
+                firstName: value.vorname,
+                lastName: value.name,
+                email: value.skypeName,
+                birthday: value.geburtsDatum,
+                bankNumber: value.kontonummer,
+                mobileNumber: value.telMobile,
+                zipCode: value.plz,
+                location: value.ort,
+                countryId: value.nationalitaetsId ? value.nationalitaetsId : value.landId,
+                civilStandId: value.zivilStandId
+            } as UserModel;
+            localStorage.setItem(USER_INFO, JSON.stringify(bbvUser));
         }
     }
 

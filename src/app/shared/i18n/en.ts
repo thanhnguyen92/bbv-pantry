@@ -7,8 +7,15 @@ export const locale = {
             'COLUMN': {
                 'PHONE': 'Phone',
                 'LOCATION': 'Location',
+                'EMAIL': 'Email',
+                'SECONDARY_EMAIL': 'Secondary Email',
                 'NAME': 'Name',
+                'FIRST_NAME': 'First Name',
+                'LAST_NAME': 'Last Name',
+                'PRICE': 'Price',
+                'NOTES': 'Notes',
                 'ACTIONS': 'Actions',
+                'BIRTHDAY': 'Birthday'
             }
         },
         'BUTTON': {
@@ -25,6 +32,12 @@ export const locale = {
         'ADMIN': {
             'RESTAURANT': {
                 'LABEL': 'Restaurants'
+            },
+            'MENU': {
+                'LABEL': 'Menus'
+            },
+            'USER': {
+                'LABEL': 'Users'
             }
         }
     }
