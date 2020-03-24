@@ -12,7 +12,8 @@
             <button kendoWindowRestoreAction></button>
             <button kendoWindowCloseAction></button>
         </kendo-window-titlebar>
-        <iframe [src]="sourceURL | safe"
+        <iframe id="iframe_id"
+                [src]="sourceURL | safe"
                 class="frame">
         </iframe>
     </kendo-window>

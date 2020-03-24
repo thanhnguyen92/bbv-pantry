@@ -14,7 +14,7 @@ export const environment = {
         messagingSenderId: '611310470642',
         appId: '1:611310470642:web:a5d3e5f8070be86e'
     },
-    url: 'http://localhost:4567',
+    url: 'http://localhost',
     aadClientId: 'fe9b28c6-8829-4c88-83ba-40b88a2d5d13',
     aadAuthority: 'https://login.microsoftonline.com/279985bd-2077-4d9d-9797-42238cfc06e2',
     aadScope: 'fe9b28c6-8829-4c88-83ba-40b88a2d5d13/access_as_user',

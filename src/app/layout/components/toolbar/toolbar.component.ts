@@ -20,7 +20,6 @@ import { UserService } from '../../../shared/services/user.service';
     styleUrls: ['./toolbar.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-
 export class ToolbarComponent implements OnInit, OnDestroy {
     horizontalNavbar: boolean;
     rightNavbar: boolean;
@@ -48,7 +47,8 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         private _fuseConfigService: FuseConfigService,
         private _translateService: TranslateService,
         private _authService: AuthService,
-        private _userService: UserService) {
+        private _userService: UserService
+    ) {
         this.userInfo = {
             displayName: 'Guest',
             email: 'guest@bbv.vn'
@@ -103,16 +103,19 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
         // Check authentication state
         this.isUserLogged = this._authService.isAuthenticated;
-        this._pubSubService.subscribe(PubSubChannel.IS_USER_LOGGED, (authState: boolean) => {
-            this.isUserLogged = authState;
-            if (this._authService.currentUser) {
-                this.userInfo = {
-                    displayName: `${this._authService.currentUser.vorname} ${this._authService.currentUser.name}`,
-                    email: this._authService.currentUser.skypeName,
-                    phone: this._authService.currentUser.telMobile
-                } as UserModel;
+        this._pubSubService.subscribe(
+            PubSubChannel.IS_USER_LOGGED,
+            (authState: boolean) => {
+                this.isUserLogged = authState;
+                if (this._authService.currentUser) {
+                    this.userInfo = {
+                        displayName: `${this._authService.currentUser.vorname} ${this._authService.currentUser.name}`,
+                        email: this._authService.currentUser.skypeName,
+                        phone: this._authService.currentUser.telMobile
+                    } as UserModel;
+                }
             }
-        });
+        );
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -126,14 +129,17 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         // Subscribe to the config changes
         this._fuseConfigService.config
             .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((settings) => {
-                this.horizontalNavbar = settings.layout.navbar.position === 'top';
+            .subscribe(settings => {
+                this.horizontalNavbar =
+                    settings.layout.navbar.position === 'top';
                 this.rightNavbar = settings.layout.navbar.position === 'right';
                 this.hiddenNavbar = settings.layout.navbar.hidden === true;
             });
 
         // Set the selected language from default languages
-        this.selectedLanguage = _.find(this.languages, { id: this._translateService.currentLang });
+        this.selectedLanguage = _.find(this.languages, {
+            id: this._translateService.currentLang
+        });
 
         if (this._authService.currentUser) {
             this.userInfo = {
@@ -193,10 +199,19 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         this._authService.msalLogin().then(async idToken => {
             const msUser = await this._authService.msalGetUser();
 
-            await this._userService.getUserInfo(msUser.displayableId, idToken).subscribe(user => {
-                this._authService.currentUser = user;
-                this._pubSubService.publish(PubSubChannel.IS_USER_LOGGED, true);
-            }, err => console.log(err));
+            console.log(msUser, idToken);
+            await this._userService
+                .getUserInfo(msUser.displayableId, idToken)
+                .subscribe(
+                    user => {
+                        this._authService.currentUser = user;
+                        this._pubSubService.publish(
+                            PubSubChannel.IS_USER_LOGGED,
+                            true
+                        );
+                    },
+                    err => console.log('login toolbar' + err)
+                );
         });
     }
 
@@ -210,7 +225,10 @@ export class ToolbarComponent implements OnInit, OnDestroy {
         if (arrayName.length === 1) {
             return arrayName[0].slice(0, 1);
         } else {
-            return arrayName[0].slice(0, 1) + arrayName[arrayName.length - 1].slice(0, 1);
+            return (
+                arrayName[0].slice(0, 1) +
+                arrayName[arrayName.length - 1].slice(0, 1)
+            );
         }
     }
 }

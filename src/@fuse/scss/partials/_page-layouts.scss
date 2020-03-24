@@ -672,10 +672,20 @@ $carded-header-height-without-toolbar: $carded-header-height - $carded-toolbar-h
         // Smaller margins
         &.carded {
 
+            > .top-bg {
+                height: 256px !important;
+            }
+
             &.fullwidth {
 
                 > .center {
                     padding: 0 16px;
+
+                    > .header {
+                        height: 192px !important;
+                        min-height: 192px !important;
+                        max-height: 192px !important;
+                    }
                 }
             }
 
