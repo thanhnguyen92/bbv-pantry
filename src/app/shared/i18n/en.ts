@@ -15,12 +15,18 @@ export const locale = {
                 'PRICE': 'Price',
                 'NOTES': 'Notes',
                 'ACTIONS': 'Actions',
-                'BIRTHDAY': 'Birthday'
+                'BIRTHDAY': 'Birthday',
+                'ROLES': 'Roles'
+            },
+            'LABEL': {
+                'ADMIN': 'Administrator',
+                'USER': 'User'
             }
         },
         'BUTTON': {
             'SAVE': 'Save',
             'CREATE': 'Create',
+            'REFRESH': 'Refresh',
             'OK': 'OK',
             'YES': 'Yes',
             'NO': 'No',

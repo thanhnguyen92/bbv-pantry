@@ -11,10 +11,12 @@ import { UserAdminRoutingModule } from './user-routing.module';
 import { SimpleMaterialModule } from 'app/shared/modules/simple-material.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { FuseSharedModule } from '@fuse/shared.module';
+import { UserRolesAdminComponent } from './user-roles/user-roles.component';
+import { UserItemAdminComponent } from './user-item/user-item.component';
 
 @NgModule({
-    declarations: [UserAdminComponent],
-    entryComponents: [],
+    declarations: [UserAdminComponent, UserRolesAdminComponent, UserItemAdminComponent],
+    entryComponents: [UserRolesAdminComponent, UserItemAdminComponent],
     imports: [
         TranslateModule,
         FuseSharedModule,

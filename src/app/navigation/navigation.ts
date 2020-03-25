@@ -11,7 +11,7 @@ export const navigation: FuseNavigation[] = [
                 id: 'admin',
                 title: 'Management',
                 translate: 'NAV.PANTRY.ADMIN.TITLE',
-                icon: 'supervised_user_circle',
+                icon: 'settings_applications',
                 // url: '/admin',
                 type: 'collapsable',
                 children: [
@@ -36,7 +36,7 @@ export const navigation: FuseNavigation[] = [
                         title: 'Booking',
                         translate: 'NAV.PANTRY.ADMIN.BOOKING.TITLE',
                         type: 'item',
-                        icon: 'restaurant',
+                        icon: 'assignment',
                         url: '/admin/booking'
                     },
                     {
@@ -54,7 +54,7 @@ export const navigation: FuseNavigation[] = [
                 title: 'Order',
                 translate: 'NAV.PANTRY.ORDER.TITLE',
                 type: 'item',
-                icon: 'receipt',
+                icon: 'shopping_cart',
                 url: '/user/order'
             }
         ]

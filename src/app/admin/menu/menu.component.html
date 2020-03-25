@@ -12,7 +12,7 @@
                  fxLayoutAlign="start center">
                 <mat-icon class="logo-icon s-32 mr-16"
                           role="img"
-                          aria-hidden="true"> shopping_basket </mat-icon><span class="logo-text h1">
+                          aria-hidden="true">restaurant_menu</mat-icon><span class="logo-text h1">
                     {{ 'ADMIN.MENU.LABEL' | translate }} </span>
             </div>
             <div class="search mx-32 mx-md-0"
@@ -32,15 +32,6 @@
                 </div>
             </div>
             <div>
-                <!-- <button class="mr-0 mr-sm-16 ng-tns-c251-42 mat-icon-button mat-button-base"
-                        matTooltip="{{ 'LABEL.RELOAD_RESTAURANT' | translate }}"
-                        (click)="goToRestaurant()">
-                    <span class="mat-button-wrapper">
-                        <mat-icon role="img"
-                                  class="mat-icon notranslate material-icons mat-icon-no-color"
-                                  aria-hidden="true">refresh</mat-icon>
-                    </span>
-                </button> -->
                 <mat-form-field class="mr-20">
                     <mat-label>{{ 'LABEL.SELECT_RESTAURANT' | translate }}</mat-label>
                     <mat-select (selectionChange)="onRestaurantSelected($event)"

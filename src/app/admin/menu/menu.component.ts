@@ -36,8 +36,8 @@ export class MenuAdminComponent implements OnInit, OnDestroy {
   menus: MenuModel[] = [];
   dataSource = new MatTableDataSource(this.menus);
   loading = false;
+  restaurantId: string;
 
-  private restaurantId: string;
   private _activatedRouteSub: Subscription;
   private _getRestaurantSub: Subscription;
 

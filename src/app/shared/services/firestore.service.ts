@@ -33,7 +33,7 @@ export class FirestoreService {
     }
 
     public update<T>(entity: T, id: string) {
-        return this.db.doc(`${this.path}/${id}`).update(entity);
+        return this.db.doc(`${this.path}/${id}`).set(entity, { merge: true });
     }
 
     public delete(id: string) {
