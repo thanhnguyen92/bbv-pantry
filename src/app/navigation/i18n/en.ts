@@ -17,6 +17,9 @@ export const locale = {
                     },
                     'BOOKING': {
                         'TITLE': 'Booking',
+                    },
+                    'HISTORY': {
+                        'TITLE': 'Order History',
                     }
                 },
                 'USER': {

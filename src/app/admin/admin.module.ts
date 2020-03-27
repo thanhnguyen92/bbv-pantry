@@ -35,7 +35,7 @@ import { RoleComponent } from './role/role.component';
     ],
     declarations: [
         AdminComponent,
-        RoleComponent
+        RoleComponent,
     ],
     bootstrap: [AdminComponent]
 })

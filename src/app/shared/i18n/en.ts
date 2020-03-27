@@ -50,6 +50,9 @@ export const locale = {
             'BOOKING': {
                 'LABEL': 'Booking'
             },
+            'ORDER_HISTORIES': {
+                'LABEL': 'Order Histories'
+            },
             'USER': {
                 'LABEL': 'Users'
             }

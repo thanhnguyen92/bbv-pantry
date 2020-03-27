@@ -1,0 +1,170 @@
+<div class="page-layout carded fullwidth inner-scroll"
+     fusePerfectScrollbar>
+    <div class="top-bg accent"></div>
+    <div class="center">
+        <div class="header accent"
+             fxLayout="column"
+             fxLayout.gt-sm="row"
+             fxLayoutAlign="center center"
+             fxLayoutAlign.gt-sm="space-between center">
+            <div class="logo mb-24 mb-md-0"
+                 fxLayout="row"
+                 fxLayoutAlign="start center">
+                <mat-icon class="logo-icon s-32 mr-16"
+                          role="img"
+                          aria-hidden="true">history</mat-icon><span class="logo-text h1">
+                    {{ 'ADMIN.ORDER_HISTORIES.LABEL' | translate }} </span>
+            </div>
+            <!-- <div class="search mx-32 mx-md-0"
+                 fxLayout="row">
+                <div class="search__container"
+                     fxLayout="row"
+                     fxLayoutAlign="start center"
+                     style="padding: 0px 18px;">
+                    <mat-icon class="mat-icon notranslate material-icons mat-icon-no-color"
+                              role="img"
+                              aria-hidden="true"
+                              class="search__container__icon">search</mat-icon>
+                    <input matInput
+                           class="ng-tns-c80-1993 search__container__input-lg"
+                           placeholder="{{ 'PLACEHOLDER.SEARCH' | translate }}"
+                           (keyup)="applyFilter($event)">
+                </div>
+            </div>
+            <button mat-mini-fab
+                    color="primary"
+                    (click)="onRefresh()"
+                    aria-label="Refresh button">
+                <mat-icon matTooltip="{{ 'Refresh' | translate }}">refresh</mat-icon>
+            </button> -->
+        </div>
+        <div class="content-card">
+            <div class="table-container">
+                <table mat-table
+                       [dataSource]="dataSource"
+                       matSort>
+
+                    <!-- Frist Name Column -->
+                    <ng-container matColumnDef="firstName">
+                        <th mat-header-cell
+                            *matHeaderCellDef
+                            mat-sort-header> {{ 'COMMON.COLUMN.FIRST_NAME' | translate }} </th>
+                        <td mat-cell
+                            *matCellDef="let element"> {{element.firstName}} </td>
+                    </ng-container>
+
+                    <!-- Last Name Column -->
+                    <ng-container matColumnDef="lastName">
+                        <th mat-header-cell
+                            *matHeaderCellDef
+                            mat-sort-header> {{ 'COMMON.COLUMN.LAST_NAME' | translate }} </th>
+                        <td mat-cell
+                            *matCellDef="let element"> {{element.lastName}} </td>
+                    </ng-container>
+
+                    <!-- Primary Email Column -->
+                    <ng-container matColumnDef="email">
+                        <th mat-header-cell
+                            *matHeaderCellDef
+                            mat-sort-header> {{ 'COMMON.COLUMN.EMAIL' | translate }} </th>
+                        <td mat-cell
+                            *matCellDef="let element"> {{element.email}} </td>
+                    </ng-container>
+
+                    <!-- Order Items Column -->
+                    <ng-container matColumnDef="orderItems">
+                        <th mat-header-cell
+                            *matHeaderCellDef
+                            mat-sort-header>Order Items</th>
+                        <td mat-cell
+                            *matCellDef="let element">
+                            <div *ngFor="let orderItem of element.orderItems"
+                                 class="order-items m-0">
+                                <div class="m-0">
+                                    <span>{{ orderItem.name }}</span>
+                                    <span>({{ orderItem.amount }})</span>
+                                    <span *ngIf="orderItem.note">({{ orderItem.note }})</span>
+                                </div>
+
+                                <span
+                                      [ngClass]="element.isPaid ? 'success' : 'failed'">{{ orderItem.price | currency:'VND' }}</span>
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <!-- Order Date Column -->
+                    <ng-container matColumnDef="orderDate">
+                        <th mat-header-cell
+                            *matHeaderCellDef
+                            mat-sort-header>Order Date</th>
+                        <td mat-cell
+                            *matCellDef="let element">{{ element.orderDate | date: 'dd.MM.y HH:mm' }}</td>
+                    </ng-container>
+
+                    <!-- Total Price Column -->
+                    <ng-container matColumnDef="totalPrice">
+                        <th mat-header-cell
+                            *matHeaderCellDef
+                            mat-sort-header>Total Price</th>
+                        <td mat-cell
+                            *matCellDef="let element"
+                            [ngClass]="element.isPaid? 'success': 'failed'">
+                            {{ element.totalPrice | currency:'VND'}}</td>
+                    </ng-container>
+
+                    <!-- Is Paid Column -->
+                    <ng-container matColumnDef="isPaid">
+                        <th mat-header-cell
+                            *matHeaderCellDef
+                            mat-sort-header>Is Paid</th>
+                        <td mat-cell
+                            *matCellDef="let element">
+                            <mat-icon *ngIf="element.isPaid"
+                                      class="success"
+                                      aria-hidden="false"
+                                      aria-label="Paid"
+                                      title="Paid">
+                                check_circle</mat-icon>
+                            <mat-icon *ngIf="!element.isPaid"
+                                      class="failed"
+                                      aria-hidden="false"
+                                      aria-label="Unpaid"
+                                      title="Unpaid">
+                                clear</mat-icon>
+                        </td>
+                    </ng-container>
+
+                    <!-- Actions Column -->
+                    <ng-container matColumnDef="actions">
+                        <th mat-header-cell
+                            *matHeaderCellDef></th>
+                        <td mat-cell
+                            *matCellDef="let element">
+                            <button [disabled]="element.isPaid"
+                                    mat-icon-button
+                                    (click)="onPayOrder(element)"
+                                    title="Pay an order">
+                                <mat-icon aria-hidden="false"
+                                          aria-label="Pay an order">payment</mat-icon>
+                            </button>
+                            <button mat-icon-button
+                                    (click)="onRemindPayment(element)"
+                                    title="Remind for payment">
+                                <mat-icon aria-hidden="false"
+                                          aria-label="Remind for payment">
+                                    notification_important</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row
+                        *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                    <tr mat-row
+                        *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+            </div>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                           showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+</div>

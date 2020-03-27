@@ -44,11 +44,11 @@ export const navigation: FuseNavigation[] = [
                     },
                     {
                         id: 'order',
-                        title: 'Order',
-                        translate: 'NAV.PANTRY.ORDER.TITLE',
+                        title: 'Order Histories',
+                        translate: 'NAV.PANTRY.ADMIN.HISTORY.TITLE',
                         type: 'item',
-                        icon: 'receipt',
-                        url: '/admin/orders'
+                        icon: 'history',
+                        url: '/admin/order-histories'
                     }
                 ]
             },

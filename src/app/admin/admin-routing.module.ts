@@ -9,6 +9,7 @@ const appRoutes: Routes = [
     { path: 'menus', loadChildren: './menu/menu.module#MenuAdminModule' },
     { path: 'menus/restaurant/:id', loadChildren: './menu/menu.module#MenuAdminModule' },
     { path: 'bookings', loadChildren: './booking/booking.module#BookingModule' },
+    { path: 'order-histories', loadChildren: './order-histories/order-histories.module#OrderHistoriesModule' },
     { path: 'users', loadChildren: './user/user.module#UserAdminModule' }
     // { path: '**', component: Error404Component }
 ];
