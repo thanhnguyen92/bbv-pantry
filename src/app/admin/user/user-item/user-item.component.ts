@@ -12,6 +12,7 @@ import { UserViewModel } from 'app/shared/view-models/user.model';
 export class UserItemAdminComponent {
   isAdmin = false;
   isUser = false;
+  isHost = false;
 
   constructor(
     public dialogRef: MatDialogRef<UserItemAdminComponent>,
@@ -20,11 +21,14 @@ export class UserItemAdminComponent {
     if (roles) {
       roles.forEach(role => {
         switch (role) {
-          case UserRole.Admin:
+          case UserRole.Administrator:
             this.isAdmin = true;
             break;
           case UserRole.User:
             this.isUser = true;
+            break;
+          case UserRole.Host:
+            this.isHost = true;
             break;
         }
       });
@@ -38,10 +42,13 @@ export class UserItemAdminComponent {
   onSubmit() {
     const roles = [];
     if (this.isAdmin) {
-      roles.push(UserRole.Admin);
+      roles.push(UserRole.Administrator);
     }
     if (this.isUser) {
       roles.push(UserRole.User);
+    }
+    if (this.isHost) {
+      roles.push(UserRole.Host);
     }
     if (roles.length === 0) {
       NotificationService.showWarningMessage('Please select at least one role');

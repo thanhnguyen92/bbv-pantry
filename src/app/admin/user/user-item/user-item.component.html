@@ -29,12 +29,16 @@
                [(ngModel)]="data.lastName" />
     </mat-form-field>
     <div>
+        <mat-label>{{ 'COMMON.COLUMN.ROLES' | translate }}:</mat-label>
         <mat-checkbox class="d-block"
                       matInput
                       [(ngModel)]="isAdmin">Admin</mat-checkbox>
         <mat-checkbox class="d-block"
                       matInput
                       [(ngModel)]="isUser">User</mat-checkbox>
+        <mat-checkbox class="d-block"
+                      matInput
+                      [(ngModel)]="isHost">Host</mat-checkbox>
     </div>
 </div>
 <div mat-dialog-actions>

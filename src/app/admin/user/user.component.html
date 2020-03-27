@@ -35,7 +35,7 @@
                     color="primary"
                     (click)="onRefresh()"
                     aria-label="Refresh button">
-                <mat-icon>refresh</mat-icon>
+                <mat-icon matTooltip="{{ 'Refresh' | translate }}">refresh</mat-icon>
             </button>
         </div>
         <div class="content-card">
@@ -107,8 +107,18 @@
                             *matCellDef="let element">
                             <div *ngFor="let role of element.roles"
                                  class="order-items m-0">
-                                <div class="m-0">
-                                    <span>{{ role === roleEnum.Admin ? 'Administrator' : 'User' }}</span>
+                                <div class="m-0"
+                                     [ngSwitch]="role">
+                                    <span *ngSwitchCase="roleEnum.Administrator">
+                                        {{ 'COMMON.LABEL.ADMIN' | translate }}
+                                    </span>
+                                    <span *ngSwitchCase="roleEnum.User">
+                                        {{ 'COMMON.LABEL.USER' | translate }}
+                                    </span>
+                                    <span *ngSwitchCase="roleEnum.Host">
+                                        {{ 'COMMON.LABEL.HOST' | translate }}
+                                    </span>
+                                    <!-- <span>{{ role === roleEnum.Administrator ? 'Administrator' : 'User' }}</span> -->
                                 </div>
                             </div>
                         </td>
@@ -124,7 +134,8 @@
                                     class="pr-3"
                                     (click)="onEdit(element)">
                                 <mat-icon aria-hidden="false"
-                                          aria-label="Edit user">edit</mat-icon>
+                                          aria-label="Edit"
+                                          matTooltip="{{ 'COMMON.LABEL.EDIT' | translate }}">edit</mat-icon>
                             </button>
                             <button mat-icon-button
                                     class="pr-3"
@@ -135,10 +146,17 @@
                             </button>
                             <button mat-icon-button
                                     class="pr-3"
-                                    disabled
                                     (click)="onDisable(element)">
-                                <mat-icon aria-hidden="false"
-                                          aria-label="Disable user">remove_circle</mat-icon>
+                                <mat-icon *ngIf="element.active"
+                                          aria-hidden="false"
+                                          aria-label="Disable"
+                                          matTooltip="{{ 'Disable user' | translate }}">
+                                    remove_circle</mat-icon>
+                                <mat-icon *ngIf="!element.active"
+                                          aria-hidden="false"
+                                          aria-label="Active"
+                                          matTooltip="{{ 'Active user' | translate }}">
+                                    remove_circle_outline</mat-icon>
                             </button>
                         </td>
                     </ng-container>

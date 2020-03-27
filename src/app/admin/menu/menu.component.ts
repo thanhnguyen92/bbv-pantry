@@ -71,8 +71,6 @@ export class MenuAdminComponent implements OnInit, OnDestroy {
           this.fetchData();
         }, () => this._appService.setLoadingStatus(false));
     });
-
-
   }
 
   ngOnDestroy(): void {

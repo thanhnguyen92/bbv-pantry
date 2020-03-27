@@ -11,6 +11,13 @@ import { MsalService } from '@azure/msal-angular';
 import { PublishSubcribeService } from './pub-sub.service';
 import { PubSubChannel } from '../constants/pub-sub-channels.contants';
 import { Utilities } from './utilities';
+import { UserService } from './user.service';
+import { NotificationService } from './notification.service';
+import { map } from 'rxjs/operators';
+import { UserViewModel } from '../view-models/user.model';
+import { SecurityModel } from '../models/security.model';
+import { FirestoreService } from './firestore.service';
+import { AppService } from './app.service';
 
 const USER_INFO = 'USER-INFO';
 const USER_PERMISSIONS = 'USER-PERMISSIONS';
@@ -25,12 +32,101 @@ export class AuthService {
     constructor(
         private _router: Router,
         private _msalService: MsalService,
-        private afs: AngularFirestore,
+        private db: AngularFirestore,
         private afAuth: AngularFireAuth,
-        private _pubSubService: PublishSubcribeService) { }
+        private _appService: AppService,
+        private _pubSubService: PublishSubcribeService,
+        private _userService: UserService) { }
 
-    login(email, password) {
-        return this.afAuth.auth.signInWithEmailAndPassword(email, password);
+    // login(email, password) {
+    //     return this.afAuth.auth.signInWithEmailAndPassword(email, password);
+    // }
+
+    login() {
+        return this.msalLogin().then(async idToken => {
+            const msUser = await this.msalGetUser();
+
+            this._appService.setLoadingStatus(true);
+            await this._userService.getBbvUserInfo(msUser.displayableId, idToken).toPromise()
+                .then(user => {
+                    if (!user.email) {
+                        user.email = msUser.displayableId;
+                    }
+                    this.currentUser = user;
+
+                    // Check firebase account
+                    const newUser = { ...this.currentUser } as UserModel;
+                    this.db.collection<UserModel>('users', t => t.where('email', '==', newUser.email))
+                        .get().pipe(map(entity => {
+                            let result;
+                            if (entity.docs.length === 1) {
+                                const data = entity.docs[0].data() as UserModel;
+                                const id = entity.docs[0].id;
+                                result = { id, ...data };
+                            }
+
+                            return result;
+                        })).toPromise().then(currUser => {
+                            if (!currUser) {
+                                // Create new user in db
+                                newUser.id = this.db.createId();
+                                newUser.active = true;
+                                this.db.doc(`users/${newUser.id}`).set(newUser, {
+                                    merge: true
+                                });
+
+                                // Assign default role User for new account
+                                const securityEntity = {
+                                    id: this.db.createId(),
+                                    userId: newUser.id,
+                                    roles: [UserRole.User]
+                                } as SecurityModel;
+                                this.db.doc(`security/${securityEntity.id}`).set(securityEntity, {
+                                    merge: true
+                                });
+                                this.userRoles = [UserRole.User];
+                                this._pubSubService.publish(PubSubChannel.LOGGED_STATE, true);
+                                this._appService.setLoadingStatus(false);
+                            } else {
+                                if (!currUser.active) {
+                                    this.logOut();
+                                    NotificationService.showWarningMessage(`Your account is deactivated, please contact administrators`);
+                                    return;
+                                }
+
+                                // Get user roles
+                                this.db.collection<SecurityModel>('security', t => t.where('userId', '==', currUser.id))
+                                    .get().pipe(map(entities => {
+                                        if (entities.docs.length === 1) {
+                                            const data = entities.docs[0].data() as SecurityModel;
+                                            const id = entities.docs[0].id;
+                                            return { id, ...data };
+                                        }
+                                    })).toPromise().then(security => {
+                                        this.userRoles = security.roles;
+                                        this._pubSubService.publish(PubSubChannel.LOGGED_STATE, true);
+                                        this._appService.setLoadingStatus(false);
+                                    }).catch(err => {
+                                        console.log(err);
+                                        this.logOut();
+                                        NotificationService.showErrorMessage(`Can’t get roles for user ${currUser.email}`);
+                                    });
+                            }
+                        }).catch(err => {
+                            console.log(err);
+                            this.logOut();
+                            NotificationService.showErrorMessage(`Can’t find firebase user with email ${newUser.email}`);
+                        });
+                }).catch(err => {
+                    console.log(err);
+                    this.logOut();
+                    NotificationService.showErrorMessage(`Can’t get bbv's user information`);
+                });
+        }).catch(err => {
+            console.log(err);
+            NotificationService.showErrorMessage(`Login failed, please try again`);
+            this._router.navigate(['/']);
+        });
     }
 
     register(email, password) {
@@ -46,7 +142,7 @@ export class AuthService {
     }
 
     setUserData(user) {
-        const userRef: AngularFirestoreDocument<any> = this.afs.doc(
+        const userRef: AngularFirestoreDocument<any> = this.db.doc(
             `users/${user.id}`
         );
         return userRef.set(user, {
@@ -63,11 +159,12 @@ export class AuthService {
     }
 
     async logOut() {
-        this._router.navigate(['/']);
         setTimeout(() => {
             this.clearStorage();
             this._msalService.logout();
+            this._router.navigate(['/']);
             this._pubSubService.publish(PubSubChannel.LOGGED_STATE, false);
+            this._appService.setLoadingStatus(false);
         });
         // return this.afAuth.auth.signOut().then(() => {
         //     this.clearStorage();
@@ -75,8 +172,17 @@ export class AuthService {
         // });
     }
 
-    async setUserRoles(roles: UserRole[]) {
+    set userRoles(roles) {
         localStorage.setItem(USER_PERMISSIONS, JSON.stringify(roles));
+    }
+
+    get userRoles(): any {
+        const roles = localStorage.getItem(USER_PERMISSIONS);
+        if (roles) {
+            return JSON.parse(roles) as [];
+        }
+
+        return undefined;
     }
 
     async refreshToken() {
@@ -118,7 +224,7 @@ export class AuthService {
             localStorage.getItem(USER_PERMISSIONS)
         ) as UserRole[];
         if (roles) {
-            return roles.indexOf(UserRole.Admin) !== -1;
+            return roles.indexOf(UserRole.Administrator) !== -1;
         }
         return false;
     }

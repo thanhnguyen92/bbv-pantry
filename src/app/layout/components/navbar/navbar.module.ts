@@ -10,18 +10,18 @@ import { NavbarVerticalStyle2Module } from 'app/layout/components/navbar/vertica
 @NgModule({
     declarations: [
         NavbarComponent
+
     ],
-    imports     : [
+    imports: [
         FuseSharedModule,
 
         NavbarHorizontalStyle1Module,
         NavbarVerticalStyle1Module,
         NavbarVerticalStyle2Module
     ],
-    exports     : [
+    exports: [
         NavbarComponent
     ]
 })
-export class NavbarModule
-{
+export class NavbarModule {
 }

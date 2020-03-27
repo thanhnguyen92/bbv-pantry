@@ -2,6 +2,7 @@ export interface UserModel {
     id?: string;
     uid?: string;
     email?: string;
+    active?: boolean;
     emailSecondary?: string;
     displayName?: string;
     photoURL?: string;

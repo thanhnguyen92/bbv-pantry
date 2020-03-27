@@ -8,6 +8,7 @@ const appRoutes: Routes = [
     { path: 'restaurants', loadChildren: './restaurant/restaurant.module#RestaurantAdminModule' },
     { path: 'menus', loadChildren: './menu/menu.module#MenuAdminModule' },
     { path: 'menus/restaurant/:id', loadChildren: './menu/menu.module#MenuAdminModule' },
+    { path: 'bookings', loadChildren: './booking/booking.module#BookingModule' },
     { path: 'users', loadChildren: './user/user.module#UserAdminModule' }
     // { path: '**', component: Error404Component }
 ];

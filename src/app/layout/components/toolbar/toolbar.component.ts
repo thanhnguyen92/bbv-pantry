@@ -90,7 +90,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
                 flag: 'us'
             },
             {
-                id: 'tr',
+                id: 'de',
                 title: 'German',
                 flag: 'de'
             }
@@ -196,23 +196,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     }
 
     login() {
-        this._authService.msalLogin().then(async idToken => {
-            const msUser = await this._authService.msalGetUser();
-
-            console.log(msUser, idToken);
-            await this._userService
-                .getBbvUserInfo(msUser.displayableId, idToken)
-                .subscribe(
-                    user => {
-                        this._authService.currentUser = user;
-                        this._pubSubService.publish(
-                            PubSubChannel.LOGGED_STATE,
-                            true
-                        );
-                    },
-                    err => console.log('login toolbar' + err)
-                );
-        });
+        this._authService.login().then();
     }
 
     logOut() {

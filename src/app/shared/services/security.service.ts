@@ -33,8 +33,19 @@ export class SecurityService {
         }
     }
 
-    getRolesByUserId(userId) {
+    getRolesByUserId(userId, onchanges = false) {
         this._firestoreService.setPath(ENTITY_NAME);
+        if (onchanges) {
+            return this._firestoreService.gets<SecurityModel>(t => t.where('userId', '==', userId))
+                .snapshotChanges().pipe(map(entities => {
+                    if (entities.length === 1) {
+                        const data = entities[0].payload.doc.data() as SecurityModel;
+                        const id = entities[0].payload.doc.id;
+                        return { id, ...data };
+                    }
+                }));
+        }
+
         return this._firestoreService.gets<SecurityModel>(t => t.where('userId', '==', userId))
             .get()
             .pipe(map(entities => {
@@ -44,13 +55,6 @@ export class SecurityService {
                     return { id, ...data };
                 }
             }));
-        // .snapshotChanges().pipe(map(entities => {
-        //     if (entities.length === 1) {
-        //         const data = entities[0].payload.doc.data() as SecurityModel;
-        //         const id = entities[0].payload.doc.id;
-        //         return { id, ...data };
-        //     }
-        // }));
     }
 
     async assignRoles(userId, roles: UserRole[]) {

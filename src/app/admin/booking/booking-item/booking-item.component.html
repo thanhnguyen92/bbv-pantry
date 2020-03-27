@@ -1,0 +1,75 @@
+<h1 mat-dialog-title>{{ data.id ? 'Edit booking item' : 'Add booking item' }}</h1>
+<div mat-dialog-content>
+    <form [formGroup]="form">
+        <div class="mat-item">
+            <mat-label>{{ 'ADMIN.RESTAURANT.LABEL' | translate }}</mat-label>
+            <mat-select (selectionChange)="onRestaurantSelected($event)"
+                        [(value)]="restaurantId">
+                <mat-option *ngFor="let restaurant of restaurants"
+                            [value]="restaurant.id">
+                    {{restaurant.name}}
+                </mat-option>
+            </mat-select>
+        </div>
+        <div class="mat-item">
+            <mat-form-field>
+                <mat-label>{{ 'COMMON.COLUMN.FROM_DATE' | translate }}</mat-label>
+                <input matInput
+                       [matDatepicker]="fromPicker"
+                       (focus)='onfocusFromDate()'
+                       placeholder="Choose a date"
+                       formControlName="bookingFrom">
+                <mat-datepicker-toggle matSuffix
+                                       [for]="fromPicker"></mat-datepicker-toggle>
+                <mat-datepicker #fromPicker></mat-datepicker>
+                <mat-error *ngIf="checkControlInvalid('bookingFrom')">{{ getErrorMsg('bookingFrom') }}</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput
+                       [ngxTimepicker]="fromTimePicker"
+                       [format]="24"
+                       [(value)]="bookingFromTime">
+                <ngx-material-timepicker #fromTimePicker
+                                         class="time-picker"
+                                         (timeSet)="onFromTimeSet($event)"></ngx-material-timepicker>
+            </mat-form-field>
+        </div>
+        <div class="mat-item">
+            <mat-form-field>
+                <mat-label>{{ 'COMMON.COLUMN.TO_DATE' | translate }}</mat-label>
+                <input matInput
+                       [matDatepicker]="toPicker"
+                       placeholder="Choose a date"
+                       formControlName="bookingTo">
+                <mat-datepicker-toggle matSuffix
+                                       [for]="toPicker"></mat-datepicker-toggle>
+                <mat-datepicker #toPicker></mat-datepicker>
+                <mat-error *ngIf="checkControlInvalid('bookingTo')">{{ getErrorMsg('bookingTo') }}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <input matInput
+                       [ngxTimepicker]="toTimePicker"
+                       [format]="24"
+                       [(value)]="bookingToTime">
+                <ngx-material-timepicker #toTimePicker
+                                         (timeSet)="onToTimeSet($event)"></ngx-material-timepicker>
+            </mat-form-field>
+        </div>
+        <div class="mat-item">
+            <mat-checkbox matInput
+                          formControlName="isClosed">{{ 'COLUMN.IS_CLOSED' | translate }}</mat-checkbox>
+        </div>
+        <div class="mat-item">
+            <mat-checkbox matInput
+                          formControlName="isPreBooking">{{ 'COLUMN.IS_PRE_BOOKING' | translate }}</mat-checkbox>
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button
+            (click)="onCancel()">{{ 'BUTTON.CANCEL' | translate }}</button>
+    <button mat-raised-button
+            color="primary"
+            (click)="onSubmit()">{{ 'BUTTON.SAVE' | translate }}</button>
+</div>

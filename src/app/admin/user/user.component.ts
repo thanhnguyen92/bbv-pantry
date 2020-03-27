@@ -86,7 +86,6 @@ export class UserAdminComponent implements OnInit, OnDestroy {
       const afterClosedSub = dialogRef.afterClosed()
         .pipe(finalize(() => Utilities.unsubscribe(afterClosedSub)))
         .subscribe((res: UserViewModel) => {
-          console.log(res);
           if (res) {
             this._appService.setLoadingStatus(true);
             this._userService.get(res.id).subscribe((resUser: UserViewModel) => {
@@ -105,13 +104,12 @@ export class UserAdminComponent implements OnInit, OnDestroy {
                     this._appService.setLoadingStatus(false);
                     NotificationService.showSuccessMessage('Update successful');
                   }
-                })
-                  .catch(() => {
-                    this._appService.setLoadingStatus(false);
-                    NotificationService.showErrorMessage(
-                      'Update failed, please try again'
-                    );
-                  });
+                }).catch(() => {
+                  this._appService.setLoadingStatus(false);
+                  NotificationService.showErrorMessage(
+                    'Update failed, please try again'
+                  );
+                });
 
                 // Update user roles
                 if (!res.roles) {
@@ -155,7 +153,23 @@ export class UserAdminComponent implements OnInit, OnDestroy {
   }
 
   onDisable(user) {
-    console.log(user);
+    this._userService.get(user.id)
+      .subscribe((resUser: UserViewModel) => {
+        if (resUser) {
+          resUser.active = !resUser.active;
+
+          // Update user information
+          this._userService.update(resUser).then(() => {
+            this._appService.setLoadingStatus(false);
+            NotificationService.showSuccessMessage('Update successful');
+          }).catch(() => {
+            this._appService.setLoadingStatus(false);
+            NotificationService.showErrorMessage(
+              'Update failed, please try again'
+            );
+          });
+        }
+      });
   }
 
   private fetchData() {

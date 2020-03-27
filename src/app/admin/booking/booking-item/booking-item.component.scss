@@ -1,0 +1,11 @@
+::ng-deep .timepicker-overlay {
+    z-index: 9999 !important;
+}
+
+.mat-dialog-content {
+    overflow: hidden;
+
+    .mat-item {
+        padding-bottom: 5px !important;
+    }
+}

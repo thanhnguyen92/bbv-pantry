@@ -1,4 +1,5 @@
 import { FuseNavigation } from '@fuse/types';
+import { UserRole } from 'app/shared/enums/user-roles.enum';
 
 export const navigation: FuseNavigation[] = [
     {
@@ -6,6 +7,7 @@ export const navigation: FuseNavigation[] = [
         title: 'Foods & Beverages',
         translate: 'NAV.PANTRY.TITLE',
         type: 'group',
+        permissions: [UserRole.User],
         children: [
             {
                 id: 'admin',
@@ -14,6 +16,7 @@ export const navigation: FuseNavigation[] = [
                 icon: 'settings_applications',
                 // url: '/admin',
                 type: 'collapsable',
+                permissions: [UserRole.Administrator, UserRole.Host],
                 children: [
                     {
                         id: 'restaurant',
@@ -37,7 +40,7 @@ export const navigation: FuseNavigation[] = [
                         translate: 'NAV.PANTRY.ADMIN.BOOKING.TITLE',
                         type: 'item',
                         icon: 'assignment',
-                        url: '/admin/booking'
+                        url: '/admin/bookings'
                     },
                     {
                         id: 'order',
@@ -55,7 +58,8 @@ export const navigation: FuseNavigation[] = [
                 translate: 'NAV.PANTRY.ORDER.TITLE',
                 type: 'item',
                 icon: 'shopping_cart',
-                url: '/user/order'
+                url: '/user/order',
+                permissions: [UserRole.User],
             }
         ]
     },
@@ -64,6 +68,7 @@ export const navigation: FuseNavigation[] = [
         title: 'Administrations',
         translate: 'NAV.ADMINISTRATIONS.TITLE',
         type: 'group',
+
         children: [
             {
                 id: 'users',
@@ -71,6 +76,7 @@ export const navigation: FuseNavigation[] = [
                 translate: 'NAV.ADMINISTRATIONS.USER.TITLE',
                 type: 'item',
                 icon: 'person',
+                permissions: [UserRole.Administrator],
                 url: '/admin/users'
             },
             {

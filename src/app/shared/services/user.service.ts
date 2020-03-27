@@ -76,14 +76,17 @@ export class UserService {
         }
     }
 
-    get(userId: string) {
+    get(userId: string, onChanges = false) {
         this._firestoreService.setPath(USER_ENTITY);
-        // return this._firestoreService.get<UserModel>(userId).snapshotChanges()
-        //     .pipe(map(entity => {
-        //         const data = entity.payload.data() as UserViewModel;
-        //         const id = entity.payload.id;
-        //         return { id, ...data };
-        //     }));
+        if (onChanges) {
+            return this._firestoreService.get<UserModel>(userId).snapshotChanges()
+                .pipe(map(entity => {
+                    const data = entity.payload.data() as UserViewModel;
+                    const id = entity.payload.id;
+                    return { id, ...data };
+                }));
+        }
+
         return this._firestoreService.get<UserModel>(userId).get()
             .pipe(map(entity => {
                 const data = entity.data() as UserViewModel;

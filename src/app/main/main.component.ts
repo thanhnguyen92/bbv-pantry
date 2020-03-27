@@ -4,6 +4,7 @@ import { locale as english } from './i18n/en';
 import { AuthService } from 'app/shared/services/auth.service';
 import { PublishSubcribeService } from 'app/shared/services/pub-sub.service';
 import { PubSubChannel } from 'app/shared/constants/pub-sub-channels.contants';
+import { UserModel } from 'app/shared/models/user.model';
 
 @Component({
   selector: 'app-main',
@@ -11,7 +12,7 @@ import { PubSubChannel } from 'app/shared/constants/pub-sub-channels.contants';
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent implements OnInit {
-  user = {};
+  user: UserModel = {};
 
   constructor(
     private _authService: AuthService,

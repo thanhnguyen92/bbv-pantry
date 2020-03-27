@@ -3,6 +3,10 @@ import { merge, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { FuseNavigationService } from '@fuse/components/navigation/navigation.service';
+import { AuthService } from 'app/shared/services/auth.service';
+import { PublishSubcribeService } from 'app/shared/services/pub-sub.service';
+import { PubSubChannel } from 'app/shared/constants/pub-sub-channels.contants';
+import { FuseNavigation } from '@fuse/types';
 
 @Component({
     selector: 'fuse-navigation',
@@ -18,6 +22,8 @@ export class FuseNavigationComponent implements OnInit {
     @Input()
     navigation: any;
 
+    roles = [];
+
     // Private
     private _unsubscribeAll: Subject<any>;
 
@@ -28,10 +34,50 @@ export class FuseNavigationComponent implements OnInit {
      */
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
-        private _fuseNavigationService: FuseNavigationService
-    ) {
+        private _fuseNavigationService: FuseNavigationService,
+        private _pubSubService: PublishSubcribeService,
+        private _authService: AuthService) {
         // Set the private defaults
         this._unsubscribeAll = new Subject();
+
+        this._pubSubService.subscribe(PubSubChannel.LOGGED_STATE, authState => {
+            // Load the navigation
+            this.navigation = this._fuseNavigationService.getCurrentNavigation();
+            const roles = this._authService.userRoles as any[];
+            this.renderNavigation(this.navigation, roles);
+            console.log(this.navigation, roles);
+
+            // Mark for check
+            this._changeDetectorRef.markForCheck();
+        });
+    }
+
+    private renderNavigation(navigation: FuseNavigation[], roles: any[], isChild = false) {
+        navigation.forEach(nav => {
+            nav.visible = false;
+            if (!nav.permissions) {
+                nav.visible = true;
+
+                if (nav.children && nav.children.length > 0) {
+                    this.renderNavigation(nav.children, roles, true);
+                }
+            } else {
+                if (roles) {
+                    const res = nav.permissions.filter((v) => {
+                        return roles.indexOf(v) > -1;
+                    });
+
+                    if (res.length > 0) {
+                        nav.visible = true;
+                    }
+
+                    if (nav.children && nav.children.length > 0) {
+                        this.renderNavigation(nav.children, roles, true);
+                    }
+                }
+            }
+
+        });
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -52,6 +98,8 @@ export class FuseNavigationComponent implements OnInit {
 
                 // Load the navigation
                 this.navigation = this._fuseNavigationService.getCurrentNavigation();
+                const roles = this._authService.userRoles as any[];
+                this.renderNavigation(this.navigation, roles);
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();

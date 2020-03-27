@@ -16,11 +16,16 @@ export const locale = {
                 'NOTES': 'Notes',
                 'ACTIONS': 'Actions',
                 'BIRTHDAY': 'Birthday',
-                'ROLES': 'Roles'
+                'ROLES': 'Roles',
+                'FROM_DATE': 'From Date',
+                'TO_DATE': 'To Date',
             },
             'LABEL': {
                 'ADMIN': 'Administrator',
-                'USER': 'User'
+                'USER': 'User',
+                'HOST': 'Host',
+                'EDIT': 'Edit',
+                'DELETE': 'Delete'
             }
         },
         'BUTTON': {
@@ -41,6 +46,9 @@ export const locale = {
             },
             'MENU': {
                 'LABEL': 'Menus'
+            },
+            'BOOKING': {
+                'LABEL': 'Booking'
             },
             'USER': {
                 'LABEL': 'Users'

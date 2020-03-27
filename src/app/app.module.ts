@@ -43,12 +43,13 @@ import { AppService } from './shared/services/app.service';
 import { AuthService } from './shared/services/auth.service';
 
 /** Azure */
-import { MsalGuard, MsalInterceptor, MsalModule } from '@azure/msal-angular';
+import { MsalInterceptor, MsalModule } from '@azure/msal-angular';
 import { UserService } from './shared/services/user.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { IframeComponent } from './iframe/iframe.component';
 import { SafePipe } from './iframe/safe-url.pipe';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 const appRoutes: Routes = [
     { path: '', loadChildren: './main/main.module#MainModule' },
@@ -93,7 +94,8 @@ const appRoutes: Routes = [
         MatSnackBarModule,
         MatMomentDateModule,
         MatTooltipModule,
-
+        NgxMaterialTimepickerModule,
+        
         // Telerik modules
         WindowModule,
         ButtonsModule,
@@ -123,7 +125,8 @@ const appRoutes: Routes = [
         })
     ],
     exports: [
-        NotificationComponent
+        NotificationComponent,
+        NgxMaterialTimepickerModule
     ],
     bootstrap: [
         AppComponent
