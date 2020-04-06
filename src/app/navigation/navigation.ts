@@ -68,7 +68,7 @@ export const navigation: FuseNavigation[] = [
         title: 'Administrations',
         translate: 'NAV.ADMINISTRATIONS.TITLE',
         type: 'group',
-
+        permissions: [UserRole.Administrator],
         children: [
             {
                 id: 'users',
@@ -85,24 +85,33 @@ export const navigation: FuseNavigation[] = [
                 translate: 'NAV.ADMINISTRATIONS.ROLES.TITLE',
                 type: 'item',
                 icon: 'supervised_user_circle',
+                permissions: [UserRole.Administrator],
                 url: '/admin/roles'
             }
         ]
     },
-    // {
-    //     id: 'applications',
-    //     title: 'Applications',
-    //     translate: 'NAV.APPS.TITLE',
-    //     type: 'group',
-    //     children: [
-    //         {
-    //             id: 'iframe',
-    //             title: 'iFrame',
-    //             translate: 'NAV.APPS.IFRAME.TITLE',
-    //             type: 'item',
-    //             icon: 'airplay',
-    //             url: '/iframe'
-    //         }
-    //     ]
-    // }
+    {
+        id: 'applications',
+        title: 'Applications',
+        translate: 'NAV.APPS.TITLE',
+        type: 'group',
+        children: [
+            // {
+            //     id: 'iframe',
+            //     title: 'iFrame',
+            //     translate: 'NAV.APPS.IFRAME.TITLE',
+            //     type: 'item',
+            //     icon: 'airplay',
+            //     url: '/iframe'
+            // },
+            {
+                id: 'covid19',
+                title: 'Covid-19',
+                translate: 'NAV.APPS.CORONA.TITLE',
+                type: 'item',
+                icon: 'airplay',
+                url: '/covid19'
+            }
+        ]
+    }
 ];

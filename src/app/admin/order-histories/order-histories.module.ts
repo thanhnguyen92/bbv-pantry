@@ -8,9 +8,10 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { SimpleMaterialModule } from 'app/shared/modules/simple-material.module';
 import { OrderHistoriesRoutingModule } from './order-histories-routing.module';
 import { MatCardModule } from '@angular/material';
+import { BookingSelectionComponent } from './booking-selection/booking-selection.component';
 
 @NgModule({
-  declarations: [OrderHistoriesAdminComponent],
+  declarations: [OrderHistoriesAdminComponent, BookingSelectionComponent],
   imports: [
     TranslateModule,
     FuseSharedModule,

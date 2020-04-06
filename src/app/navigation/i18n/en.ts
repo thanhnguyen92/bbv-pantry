@@ -30,6 +30,9 @@ export const locale = {
                 'TITLE': 'Applications',
                 'IFRAME': {
                     'TITLE': 'iFrame',
+                },
+                'CORONA': {
+                    'TITLE': 'Covid-19',
                 }
             },
             'ADMINISTRATIONS': {

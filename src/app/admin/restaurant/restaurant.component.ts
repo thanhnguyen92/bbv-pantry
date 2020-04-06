@@ -71,9 +71,7 @@ export class RestaurantAdminComponent implements OnInit {
   }
 
   onGotoMenu(restaurant) {
-    this._route.navigate([restaurant.id, 'menu'], {
-      relativeTo: this._activatedRoute
-    });
+    this._route.navigate(['admin', 'menus', 'restaurant', restaurant.id]);
   }
 
   applyFilter(event) {

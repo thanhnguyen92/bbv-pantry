@@ -55,7 +55,8 @@ const appRoutes: Routes = [
     { path: '', loadChildren: './main/main.module#MainModule' },
     { path: 'main', loadChildren: './main/main.module#MainModule' },
     { path: 'admin', loadChildren: './admin/admin.module#AdminModule', canActivate: [AuthGuard] },
-    { path: 'iframe', component: IframeComponent },
+    // { path: 'iframe', component: IframeComponent },
+    { path: 'covid19', component: IframeComponent },
     { path: '**', component: Error404Component }
 ];
 

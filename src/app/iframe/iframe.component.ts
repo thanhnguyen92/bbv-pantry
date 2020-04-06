@@ -14,16 +14,16 @@ export class IframeComponent implements OnInit {
   constructor(private _dialog: MatDialog) { }
 
   ngOnInit() {
-    const dialogRef = this._dialog.open(ConfirmDialogComponent, {
-      width: '350px',
-      data: { title: 'URL iFrame', noButton: 'BUTTON.CANCEL', yesButton: 'BUTTON.OK' }
-    });
+    // const dialogRef = this._dialog.open(ConfirmDialogComponent, {
+    //   width: '350px',
+    //   data: { title: 'URL iFrame', noButton: 'BUTTON.CANCEL', yesButton: 'BUTTON.OK' }
+    // });
 
-    dialogRef.afterClosed().subscribe(res => {
-      if (res) {
-        console.log('afterClosed', res);
-        this.sourceURL = res.input;
-      }
-    });
+    // dialogRef.afterClosed().subscribe(res => {
+    //   if (res) {
+    //     console.log('afterClosed', res);
+    //     this.sourceURL = res.input;
+    //   }
+    // });
   }
 }
